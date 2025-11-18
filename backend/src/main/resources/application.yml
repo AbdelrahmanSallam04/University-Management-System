@@ -1,6 +1,11 @@
 spring:
+  application:
+    name: backend
   datasource:
     url: jdbc:sqlserver://localhost:1433;databaseName=university_management_system;encrypt=true;trustServerCertificate=true;
+    username: university_user
+    password: 123
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 
   jpa:
     hibernate:

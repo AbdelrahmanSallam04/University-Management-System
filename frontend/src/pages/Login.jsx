@@ -6,6 +6,8 @@ import '../styles/Login.css';
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -13,9 +15,10 @@ const Login = () => {
         setError('');
 
         try {
-            await authService.login(username, password);
-            onLogin(); // Notify App component
-            navigate('/dashboard'); // Redirect to dashboard
+            const result = await authService.login(username, password);
+            console.log('Login successful:', result);
+            // onLogin(); // Notify App component
+            // navigate('/dashboard'); // Redirect to dashboard
         } catch (error) {
             setError(error.message);
         } finally {

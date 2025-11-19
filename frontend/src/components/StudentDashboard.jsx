@@ -1,15 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./StudentSidebar";
-import Header from "./StudentHeader";
 import "../styles/StudentDashboard.css";
+import axios from "axios";
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
   const [activeCard, setActiveCard] = useState(null);
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Replace with actual student user ID from your authentication system
+  const studentUserId = 5;
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8081/api/student/dashboard/${studentUserId}`
+      );
+      setDashboardData(response.data);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching dashboard data:", err);
+      setError("Failed to load dashboard data");
+      setLoading(false);
+    }
+  };
 
   const dashboardCards = [
-    { id: 1, name: "Courses", icon: "📚", path: "/course-catalog", color: "#f5576c" },
+    { id: 1, name: "Courses", icon: "📚", path: "/courses", color: "#f5576c" },
     { id: 2, name: "Courses Catalog", icon: "📊", path: "/course-catalog", color: "#667eea" },
     { id: 3, name: "Results", icon: "📝", path: "/grades", color: "#4facfe" },
     { id: 4, name: "Profile", icon: "👤", path: "/profile", color: "#43e97b" },
@@ -26,16 +50,44 @@ const StudentDashboard = () => {
     }, 200);
   };
 
+  if (loading) {
+    return (
+      <div className="dashboard-wrapper">
+        <Sidebar />
+        <div className="main-content">
+          <div className="loading-section">
+            <div className="loading-spinner"></div>
+            <p>Loading your dashboard...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="dashboard-wrapper">
+        <Sidebar />
+        <div className="main-content">
+          <div className="error-section">
+            <p>{error}</p>
+            <button onClick={fetchDashboardData} className="retry-button">
+              Try Again
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard-wrapper">
       <Sidebar />
       <div className="main-content">
-        <Header />
-
-        {/* Welcome Section */}
+        {/* Welcome Section - Dynamic Data */}
         <div className="welcome-section">
           <div className="welcome-text">
-            <h1>Welcome back, John! 👋</h1>
+            <h1>Welcome back, {dashboardData?.firstName || 'Student'}! 👋</h1>
             <p>Here's your academic overview for today</p>
           </div>
           <div className="date-display">
@@ -48,12 +100,12 @@ const StudentDashboard = () => {
           </div>
         </div>
 
-        {/* Quick Stats */}
+        {/* Quick Stats - Dynamic Data */}
         <div className="stats-container">
           <div className="stat-card">
             <div className="stat-icon">📚</div>
             <div className="stat-info">
-              <h3>5</h3>
+              <h3>{dashboardData?.enrolledCoursesCount || 0}</h3>
               <p>Enrolled Courses</p>
             </div>
           </div>
@@ -98,7 +150,6 @@ const StudentDashboard = () => {
             ))}
           </div>
         </div>
-
         {/* Upcoming Events */}
         <div className="events-section">
           <h2>Upcoming Events</h2>

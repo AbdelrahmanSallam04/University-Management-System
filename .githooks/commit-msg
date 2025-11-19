@@ -1,16 +1,10 @@
 #!/bin/sh
 # Enforce "type: description" (Conventional Commits-lite)
 
-# Valid types
-valid_types="feat|fix|docs|style|refactor|test|chore"
-
 msg_file="$1"
 msg="$(cat "$msg_file")"
 
-# Allow merge commits
-echo "$msg" | grep -iq "^merge" && exit 0
-
-if ! printf "%s" "$msg" | grep -Eq '^($valid_types): .+'; then
+if ! printf "%s" "$msg" | grep -Eq '^(feat|fix|docs|style|refactor|test|chore): .+'; then
   echo "❌ Invalid commit message."
   echo "   Use: <type>: <description>"
   echo "   Types: feat|fix|docs|style|refactor|test|chore"

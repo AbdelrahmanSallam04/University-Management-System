@@ -9,12 +9,12 @@ const Sidebar = () => {
 
   const menuItems = [
     { path: "/", label: "Dashboard", icon: "📊" },
-    { path: "/course-catalog", label: "Courses", icon: "📚" },
+    { path: "/enrolledCourses", label: "Courses", icon: "📚" },
+    { path: "/course-catalog", label: "Courses Catalog", icon: "📊" },
     { path: "/grades", label: "Results", icon: "📝" },
     { path: "/profile", label: "Profile", icon: "👤" },
     { path: "/schedule", label: "Schedule", icon: "📅" },
     { path: "/notice", label: "Notice", icon: "📢" },
-    { path: "/resources", label: "Resources", icon: "💼" },
     { path: "/messages", label: "Messages", icon: "💬" },
   ];
 

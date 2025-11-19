@@ -1,0 +1,105 @@
+/* --- New Styles for EnrolledCoursesView --- */
+
+/* Replicate the general content section container style */
+.content-section {
+    /* Use padding similar to .welcome-section or .events-section for spacing */
+    padding: 30px;
+    margin-bottom: 30px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e2e8f0; /* Match existing border subtle look */
+}
+
+.content-section h1 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #1a202c;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.content-section p {
+    color: #718096;
+    margin-bottom: 25px;
+}
+
+/* Table Styling - Mimics Card Aesthetic */
+.courses-table {
+    width: 100%;
+    border-collapse: separate; /* Use separate for rounded corners */
+    border-spacing: 0; /* Important for separate model */
+    margin-top: 20px;
+    overflow: hidden; /* Ensures borders/shadows look clean */
+    border-radius: 16px; /* Match stat-card/dashboard-card radius */
+}
+
+.courses-table thead tr {
+    background: linear-gradient(90deg, #667eea, #764ba2); /* Use primary color gradient */
+    color: white;
+    font-weight: 600;
+}
+
+.courses-table th {
+    padding: 15px 20px;
+    text-align: left;
+    font-size: 0.95rem;
+}
+
+/* Ensure top corners are rounded */
+.courses-table th:first-child { border-top-left-radius: 16px; }
+.courses-table th:last-child { border-top-right-radius: 16px; }
+
+
+.courses-table td {
+    padding: 18px 20px;
+    text-align: left;
+    color: #2d3748;
+    background-color: white;
+    border-bottom: 1px solid #edf2f7; /* Light divider */
+}
+
+/* Zebra striping for better readability, using the background color */
+.courses-table tbody tr:nth-child(even) td {
+    background-color: #f7fafc;
+}
+
+/* Hover effect on rows, similar to stat-card hover */
+.courses-table tbody tr:hover td {
+    background-color: #e2e8f0; /* Lighter background on hover */
+    cursor: default;
+}
+
+/* Highlight the last row to complete the bottom border */
+.courses-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Style for action buttons (View Details) */
+.view-details-btn {
+    background: linear-gradient(135deg, #4facfe, #00f2fe); /* Use a secondary light gradient */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.view-details-btn:hover {
+    opacity: 0.9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive adjustment for table on small screens */
+@media (max-width: 768px) {
+    /* Make the table scrollable horizontally */
+    .data-container {
+        overflow-x: auto;
+    }
+    .courses-table {
+        min-width: 600px; /* Force minimum width to prevent squishing */
+    }
+}

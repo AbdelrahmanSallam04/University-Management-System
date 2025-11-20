@@ -9,7 +9,8 @@ const AdminSidebar = ({ onMenuChange }) => {
     { id: 'user-management', label: 'User Management', icon: '👥' },
     { id: 'create-account', label: 'Create Account', icon: '➕' },
     { id: 'events', label: 'Events', icon: '📅' },
-    { id: 'announcements', label: 'Announcements', icon: '📢' }
+    { id: 'announcements', label: 'Announcements', icon: '📢' },
+    { id: 'room-availability', label: 'Room Availability', icon: '🏢' }
   ];
 
   const handleMenuClick = (menuId) => {

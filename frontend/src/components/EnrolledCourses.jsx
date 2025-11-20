@@ -3,19 +3,14 @@
 import React, { useState, useEffect } from "react";
 import "../styles/EnrolledCourses.css";
 
-// Ensure this component name matches your export/file name (EnrolledCourses.jsx)
 const EnrolledCoursesView = () => {
 
-    // 🛑 FIX: Define the state variables and their setters using array destructuring
     const [courses, setCourses] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
     // --- Data Fetching Logic ---
     const fetchEnrolledCourses = async () => {
-        // ... (API fetch implementation using try/catch/finally) ...
-
-        // Placeholder for successful test (REMOVED DUMMY DATA FOR CLEANLINESS):
         try {
             // Using your actual API call now
             const response = await fetch('/api/v1/students/me/courses');
@@ -26,15 +21,12 @@ const EnrolledCoursesView = () => {
             }
 
             const data = await response.json();
-            // FIX: setCourses is now defined
             setCourses(data);
 
         } catch (err) {
             console.error("Failed to fetch courses:", err);
-            // FIX: setError is now defined
             setError("Could not load courses. Ensure API is running and accessible.");
         } finally {
-            // FIX: setIsLoading is now defined
             setIsLoading(false);
         }
     };
@@ -45,7 +37,7 @@ const EnrolledCoursesView = () => {
 
     // --- Conditional Content Rendering ---
     let content;
-    // FIX: isLoading, error, and courses are now defined
+
     if (isLoading) {
         content = <p>Loading your enrolled courses... ⏳</p>;
     } else if (error) {
@@ -53,9 +45,39 @@ const EnrolledCoursesView = () => {
     } else if (courses.length === 0) {
         content = <p>You are not currently enrolled in any courses.</p>;
     } else {
+        // VITAL FIX: Complete the table structure using the DTO keys
         content = (
             <table className="courses-table">
-                {/* ... table content remains the same ... */}
+                <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Course Name</th>
+                    <th>Credits</th>
+                    <th>Type</th>
+                    <th>Professor</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {/* Map over the DTO array received from the backend */}
+                {courses.map((course) => (
+                    <tr key={course.courseId}>
+                        <td>{course.code}</td>
+                        <td>{course.name}</td>
+                        <td>{course.creditHours}</td>
+                        <td>{course.courseTypeName}</td> {/* Mapped from DTO */}
+                        <td>{course.professorFullName}</td> {/* Mapped from DTO */}
+                        <td>
+                            <button
+                                className="view-details-btn"
+                                onClick={() => alert(`Viewing details for: ${course.name}`)}
+                            >
+                                View Details
+                            </button>
+                        </td>
+                    </tr>
+                ))}
+                </tbody>
             </table>
         );
     }
@@ -63,13 +85,12 @@ const EnrolledCoursesView = () => {
     // --- Layout Structure ---
     return (
         <div className="dashboard-wrapper">
-            {/* ... layout structure remains the same ... */}
+            {/* The rest of your wrapper and layout is fine */}
             <div className="main-content">
-                {/* ... */}
                 <div className="content-section">
                     <h1>📚 My Enrolled Courses</h1>
                     <div className="data-container">
-                        {content}
+                        {content} {/* This will render the table or loading/error message */}
                     </div>
                 </div>
             </div>

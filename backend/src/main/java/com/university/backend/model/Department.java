@@ -1,5 +1,6 @@
 package com.university.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,5 +21,6 @@ public class Department {
     private Professor departmentHead;
 //prof
     @OneToMany(mappedBy = "department")
+    @JsonIgnore
     private List<Course> courses;
 }

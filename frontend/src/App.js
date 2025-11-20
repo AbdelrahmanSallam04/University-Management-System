@@ -8,11 +8,7 @@ function App() {
       // We use the Router to handle navigation
       <Router>
         <Routes>
-
-
           <Route path="/" element={<EnrolledCoursesView />} />
-
-
         </Routes>
       </Router>
   );

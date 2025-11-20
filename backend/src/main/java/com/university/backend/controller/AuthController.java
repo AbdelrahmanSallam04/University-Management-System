@@ -1,6 +1,7 @@
 package com.university.backend.controller;
 import com.university.backend.dto.LoginRequest;
 import com.university.backend.dto.LoginResponse;
+import com.university.backend.service.AuthService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,12 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class AuthController {
 
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest, HttpSession session)
     {
@@ -17,12 +24,16 @@ public class AuthController {
         String password = loginRequest.getPassword();
 
         // TODO: Check if username and password are correct
-        boolean isValid = checkCredentials(username, password);
+        boolean isValid = authService.authenticate(username, password);
 
         if (isValid) {
+            String userRole = authService.getUserRole(username);
+
             session.setAttribute("user", username);
-            System.out.println("Login successful! Session ID: " + session.getId());
-            return ResponseEntity.ok(new LoginResponse("Login successful"));
+            session.setAttribute("userRole", userRole);
+
+            System.out.println("Login successful! User: " + username + ", Role: " + userRole);
+            return ResponseEntity.ok(new LoginResponse("Login successful", userRole));
         } else {
             System.out.println("Login Failed!");
             return ResponseEntity.status(401).body(new LoginResponse("Invalid credentials"));

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // ← ADD THIS IMPORT
 import InputField from '../components/InputField';
 import authService from '../services/authService';
 import '../styles/Login.css';
@@ -8,6 +9,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const navigate = useNavigate(); // ← ADD THIS HOOK
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -17,8 +19,17 @@ const Login = () => {
         try {
             const result = await authService.login(username, password);
             console.log('Login successful:', result);
+            // Navigate based on user role
+            if (result.role === "PROFESSOR") {
+                navigate('/professor-dashboard');
+            } else if (result.role === "ADMIN") {
+                navigate('/admin-dashboard');
+            } else if (result.role === "STUDENT") {
+                navigate('/student-dashboard');
+            } else {
+                console.log('Role unidentified!!', result)
+            }
             // onLogin(); // Notify App component
-            // navigate('/dashboard'); // Redirect to dashboard
         } catch (error) {
             setError(error.message);
         } finally {

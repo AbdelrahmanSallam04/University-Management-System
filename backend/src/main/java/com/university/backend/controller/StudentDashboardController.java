@@ -1,7 +1,7 @@
 package com.university.backend.controller;
 
 import com.university.backend.dto.StudentDashboardDTO;
-import com.university.backend.service.StudentService;
+import com.university.backend.service.StudentDashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins ="http://localhost:3000") // Your frontend URL
 public class StudentDashboardController {
 
-    private final StudentService studentService;
+    private final StudentDashboardService studentDashboardService;
 
     @GetMapping("/dashboard/{userId}")
     public ResponseEntity<StudentDashboardDTO> getStudentDashboard(@PathVariable Long userId) {
-        StudentDashboardDTO dashboard = studentService.getStudentDashboard(userId);
+        StudentDashboardDTO dashboard = studentDashboardService.getStudentDashboard(userId);
         return ResponseEntity.ok(dashboard);
     }
 }

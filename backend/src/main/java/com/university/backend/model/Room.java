@@ -1,9 +1,12 @@
 package com.university.backend.model;
 
 import jakarta.persistence.*;
-
+import lombok.Getter;
+import lombok.Setter;
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "room")
 public class Room {
@@ -33,5 +36,6 @@ public class Room {
 
     @Column(name = "isActive", nullable = false)
     private boolean isActive;
+
 
 }

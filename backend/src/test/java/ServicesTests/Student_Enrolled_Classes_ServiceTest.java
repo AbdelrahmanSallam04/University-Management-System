@@ -3,7 +3,7 @@ package ServicesTests;// src/test/java/com/university/backend/service/StudentSer
 import com.university.backend.model.Student;
 import com.university.backend.model.Course;
 import com.university.backend.repository.StudentRepository;
-import com.university.backend.service.StudentService;
+import com.university.backend.service.Student_Enrolled_Classes_Service;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,13 +18,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class StudentServiceTest {
+public class Student_Enrolled_Classes_ServiceTest {
 
     @Mock
     private StudentRepository studentRepository;
 
     @InjectMocks
-    private StudentService studentService;
+    private Student_Enrolled_Classes_Service studentService;
 
     // Test Case 1: Successfully retrieves courses
     @Test

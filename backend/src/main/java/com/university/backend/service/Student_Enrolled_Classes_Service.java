@@ -10,12 +10,12 @@ import java.util.Set;
 import java.util.NoSuchElementException;
 
 @Service
-public class StudentService {
+public class Student_Enrolled_Classes_Service {
 
     private final StudentRepository studentRepository;
 
     // Use constructor injection for the repository
-    public StudentService(StudentRepository studentRepository) {
+    public Student_Enrolled_Classes_Service(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
     }
 

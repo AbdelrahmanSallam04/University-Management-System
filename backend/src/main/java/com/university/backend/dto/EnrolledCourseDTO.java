@@ -5,7 +5,7 @@ package com.university.backend.dto;
 import lombok.Data; // Use @Data from Lombok for simplicity
 
 @Data
-public class CourseDTO {
+public class EnrolledCourseDTO {
     private Integer courseId;
     private String code;
     private String name;

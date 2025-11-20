@@ -2,15 +2,16 @@
 
 package com.university.backend.service;
 
-import com.university.backend.dto.CourseDTO;
+import com.university.backend.dto.EnrolledCourseDTO;
+import com.university.backend.dto.EnrolledCourseDTO;
 import com.university.backend.model.Course;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MappingService {
+public class Mapping_Enrolled_Service {
 
-    public CourseDTO toCourseDTO(Course course) {
-        CourseDTO dto = new CourseDTO();
+    public EnrolledCourseDTO toCourseDTO(Course course) {
+        EnrolledCourseDTO dto = new EnrolledCourseDTO();
         dto.setCourseId(course.getCourseId());
         dto.setCode(course.getCode());
         dto.setName(course.getName());

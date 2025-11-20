@@ -2,10 +2,11 @@
 
 package com.university.backend.controller;
 
-import com.university.backend.dto.CourseDTO; // New Import
+import com.university.backend.dto.EnrolledCourseDTO; // New Import
 import com.university.backend.model.Course;
-import com.university.backend.service.StudentService;
-import com.university.backend.service.MappingService; // New Import
+import com.university.backend.service.Mapping_Enrolled_Service;
+import com.university.backend.service.Student_Enrolled_Classes_Service;
+import com.university.backend.service.Mapping_Enrolled_Service; // New Import
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,17 +22,17 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/students")
 public class StudentController {
 
-    private final StudentService studentService;
-    private final MappingService mappingService; // Inject the mapper
+    private final Student_Enrolled_Classes_Service studentService;
+    private final Mapping_Enrolled_Service mappingService; // Inject the mapper
 
-    public StudentController(StudentService studentService, MappingService mappingService) {
+    public StudentController(Student_Enrolled_Classes_Service studentService, Mapping_Enrolled_Service mappingService) {
         this.studentService = studentService;
         this.mappingService = mappingService;
     }
 
     @GetMapping("/me/courses")
     // NOTE: Change the return type to Set<CourseDTO>
-    public ResponseEntity<Set<CourseDTO>> getMyEnrolledCourses(HttpSession session) {
+    public ResponseEntity<Set<EnrolledCourseDTO>> getMyEnrolledCourses(HttpSession session) {
 
         // ... (Session/ID logic here)
         Integer authenticatedStudentId = 100; // Still using hardcoded ID for testing
@@ -44,7 +45,7 @@ public class StudentController {
 
         // --- CONVERSION STEP ---
         // Convert the Set of Course Entities to a Set of Course DTOs
-        Set<CourseDTO> courseDTOs = courses.stream()
+        Set<EnrolledCourseDTO> courseDTOs = courses.stream()
                 .map(mappingService::toCourseDTO)
                 .collect(Collectors.toSet());
         // -----------------------

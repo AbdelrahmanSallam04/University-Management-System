@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from './Professor SideBar';
+import Sidebar from './Professor SideBar'; // Ensure this path matches your file structure
 import '../styles/ProfessorDashboard.css';
 
 function ProfessorDashboard() {
@@ -34,12 +34,11 @@ function ProfessorDashboard() {
             if (!response.ok) {
                 let message = `Failed to fetch dashboard data. Status: ${response.status}`;
 
-                // --- FIX 1: SECURITY REDIRECT ---
+                // --- FIX 1: SECURITY REDIRECT (401) ---
                 if (response.status === 401) {
                     console.log("Session expired or unauthorized. Redirecting...");
-                    // This prevents staying on the page if the Back button is pressed later
                     navigate('/login', { replace: true });
-                    return; // Stop execution
+                    return;
                 } else if (response.status === 403) {
                     message = "Forbidden. Not a Professor account.";
                 } else if (response.status === 404) {
@@ -76,16 +75,23 @@ function ProfessorDashboard() {
     // --- FIX 2: LOGOUT HISTORY REPLACEMENT ---
     const handleLogout = async () => {
         console.log('Logging out...');
-
-        // Optional: Tell server to destroy session cookie so the 401 check works above
         try {
-            await fetch('/logout', { method: 'POST' }); // Adjust endpoint as needed
+            await fetch('/logout', { method: 'POST' });
         } catch(err) {
             console.log("Backend logout failed, clearing frontend anyway");
         }
-
-        // { replace: true } is the key. It wipes the Dashboard from history.
+        // Wipes dashboard from history so 'Back' button doesn't work
         navigate('/login', { replace: true });
+    };
+
+    // --- FIX 3: CUSTOM NAVIGATION HANDLER ---
+    // Intercepts Sidebar clicks. Routes to new page for Room Availability.
+    const handleSidebarNavigation = (viewId) => {
+        if (viewId === 'room_availability') {
+            navigate('/room-availability');
+        } else {
+            setCurrentView(viewId);
+        }
     };
 
     // --- HELPER COMPONENTS ---
@@ -274,17 +280,6 @@ function ProfessorDashboard() {
                     </div>
                 );
 
-            case 'room_availability':
-                return (
-                    <div className="events-section availability-note">
-                        <h2>📅Room Availability</h2>
-                        <div className="content-placeholder-note">
-                            <p>**Integration Pending:** This will connect with the room scheduling service.</p>
-                            <p className="mt-2">For now, this button serves as a placeholder for the functionality.</p>
-                        </div>
-                    </div>
-                );
-
             default:
                 return <div className="p-8 text-center text-red-500">Unknown view selected.</div>;
         }
@@ -294,7 +289,7 @@ function ProfessorDashboard() {
         <div className="dashboard-wrapper">
             <Sidebar
                 currentView={currentView}
-                setCurrentView={setCurrentView}
+                setCurrentView={handleSidebarNavigation} // Use custom handler
                 handleLogout={handleLogout}
             />
             <main className="main-content">

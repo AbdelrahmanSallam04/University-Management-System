@@ -8,7 +8,7 @@ const Sidebar = ({ currentView, setCurrentView, handleLogout }) => {
         { id: 'dashboard', label: 'Dashboard Overview', icon: '🏠' },
         { id: 'advisees', label: 'Advised Students', icon: '🧑‍🎓' },
         { id: 'courses', label: 'Courses Teaching', icon: '📚' },
-        { id: 'room_availability', label: 'Room Availability', icon: '📅' },
+        { id: 'room_availability', label: '  Room Availability', icon: '📅' },
     ];
 
     return (

@@ -15,6 +15,14 @@ public abstract class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
 
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
+
+    @Column(length = 20)
+    private String phone;
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)

@@ -5,7 +5,9 @@ import '../App.css';
 import StudentDashboard from "../components/StudentDashboard";
 import CoursesCatalog from "../components/CoursesCatalog";
 import EnrolledCoursesView from "../components/EnrolledCourses";
-import ProfessorDashboard from "../components/ProfessorDashboard"; // make sure this import exists
+import ProfessorDashboard from "../components/ProfessorDashboard";
+import AdminDashboard from "../pages/AdminDashboard";
+import RoomCalendar from "../pages/RoomCalendar"; // make sure this import exists
 
 const AppRoutes = () => {
   return (
@@ -13,10 +15,11 @@ const AppRoutes = () => {
            <Route path="/login" element={<Login />} />
            {/* CHANGE THESE PATHS WHEN THE DASHBOARDS ARE DONE */}
            <Route path="/professor-dashboard" element={<ProfessorDashboard />} />
-           <Route path="/admin-dashboard" element={<StudentDashboard />} />
+           <Route path="/admin-dashboard" element={<AdminDashboard />} />
            <Route path="/student-dashboard" element={<StudentDashboard />} />
            <Route path="/course-catalog" element={<CoursesCatalog />} />
            <Route path="/EnrolledCourses" element={<EnrolledCoursesView/>} /> {/* ✅ Fixed */}
+          <Route path="/RoomCalendar" element={<RoomCalendar/>} /> {/* ✅ Fixed */}
 
            {/* Default route - always go to login */}
            <Route path="/" element={<Navigate to="/login" />} />

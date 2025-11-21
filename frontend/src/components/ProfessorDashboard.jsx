@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from './Professor SideBar'; // Ensure this path matches your file structure
+import Sidebar from './Professor SideBar';
 import '../styles/ProfessorDashboard.css';
+import { fetchAvailableRooms } from '../services/roomService'; // Make sure this path is correct
+import axios from 'axios';
 
 function ProfessorDashboard() {
     const navigate = useNavigate();
@@ -20,6 +22,15 @@ function ProfessorDashboard() {
     const [error, setError] = useState(null);
     const [currentView, setCurrentView] = useState('dashboard');
 
+    // Room Availability State
+    const [roomAvailability, setRoomAvailability] = useState({
+        selectedDate: new Date().toISOString().split('T')[0],
+        selectedRoomType: 'All Rooms',
+        availableRooms: [],
+        isLoading: false,
+        error: null
+    });
+
     const fetchDashboardData = async () => {
         setLoading(true);
         setError(null);
@@ -33,8 +44,6 @@ function ProfessorDashboard() {
 
             if (!response.ok) {
                 let message = `Failed to fetch dashboard data. Status: ${response.status}`;
-
-                // --- FIX 1: SECURITY REDIRECT (401) ---
                 if (response.status === 401) {
                     console.log("Session expired or unauthorized. Redirecting...");
                     navigate('/login', { replace: true });
@@ -48,7 +57,6 @@ function ProfessorDashboard() {
             }
 
             const data = await response.json();
-
             setDashboardData({
                 firstName: data.firstName || 'Professor',
                 lastName: data.lastName || '',
@@ -68,11 +76,39 @@ function ProfessorDashboard() {
         }
     };
 
+    // Room Availability Functions
+    const loadRooms = useCallback(async () => {
+        setRoomAvailability(prev => ({ ...prev, isLoading: true, error: null }));
+        try {
+            const data = await fetchAvailableRooms(
+                roomAvailability.selectedDate,
+                roomAvailability.selectedRoomType
+            );
+            setRoomAvailability(prev => ({ ...prev, availableRooms: data }));
+        } catch (err) {
+            let errorMessage = 'Failed to load room data. Check backend logs.';
+            if (axios.isAxiosError(err) && !err.response) {
+                errorMessage = 'Connection Error: Cannot reach backend server. Is Spring Boot running on localhost:8080?';
+            } else if (err.response && err.response.data) {
+                errorMessage = `API Error: ${err.response.data}`;
+            }
+            setRoomAvailability(prev => ({ ...prev, error: errorMessage }));
+        } finally {
+            setRoomAvailability(prev => ({ ...prev, isLoading: false }));
+        }
+    }, [roomAvailability.selectedDate, roomAvailability.selectedRoomType]);
+
     useEffect(() => {
         fetchDashboardData();
     }, []);
 
-    // --- FIX 2: LOGOUT HISTORY REPLACEMENT ---
+    // Load rooms when room availability view is active and dependencies change
+    useEffect(() => {
+        if (currentView === 'room_availability') {
+            loadRooms();
+        }
+    }, [currentView, loadRooms]);
+
     const handleLogout = async () => {
         console.log('Logging out...');
         try {
@@ -80,18 +116,21 @@ function ProfessorDashboard() {
         } catch(err) {
             console.log("Backend logout failed, clearing frontend anyway");
         }
-        // Wipes dashboard from history so 'Back' button doesn't work
         navigate('/login', { replace: true });
     };
 
-    // --- FIX 3: CUSTOM NAVIGATION HANDLER ---
-    // Intercepts Sidebar clicks. Routes to new page for Room Availability.
+    // Updated sidebar navigation handler - no longer needs special routing
     const handleSidebarNavigation = (viewId) => {
-        if (viewId === 'room_availability') {
-            navigate('/room-availability');
-        } else {
-            setCurrentView(viewId);
-        }
+        setCurrentView(viewId);
+    };
+
+    // Room Availability Handlers
+    const handleDateChange = (e) => {
+        setRoomAvailability(prev => ({ ...prev, selectedDate: e.target.value }));
+    };
+
+    const handleRoomTypeChange = (e) => {
+        setRoomAvailability(prev => ({ ...prev, selectedRoomType: e.target.value }));
     };
 
     // --- HELPER COMPONENTS ---
@@ -163,8 +202,124 @@ function ProfessorDashboard() {
         </div>
     );
 
+    // Room Availability Component
+    const RoomAvailabilityView = () => {
+        const { selectedDate, selectedRoomType, availableRooms, isLoading, error } = roomAvailability;
+
+        const tableHeaderStyle = {
+            padding: '15px 20px',
+            textAlign: 'left',
+            borderBottom: '2px solid #ddd',
+            backgroundColor: '#e0e7ff'
+        };
+        const tableCellStyle = {
+            padding: '15px 20px',
+            textAlign: 'left'
+        };
+
+        return (
+            <div className="calendar-page-container">
+                {/* Page Title Header */}
+                <div className="page-header">
+                    <h2>🗓️ Classroom & Lab Availability</h2>
+                </div>
+
+                {/* Search and Filter Area */}
+                <div className="room-filter-section">
+                    <label>Date:</label>
+                    <input
+                        type="date"
+                        value={selectedDate}
+                        onChange={handleDateChange}
+                    />
+
+                    <label>Room Type:</label>
+                    <select
+                        value={selectedRoomType}
+                        onChange={handleRoomTypeChange}
+                    >
+                        <option value="All Rooms">All Rooms</option>
+                        <option value="Classroom">Classroom</option>
+                        <option value="Computer Lab">Computer Lab</option>
+                    </select>
+
+                    <button
+                        onClick={loadRooms}
+                        className="refresh-button"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? 'Loading...' : 'Refresh'}
+                    </button>
+                </div>
+
+                {/* Availability List View */}
+                <div className="availability-list-section">
+                    {error && (
+                        <div className="error-message">{error}</div>
+                    )}
+                    {isLoading && (
+                        <div className="loading-message">Loading room availability...</div>
+                    )}
+
+                    {!isLoading && !error && (
+                        <>
+                            <h3 className="section-title">
+                                Availability Status (Showing {availableRooms.length} slots for {new Date(selectedDate).toDateString()})
+                            </h3>
+
+                            <div className="table-wrapper">
+                                <table className="availability-table">
+                                    <thead>
+                                    <tr>
+                                        <th style={tableHeaderStyle}>Room Code</th>
+                                        <th style={tableHeaderStyle}>Type</th>
+                                        <th style={tableHeaderStyle}>Capacity</th>
+                                        <th style={tableHeaderStyle}>Time Slot / Status</th>
+                                        <th style={tableHeaderStyle}>Details</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {availableRooms.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="5" className="no-data-cell">
+                                                No room slots found for the selected criteria.
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        availableRooms.map((item, index) => (
+                                            <tr key={item.id + "-" + index} className="table-row">
+                                                <td style={tableCellStyle}>{item.roomCode}</td>
+                                                <td style={tableCellStyle}>{item.roomType}</td>
+                                                <td style={tableCellStyle}>{item.capacity}</td>
+                                                <td style={{
+                                                    ...tableCellStyle,
+                                                    color: item.status === 'Free' ? '#10b981' : '#ef4444',
+                                                    fontWeight: '600'
+                                                }}>
+                                                    {item.status} - {item.timeSlot}
+                                                </td>
+                                                <td style={tableCellStyle}>
+                                                    {item.status === 'Free' ? (
+                                                        <button className="book-button">Book Slot</button>
+                                                    ) : (
+                                                        <span className="occupied-slot">{item.timeSlot}</span>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </>
+                    )}
+                </div>
+            </div>
+        );
+    };
+
     const renderMainContent = () => {
-        if (loading) {
+        if (loading && currentView !== 'room_availability') {
             return (
                 <div className="events-section" style={{ textAlign: 'center', marginTop: '50px' }}>
                     <p style={{ color: '#64748b', fontSize: '1.1rem' }}>Loading dashboard data...</p>
@@ -172,21 +327,14 @@ function ProfessorDashboard() {
             );
         }
 
-        if (error) {
+        if (error && currentView !== 'room_availability') {
             return (
                 <div className="events-section" style={{ textAlign: 'center', color: '#ef4444' }}>
                     <h3>Connection Error</h3>
                     <p className="mb-4">{error}</p>
                     <button
                         onClick={fetchDashboardData}
-                        style={{
-                            padding: '10px 20px',
-                            background: '#2563eb',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '8px',
-                            cursor: 'pointer'
-                        }}
+                        className="retry-button"
                     >
                         Retry Connection
                     </button>
@@ -206,7 +354,11 @@ function ProfessorDashboard() {
                                 <p>Quick access to your academic responsibilities.</p>
                             </div>
                             <div className="date-display">
-                                {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                                {new Date().toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                })}
                             </div>
                         </div>
 
@@ -280,6 +432,9 @@ function ProfessorDashboard() {
                     </div>
                 );
 
+            case 'room_availability':
+                return <RoomAvailabilityView />;
+
             default:
                 return <div className="p-8 text-center text-red-500">Unknown view selected.</div>;
         }
@@ -289,7 +444,7 @@ function ProfessorDashboard() {
         <div className="dashboard-wrapper">
             <Sidebar
                 currentView={currentView}
-                setCurrentView={handleSidebarNavigation} // Use custom handler
+                setCurrentView={handleSidebarNavigation}
                 handleLogout={handleLogout}
             />
             <main className="main-content">

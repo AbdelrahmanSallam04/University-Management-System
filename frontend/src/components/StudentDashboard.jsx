@@ -12,7 +12,6 @@ const StudentDashboard = () => {
   const [error, setError] = useState(null);
 
   // Replace with actual student user ID from your authentication system
-  const studentUserId = 5;
 
   useEffect(() => {
     fetchDashboardData();
@@ -21,7 +20,10 @@ const StudentDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8081/api/student/dashboard/${studentUserId}`
+          `http://localhost:8080/api/student/dashboard`,
+          {
+            withCredentials: true  // This is crucial for sending cookies/session
+          }
       );
       setDashboardData(response.data);
       setLoading(false);

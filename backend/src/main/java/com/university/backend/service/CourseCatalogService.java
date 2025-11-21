@@ -35,13 +35,13 @@ public class CourseCatalogService {
                 .collect(Collectors.toList());
     }
 
-    public List<String> getDepartments() {
-        return courseRepository.findAll().stream()
-                .map(course -> course.getDepartment().getName())
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());
-    }
+//    public List<String> getDepartments() {
+//        return courseRepository.findAll().stream()
+//                .map(course -> course.getDepartment().getName())
+//                .distinct()
+//                .sorted()
+//                .collect(Collectors.toList());
+//    }
 
     private CourseCatalogDTO convertToDTO(Course course) {
         CourseCatalogDTO dto = new CourseCatalogDTO();
@@ -59,11 +59,11 @@ public class CourseCatalogService {
         }
 
         // Handle Department relationship
-        if (course.getDepartment() != null) {
-            dto.setDepartmentName(course.getDepartment().getName());
-        } else {
-            dto.setDepartmentName("Not specified");
-        }
+//        if (course.getDepartment() != null) {
+//            dto.setDepartmentName(course.getDepartment().getName());
+//        } else {
+//            dto.setDepartmentName("Not specified");
+//        }
 
         // Handle Professor relationship (nullable = true)
         if (course.getProfessor() != null) {

@@ -25,7 +25,7 @@ const CoursesCatalog = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await axios.get("http://localhost:8081/api/courses"); // localhost: server port (default 8080) but it is not running with me
+      const response = await axios.get("http://localhost:8080/api/courses"); // localhost: server port (default 8080) but it is not running with me
 
       if (response.data && Array.isArray(response.data)) {
         setCourses(response.data);

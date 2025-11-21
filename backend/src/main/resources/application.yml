@@ -1,10 +1,8 @@
-server:
-  port: 8081
 spring:
   application:
     name: backend
   datasource:
-    url: jdbc:sqlserver://LAPTOP-859490JA:1433;databaseName=university_management_system;encrypt=true;trustServerCertificate=true;instanceName=SQLEXPRESS01;
+    url: jdbc:sqlserver://localhost:1433;databaseName=university_management_system;encrypt=true;trustServerCertificate=true;
     username: university_user
     password: 123
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver

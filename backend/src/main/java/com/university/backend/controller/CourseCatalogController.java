@@ -39,9 +39,9 @@ public class CourseCatalogController {
 
 
     /** Get all departments for filter dropdown */
-    @GetMapping("/filters/departments")
-    public ResponseEntity<List<String>> getDepartments() {
-        List<String> departments = courseCatalogService.getDepartments();
-        return ResponseEntity.ok(departments);
-    }
+//    @GetMapping("/filters/departments")
+//    public ResponseEntity<List<String>> getDepartments() {
+//        List<String> departments = courseCatalogService.getDepartments();
+//        return ResponseEntity.ok(departments);
+//    }
 }

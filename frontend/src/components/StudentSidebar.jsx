@@ -8,7 +8,7 @@ const Sidebar = () => {
   const [activeItem, setActiveItem] = useState(location.pathname);
 
   const menuItems = [
-    { path: "/", label: "Dashboard", icon: "📊" },
+    { path: "/student-dashboard", label: "Dashboard", icon: "📊" },
     { path: "/enrolledCourses", label: "Courses", icon: "📚" },
     { path: "/course-catalog", label: "Courses Catalog", icon: "📊" },
     { path: "/grades", label: "Results", icon: "📝" },

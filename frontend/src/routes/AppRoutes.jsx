@@ -4,14 +4,14 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import RoomCalendar from '../pages/RoomCalendar.jsx';
+import AdminDashboard from '../pages/AdminDashboard.jsx';
+
 // ... other imports (StudentDashboard, etc.)
 
 const AppRoutes = () => {
     return (
             <Routes>
-
-                <Route path="/" element={<RoomCalendar />} />
-
+                <Route path="/" element={<AdminDashboard />} />
             </Routes>
     );
 };

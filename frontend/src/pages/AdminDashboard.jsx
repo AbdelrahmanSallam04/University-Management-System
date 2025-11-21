@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AdminSidebar from '../components/AdminSidebar';
 import UserManagement from './UserManagement';
 import CreateAccount from './CreateAccount';
-import RoomAvailability from './RoomAvailability'; // ADD THIS IMPORT
+import RoomCalendar from './RoomCalendar'; // ADD THIS IMPORT
 import EventsManagement from './EventsManagement';
 import AnnouncementsManagement from './AnnouncementsManagement';
 import '../styles/AdminDashboard.css';
@@ -19,7 +19,7 @@ const AdminDashboard = () => {
       case 'create-account':
         return <CreateAccount />;
       case 'room-availability': // ADD THIS CASE
-        return <RoomAvailability />;
+        return <RoomCalendar />;
       case 'events':
         return <EventsManagement />;
       case 'announcements':

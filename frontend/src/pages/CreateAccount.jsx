@@ -47,7 +47,7 @@ const CreateAccount = () => {
     try {
       console.log('Sending data to backend:', userData);
 
-      const response = await fetch('http://localhost:8081/api/accounts/create', { // Fixed port
+      const response = await fetch('http://localhost:8080/api/accounts/create', { // Fixed port
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

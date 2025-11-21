@@ -10,7 +10,7 @@ const UserManagement = () => {
   const [editingUser, setEditingUser] = useState(null);
 
   // Base URL for API calls
-  const API_BASE_URL = 'http://localhost:8081/api/accounts';
+  const API_BASE_URL = 'http://localhost:8080/api/accounts';
 
   // Fetch users from backend
   const fetchUsers = async () => {

@@ -1,0 +1,142 @@
+.login-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: white;
+    padding: 2rem;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.login-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: #4a90e2;
+}
+
+.login-header p {
+    color: #b0b0b0;
+    font-size: 1.1rem;
+}
+
+.login-content {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.login-card {
+    background: #2d2d2d;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.login-card h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #4a90e2;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 0.5rem;
+    color: #b0b0b0;
+}
+
+.form-group input {
+    padding: 0.75rem;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background: #1a1a1a;
+    color: white;
+    font-size: 1rem;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #4a90e2;
+}
+
+.login-btn {
+    background: #4a90e2;
+    color: white;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.login-btn:hover {
+    background: #357abd;
+}
+
+.login-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.sidebar-section {
+    background: #2d2d2d;
+    padding: 1.5rem;
+    border-radius: 10px;
+}
+
+.sidebar-section h3 {
+    color: #4a90e2;
+    margin-bottom: 1rem;
+}
+
+.sidebar-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar-section li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #444;
+    cursor: pointer;
+}
+
+.sidebar-section li:hover {
+    color: #4a90e2;
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status-online {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .login-content {
+        grid-template-columns: 1fr;
+    }
+
+    .login-container {
+        padding: 1rem;
+    }
+}

@@ -1,22 +1,16 @@
-// com/university/backend/repository/StudentRepository.java
-
 package com.university.backend.repository;
 
-import com.university.backend.model.Student; // Import your entity
+import com.university.backend.model.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import java.util.Optional;
 
-/**
- * Interface that extends JpaRepository to provide automatic CRUD operations 
- * for the Student entity.
- */
-@Repository // Optional but good practice
-public interface StudentRepository extends JpaRepository<Student, Integer> {
+public interface StudentRepository extends JpaRepository<Student, Long> {
 
-    // JpaRepository takes two generics:
-    // 1. The Entity Class: Student
-    // 2. The type of the Entity's Primary Key: Integer (inherited from User)
+    @Query("SELECT s FROM Student s JOIN FETCH s.courses WHERE s.userId = :userId")
+    Optional<Student> findByUserIdWithCourses(@Param("userId") Long userId);
 
-    // You can add custom query methods here if needed, 
-    // but for simple lookups, Spring does the heavy lifting.
+    // Or if you don't need courses immediately:
+    Optional<Student> findByUserId(Long userId);
 }

@@ -31,7 +31,9 @@ const Login = () => {
             }
             // onLogin(); // Notify App component
         } catch (error) {
-            setError(error.message);
+            const errorMessage =
+                'Login failed. Please check your credentials.';
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -47,6 +49,15 @@ const Login = () => {
             <div className="login-content">
                 <div className="login-card">
                     <h2>Welcome Back</h2>
+
+                    {/* Error Message Display */}
+                    {error && (
+                        <div className="error-message">
+                            <span className="error-icon">⚠</span>
+                            {error}
+                        </div>
+                    )}
+
                     <form onSubmit={handleLogin} className="login-form">
                         <InputField
                             label="Username"
@@ -54,6 +65,7 @@ const Login = () => {
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             placeholder="Enter your username"
+                            error={error && !username.trim() ? 'Username is required' : ''}
                         />
 
                         <InputField
@@ -62,10 +74,15 @@ const Login = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="Enter your password"
+                            error={error && !password.trim() ? 'Password is required' : ''}
                         />
 
-                        <button type="submit" className="login-btn">
-                            Login
+                        <button
+                            type="submit"
+                            className="login-btn"
+                            disabled={loading}
+                        >
+                            {loading ? 'Logging in...' : 'Login'}
                         </button>
                     </form>
                 </div>

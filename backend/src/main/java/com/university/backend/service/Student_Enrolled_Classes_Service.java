@@ -27,7 +27,7 @@ public class Student_Enrolled_Classes_Service {
     public Set<Course> getEnrolledCourses(Integer studentId) {
 
         // 1. Fetch the Student entity using the injected repository
-        Student student = studentRepository.findById(studentId)
+        Student student = studentRepository.findById(Long.valueOf(studentId))
                 // Handle the case where the student ID might be invalid or not found
                 .orElseThrow(() -> new NoSuchElementException("Student not found with ID: " + studentId));
 

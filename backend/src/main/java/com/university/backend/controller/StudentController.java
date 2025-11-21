@@ -31,24 +31,22 @@ public class StudentController {
     }
 
     @GetMapping("/me/courses")
-    // NOTE: Change the return type to Set<CourseDTO>
     public ResponseEntity<Set<EnrolledCourseDTO>> getMyEnrolledCourses(HttpSession session) {
 
-        // ... (Session/ID logic here)
-        Integer authenticatedStudentId = 100; // Still using hardcoded ID for testing
-
-        if (authenticatedStudentId == null) {
+        // ✅ Get userId from session
+        String userIdStr = (String) session.getAttribute("userID");
+        if (userIdStr == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        Integer authenticatedStudentId = Integer.valueOf(userIdStr);
 
+        // Fetch enrolled courses
         Set<Course> courses = studentService.getEnrolledCourses(authenticatedStudentId);
 
-        // --- CONVERSION STEP ---
-        // Convert the Set of Course Entities to a Set of Course DTOs
+        // Convert to DTO
         Set<EnrolledCourseDTO> courseDTOs = courses.stream()
                 .map(mappingService::toCourseDTO)
                 .collect(Collectors.toSet());
-        // -----------------------
 
         return ResponseEntity.ok(courseDTOs);
     }

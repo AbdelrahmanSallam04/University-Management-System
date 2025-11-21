@@ -48,7 +48,7 @@ public class Student_Enrolled_Classes_ServiceTest {
         mockStudent.setCourses(Set.of(math, cs));
 
         // Configure the repository mock to return the student
-        when(studentRepository.findById(studentId)).thenReturn(Optional.of(mockStudent));
+        when(studentRepository.findById(Long.valueOf(studentId))).thenReturn(Optional.of(mockStudent));
 
         // Act
         Set<Course> result = studentService.getEnrolledCourses(studentId);
@@ -66,7 +66,7 @@ public class Student_Enrolled_Classes_ServiceTest {
         Integer studentId = 999;
 
         // Configure the repository mock to return an empty Optional
-        when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
+        when(studentRepository.findById(Long.valueOf(studentId))).thenReturn(Optional.empty());
 
         // Assert that calling the service throws the expected exception
         assertThrows(NoSuchElementException.class, () -> {

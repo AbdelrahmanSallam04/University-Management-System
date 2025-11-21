@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public abstract class StaffMember extends User {
 
-    @Column(nullable = false)
+    @Column(name = "salary", nullable = false)
     private Double salary;
 
     @ManyToOne

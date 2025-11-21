@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "../styles/StudentHeader.css";
 
-const Header = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [showNotifications, setShowNotifications] = useState(false);
+const StudentHeader = () => {
+    const [searchQuery, setSearchQuery] = useState("");
+    const [showNotifications, setShowNotifications] = useState(false);
 
   return (
     <div className="header">
@@ -36,4 +36,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default StudentHeader;

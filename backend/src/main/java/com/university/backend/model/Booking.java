@@ -38,4 +38,5 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "status_id", nullable = false)
     private BookingStatus status;
+
 }

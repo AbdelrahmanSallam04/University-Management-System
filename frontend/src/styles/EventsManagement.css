@@ -1,0 +1,127 @@
+.events-management {
+  padding: 20px;
+}
+
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 25px;
+}
+
+.event-card {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border-left: 4px solid #3498db;
+}
+
+.event-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.event-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.event-category-icon {
+  font-size: 2rem;
+}
+
+.event-header h3 {
+  margin: 0;
+  color: #2c3e50;
+  flex: 1;
+}
+
+.category-badge {
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.category-academic {
+  background: #e8f6f3;
+  color: #1abc9c;
+}
+
+.category-sports {
+  background: #fdedec;
+  color: #e74c3c;
+}
+
+.category-cultural {
+  background: #f4ecf7;
+  color: #9b59b6;
+}
+
+.category-social {
+  background: #fef9e7;
+  color: #f39c12;
+}
+
+.event-description {
+  color: #7f8c8d;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.event-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.event-detail {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #2c3e50;
+}
+
+.detail-icon {
+  font-size: 1.1rem;
+}
+
+.event-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.event-actions .edit-button,
+.event-actions .delete-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.event-actions .edit-button {
+  background: #3498db;
+  color: white;
+}
+
+.event-actions .edit-button:hover {
+  background: #2980b9;
+}
+
+.event-actions .delete-button {
+  background: #e74c3c;
+  color: white;
+}
+
+.event-actions .delete-button:hover {
+  background: #c0392b;
+}

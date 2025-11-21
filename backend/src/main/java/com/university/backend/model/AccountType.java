@@ -1,5 +1,6 @@
 package com.university.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,6 +20,7 @@ public class AccountType {
     @Column(name = "account_type_name", nullable = false)
     private String name;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "accountType")
     private List<Account> accounts;
 }

@@ -14,37 +14,5 @@ public class Advised_By_ProfessorDTO {
     private String lastName;
     private String email;
 
-    // Getters and Setters
 
-//    public Integer getStudentId() {
-//        return studentId;
-//    }
-//
-//    public void setStudentId(Integer studentId) {
-//        this.studentId = studentId;
-//    }
-//
-//    public String getFirstName() {
-//        return firstName;
-//    }
-//
-//    public void setFirstName(String firstName) {
-//        this.firstName = firstName;
-//    }
-//
-//    public String getLastName() {
-//        return lastName;
-//    }
-//
-//    public void setLastName(String lastName) {
-//        this.lastName = lastName;
-//    }
-//
-//    public String getEmail() {
-//        return email;
-//    }
-//
-//    public void setEmail(String email) {
-//        this.email = email;
-//    }
 }

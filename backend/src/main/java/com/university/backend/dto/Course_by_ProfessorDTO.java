@@ -13,37 +13,5 @@ public class Course_by_ProfessorDTO {
     private String name;
     private Integer creditHours;
 
-    // Getters and Setters
 
-//    public Integer getCourseId() {
-//        return courseId;
-//    }
-//
-//    public void setCourseId(Integer courseId) {
-//        this.courseId = courseId;
-//    }
-//
-//    public String getCode() {
-//        return code;
-//    }
-//
-//    public void setCode(String code) {
-//        this.code = code;
-//    }
-//
-//    public String getName() {
-//        return name;
-//    }
-//
-//    public void setName(String name) {
-//        this.name = name;
-//    }
-//
-//    public Integer getCreditHours() {
-//        return creditHours;
-//    }
-//
-//    public void setCreditHours(Integer creditHours) {
-//        this.creditHours = creditHours;
-//    }
 }

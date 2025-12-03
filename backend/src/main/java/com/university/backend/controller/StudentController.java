@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 // ... other imports
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,7 @@ public class StudentController {
         Integer authenticatedStudentId = Integer.valueOf(userIdStr);
 
         // Fetch enrolled courses
-        Set<Course> courses = studentService.getEnrolledCourses(authenticatedStudentId);
+        List<Course> courses = studentService.getEnrolledCourses(authenticatedStudentId);
 
         // Convert to DTO
         Set<EnrolledCourseDTO> courseDTOs = courses.stream()

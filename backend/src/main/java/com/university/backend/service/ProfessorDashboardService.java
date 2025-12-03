@@ -54,11 +54,11 @@ public class ProfessorDashboardService {
         // 2. Fetch Taught Courses
         List<Course> taughtCourses = courseRepository.findByProfessor(professor);
 
-        // 3. Fetch Advisee Students
-        List<Student> adviseeStudents = studentRepository.findByAdvisor(professor);
+//        // 3. Fetch Advisee Students
+//        List<Student> adviseeStudents = studentRepository.findByAdvisor(professor);
 
         // 4. Map entities to the ProfessorDashboardDTO
-        return mapToProfessorDashboardDTO(professor, taughtCourses, adviseeStudents);
+        return mapToProfessorDashboardDTO(professor, taughtCourses);
     }
 
     /**
@@ -66,8 +66,8 @@ public class ProfessorDashboardService {
      */
     private ProfessorDashboardDTO mapToProfessorDashboardDTO(
             Professor professor,
-            List<Course> taughtCourses,
-            List<Student> adviseeStudents) {
+            List<Course> taughtCourses
+            ) {
 
         ProfessorDashboardDTO dto = new ProfessorDashboardDTO();
 
@@ -99,10 +99,10 @@ public class ProfessorDashboardService {
         dto.setTaughtCourses(courseDTOs);
 
         // --- 3. Advisee Students ---
-        List<Advised_By_ProfessorDTO> adviseeDTOs = adviseeStudents.stream()
-                .map(this::mapToAdviseeDTO)
-                .collect(Collectors.toList());
-        dto.setAdviseeStudents(adviseeDTOs);
+//        List<Advised_By_ProfessorDTO> adviseeDTOs = adviseeStudents.stream()
+//                .map(this::mapToAdviseeDTO)
+//                .collect(Collectors.toList());
+//        dto.setAdviseeStudents(adviseeDTOs);
 
         return dto;
     }

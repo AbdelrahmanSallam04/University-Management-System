@@ -6,15 +6,9 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "parents")
-@Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter
-public abstract class Parent extends User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "parent_id")
-    private Integer id;
+public class Parent extends User {
 
     @OneToOne
     @JoinColumn(name = "student_id")

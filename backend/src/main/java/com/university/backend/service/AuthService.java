@@ -38,21 +38,21 @@ public class AuthService {
         return null;
     }
 
-    public String getAccountID(String username) {
+    public int getAccountID(String username) {
         Account account = accountRepository.findByEmail(username);
         if (account != null && account.getAccountType() != null) {
-            return account.getId().toString();
+            return account.getId();
         }
-        return null;
+        return 0;
     }
 
-    public String getUserID(String accountID)
+    public int getUserID(int accountID)
     {
-        User user = userRepository.findUserByAccountId(Integer.parseInt(accountID));
+        User user = userRepository.findUserByAccountId(accountID);
         if (user != null && user.getUserId() != null)
         {
-            return user.getUserId().toString();
+            return user.getUserId();
         }
-        return null;
+        return 0;
     }
 }

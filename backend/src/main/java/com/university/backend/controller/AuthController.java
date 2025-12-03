@@ -28,8 +28,8 @@ public class AuthController {
 
         if (isValid) {
             String userRole = authService.getUserRole(username);
-            String accountID = authService.getAccountID(username);
-            String userID = authService.getUserID(accountID);
+            int accountID = authService.getAccountID(username);
+            int userID = authService.getUserID(accountID);
 
 
             session.setAttribute("user", username);

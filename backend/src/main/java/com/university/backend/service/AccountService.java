@@ -94,7 +94,7 @@ public class AccountService {
         return response;
     }
 
-    public Map<String, Object> updateUserAccount(Integer id, String firstName, String lastName,
+    public Map<String, Object> updateUserAccount(int id, String firstName, String lastName,
                                                  String email, String role, String password,
                                                  String phone, String department) {
         Map<String, Object> response = new HashMap<>();
@@ -104,7 +104,7 @@ public class AccountService {
             System.out.println("Updating account ID: " + id);
 
             // Find the existing account
-            Optional<Account> existingAccountOpt = accountRepository.findById(Long.valueOf(id));
+            Optional<Account> existingAccountOpt = accountRepository.findById(id);
             if (existingAccountOpt.isEmpty()) {
                 response.put("success", false);
                 response.put("message", "Account not found with ID: " + id);
@@ -176,14 +176,14 @@ public class AccountService {
             System.out.println("Deleting account ID: " + id);
 
             // Check if account exists
-            if (!accountRepository.existsById(Long.valueOf(id))) {
+            if (!accountRepository.existsById(id)) {
                 response.put("success", false);
                 response.put("message", "Account not found with ID: " + id);
                 return response;
             }
 
             // Delete the account
-            accountRepository.deleteById(Long.valueOf(id));
+            accountRepository.deleteById(id);
 
             System.out.println("=== DEBUG: Account deleted successfully ===");
 

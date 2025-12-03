@@ -9,12 +9,12 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface StudentRepository extends JpaRepository<Student, Long> {
+public interface StudentRepository extends JpaRepository<Student, Integer> {
 
     @Query("SELECT s FROM Student s JOIN FETCH s.courses WHERE s.userId = :userId")
-    Optional<Student> findByUserIdWithCourses(@Param("userId") Long userId);
+    Optional<Student> findByUserIdWithCourses(@Param("userId") int userId);
 
     // Or if you don't need courses immediately:
-    Optional<Student> findByUserId(Long userId);
+    Optional<Student> findByUserId(int userId);
     List<Student> findByAdvisor(Professor advisorId);
 }

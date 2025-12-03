@@ -17,6 +17,12 @@ public class Exam {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course_id;
 
+    @Column(name = "title", nullable = false, length = 255)
+    private String title;
+
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
+
     @Column(name = "marks")
     private int marks;
 

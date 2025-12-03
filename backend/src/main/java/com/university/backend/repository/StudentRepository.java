@@ -16,5 +16,4 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     // Or if you don't need courses immediately:
     Optional<Student> findByUserId(Long userId);
-    List<Student> findByAdvisor(Professor advisorId);
 }

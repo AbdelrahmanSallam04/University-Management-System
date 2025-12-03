@@ -6,7 +6,7 @@ const Sidebar = ({ currentView, setCurrentView, handleLogout }) => {
 
     const navItems = [
         { id: 'dashboard', label: 'Dashboard Overview', icon: '🏠' },
-        { id: 'advisees', label: 'Advised Students', icon: '🧑‍🎓' },
+        // { id: 'advisees', label: 'Advised Students', icon: '🧑‍🎓' },
         { id: 'courses', label: 'Courses Teaching', icon: '📚' },
         { id: 'room_availability', label: '  Room Availability', icon: '📅' },
     ];

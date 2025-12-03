@@ -144,34 +144,6 @@ function ProfessorDashboard() {
         </div>
     );
 
-    const AdviseesList = ({ advisees }) => (
-        <div className="list-container">
-            {advisees.length > 0 ? (
-                <table className="data-table">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {advisees.map((student) => (
-                        <tr key={student.studentId}>
-                            <td>{student.studentId}</td>
-                            <td>{student.firstName}</td>
-                            <td>{student.lastName}</td>
-                            <td className="email-cell">{student.email}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            ) : (
-                <p className="no-data-message">You are not currently advising any students.</p>
-            )}
-        </div>
-    );
 
     const CoursesList = ({ courses }) => (
         <div className="list-container">
@@ -364,12 +336,6 @@ function ProfessorDashboard() {
 
                         <div className="stats-container">
                             <StatCard
-                                title="Students Advised"
-                                value={data.numberOfAdvisedStudents}
-                                icon="🧑‍🎓"
-                                color="blue"
-                            />
-                            <StatCard
                                 title="Courses Teaching"
                                 value={data.numberOfCoursesTeaching}
                                 icon="📚"
@@ -414,14 +380,6 @@ function ProfessorDashboard() {
                             </div>
                         </div>
                     </>
-                );
-
-            case 'advisees':
-                return (
-                    <div className="events-section">
-                        <h2>🧑‍🎓 Advised Students ({data.numberOfAdvisedStudents})</h2>
-                        <AdviseesList advisees={data.adviseeStudents} />
-                    </div>
                 );
 
             case 'courses':

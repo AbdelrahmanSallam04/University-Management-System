@@ -11,4 +11,6 @@ public interface UserRepository extends JpaRepository<User, Long>
 {
     @Query("SELECT u FROM User u WHERE u.account.id = :accountId")
     User findUserByAccountId(@Param("accountId") Integer accountId);
+
+    void deleteByAccountId(Integer accountId);
 }

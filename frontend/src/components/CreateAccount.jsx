@@ -85,9 +85,9 @@ const CreateAccount = () => {
               onChange={handleInputChange}
               required
             >
-              <option value="student">Student</option>
-              <option value="faculty">Faculty</option>
               <option value="staff">Staff</option>
+              <option value="faculty">Faculty</option>
+              <option value="student">Student</option>
               <option value="admin">Admin</option>
             </select>
           </div>

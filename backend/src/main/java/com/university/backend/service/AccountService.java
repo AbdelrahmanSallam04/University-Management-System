@@ -1,9 +1,8 @@
 package com.university.backend.service;
 
-import com.university.backend.model.Account;
-import com.university.backend.model.AccountType;
-import com.university.backend.repository.AccountRepository;
-import com.university.backend.repository.AccountTypeRepository;
+import com.university.backend.model.*;
+import com.university.backend.repository.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,182 +20,204 @@ public class AccountService {
     @Autowired
     private AccountTypeRepository accountTypeRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private StudentRepository studentRepository;
+
+    @Autowired
+    private ProfessorRepository professorRepository;
+
+//    @Autowired
+//    private AdminRepository adminRepository;
+//
+//    @Autowired
+//    private TARepository taRepository;
+
+    @Transactional // Important: Ensures Account and User are created together or rolled back
     public Map<String, Object> createUserAccount(String firstName, String lastName, String email,
                                                  String role, String password, String phone, String department) {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            System.out.println("=== DEBUG: Starting account creation ===");
-            System.out.println("Role received: " + role);
-
-            // Check if email already exists
+            // 1. Check if email exists
             if (accountRepository.existsByEmail(email)) {
                 response.put("success", false);
                 response.put("message", "Email already exists");
                 return response;
             }
 
-            // HARDCODED MAPPING: Role to account_type ID
+            // 2. Resolve Account Type
             Integer accountTypeId = getAccountTypeIdByRole(role);
-            System.out.println("Mapped role '" + role + "' to accountTypeId: " + accountTypeId);
-
             if (accountTypeId == null) {
                 response.put("success", false);
                 response.put("message", "Invalid role: " + role);
                 return response;
             }
 
-            // Get the AccountType by ID
             AccountType accountType = accountTypeRepository.findById(accountTypeId)
-                    .orElseThrow(() -> new RuntimeException("Account type not found for ID: " + accountTypeId));
+                    .orElseThrow(() -> new RuntimeException("Account type not found"));
 
-            System.out.println("Found AccountType - ID: " + accountType.getId() + ", Name: " + accountType.getName());
-
-            // Create account with ALL database columns
+            // 3. Create and Save the ACCOUNT (Authentication details only)
             Account account = new Account();
-            account.setFirstName(firstName);
-            account.setLastName(lastName);
             account.setEmail(email);
-            account.setPassword(password);
+            account.setPassword(password); // Ensure this is hashed in production!
             account.setAccountType(accountType);
-            account.setPhone(phone != null ? phone : "");
-            account.setDepartment(department != null ? department : "General");
+            account.setDepartment(department != null ? department : "General"); // String dept on Account
             account.setCreatedAt(LocalDateTime.now());
             account.setIsActive(true);
-            account.setLastLogin(null);
-
-            System.out.println("Account object created with account_type_id: " + account.getAccountType().getId());
 
             Account savedAccount = accountRepository.save(account);
 
-            System.out.println("=== DEBUG: Account saved successfully ===");
-            System.out.println("Saved account ID: " + savedAccount.getId());
+            // 4. Create the specific USER subclass based on role
+            User newUser;
+
+            switch (role.toLowerCase()) {
+                case "student":
+                    Student student = new Student();
+                    // Set student specific fields here if needed
+                    newUser = student;
+                    break;
+
+                case "professor": // Renamed from staff as requested
+                case "staff":
+                    Professor professor = new Professor();
+                    professor.setSalary(0.0); // Mandatory field in StaffMember, setting default
+                    // Note: Professor also has a 'Department' entity field.
+                    // You need to fetch the Department entity and set it here eventually.
+                    newUser = professor;
+                    break;
+
+                case "admin":
+                    Admin admin = new Admin();
+                    newUser = admin;
+                    break;
+
+                case "assistant": // Assuming this is TA
+                case "ta":
+                    TA ta = new TA();
+                    ta.setSalary(0.0);
+                    newUser = ta;
+                    break;
+
+                default:
+                    throw new RuntimeException("Logic not implemented for role: " + role);
+            }
+
+            // 5. Set Common User Fields and Link to Account
+            newUser.setFirstName(firstName);
+            newUser.setLastName(lastName);
+            newUser.setPhone(phone);
+            newUser.setAccount(savedAccount); // <--- LINKING HAPPENS HERE
+
+            // 6. Save the User using the generic repository (Hibernate handles the subclass table insertion)
+            userRepository.save(newUser);
 
             response.put("success", true);
-            response.put("message", "Account created successfully!");
+            response.put("message", "Account and User profile created successfully!");
             response.put("accountId", savedAccount.getId());
-            response.put("user", Map.of(
-                    "firstName", savedAccount.getFirstName(),
-                    "lastName", savedAccount.getLastName(),
-                    "email", savedAccount.getEmail(),
-                    "role", savedAccount.getAccountType().getName(),
-                    "department", savedAccount.getDepartment()
-            ));
+            response.put("userId", newUser.getUserId());
 
         } catch (Exception e) {
-            System.out.println("=== DEBUG: Error occurred ===");
-            System.out.println("Error: " + e.getMessage());
             e.printStackTrace();
             response.put("success", false);
-            response.put("message", "Error creating account: " + e.getMessage());
+            response.put("message", "Error: " + e.getMessage());
+            // Transaction triggers rollback automatically here
+            throw new RuntimeException(e);
         }
 
         return response;
     }
 
-    public Map<String, Object> updateUserAccount(Integer id, String firstName, String lastName,
+    @Transactional
+    public Map<String, Object> updateUserAccount(Integer accountId, String firstName, String lastName,
                                                  String email, String role, String password,
                                                  String phone, String department) {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            System.out.println("=== DEBUG: Starting account update ===");
-            System.out.println("Updating account ID: " + id);
-
-            // Find the existing account
-            Optional<Account> existingAccountOpt = accountRepository.findById(Long.valueOf(id));
-            if (existingAccountOpt.isEmpty()) {
+            // 1. Fetch Account
+            Optional<Account> accountOpt = accountRepository.findById(Long.valueOf(accountId));
+            if (accountOpt.isEmpty()) {
                 response.put("success", false);
-                response.put("message", "Account not found with ID: " + id);
+                response.put("message", "Account not found");
                 return response;
             }
+            Account account = accountOpt.get();
 
-            Account existingAccount = existingAccountOpt.get();
-
-            // Check if email is being changed and if new email already exists
-            if (!existingAccount.getEmail().equals(email) && accountRepository.existsByEmail(email)) {
+            // 2. Fetch Associated User
+            // We need to find the User that owns this account to update names/phone
+            Optional<User> userOpt = Optional.ofNullable(userRepository.findUserByAccountId(accountId));
+            if (userOpt.isEmpty()) {
+                // Edge case: Account exists but User doesn't?
                 response.put("success", false);
-                response.put("message", "Email already exists: " + email);
+                response.put("message", "User profile not found for this account");
                 return response;
             }
+            User user = userOpt.get();
 
-            // Update account type if role changed
-            if (role != null && !role.isEmpty()) {
-                Integer accountTypeId = getAccountTypeIdByRole(role);
-                if (accountTypeId == null) {
-                    response.put("success", false);
-                    response.put("message", "Invalid role: " + role);
-                    return response;
+            // 3. Update Account Details (Auth info)
+            if (email != null && !email.isEmpty()) account.setEmail(email);
+            if (password != null && !password.isEmpty()) account.setPassword(password);
+            if (department != null) account.setDepartment(department);
+
+            // Update Role (AccountType) - Careful, this doesn't change the User Subclass (Table)
+            // Changing a Student to a Professor requires deleting the Student entity and creating a Professor entity.
+            // For now, we only update the auth role reference.
+            if (role != null) {
+                Integer typeId = getAccountTypeIdByRole(role);
+                if(typeId != null) {
+                    AccountType at = accountTypeRepository.findById(typeId).orElse(null);
+                    if(at != null) account.setAccountType(at);
                 }
-
-                AccountType accountType = accountTypeRepository.findById(accountTypeId)
-                        .orElseThrow(() -> new RuntimeException("Account type not found for ID: " + accountTypeId));
-                existingAccount.setAccountType(accountType);
             }
 
-            // Update other fields
-            if (firstName != null) existingAccount.setFirstName(firstName);
-            if (lastName != null) existingAccount.setLastName(lastName);
-            if (email != null) existingAccount.setEmail(email);
-            if (password != null && !password.isEmpty()) existingAccount.setPassword(password);
-            if (phone != null) existingAccount.setPhone(phone);
-            if (department != null) existingAccount.setDepartment(department);
+            // 4. Update User Details (Personal info)
+            if (firstName != null) user.setFirstName(firstName);
+            if (lastName != null) user.setLastName(lastName);
+            if (phone != null) user.setPhone(phone);
 
-            Account updatedAccount = accountRepository.save(existingAccount);
-
-            System.out.println("=== DEBUG: Account updated successfully ===");
+            // 5. Save Both
+            accountRepository.save(account);
+            userRepository.save(user);
 
             response.put("success", true);
-            response.put("message", "Account updated successfully!");
-            response.put("accountId", updatedAccount.getId());
-            response.put("user", Map.of(
-                    "firstName", updatedAccount.getFirstName(),
-                    "lastName", updatedAccount.getLastName(),
-                    "email", updatedAccount.getEmail(),
-                    "role", updatedAccount.getAccountType().getName(),
-                    "department", updatedAccount.getDepartment()
-            ));
+            response.put("message", "Account updated successfully");
 
         } catch (Exception e) {
-            System.out.println("=== DEBUG: Error updating account ===");
-            System.out.println("Error: " + e.getMessage());
-            e.printStackTrace();
             response.put("success", false);
-            response.put("message", "Error updating account: " + e.getMessage());
+            response.put("message", "Error updating: " + e.getMessage());
         }
 
         return response;
     }
 
-    public Map<String, Object> deleteUserAccount(Integer id) {
+    @Transactional
+    public Map<String, Object> deleteUserAccount(Integer accountId) {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            System.out.println("=== DEBUG: Starting account deletion ===");
-            System.out.println("Deleting account ID: " + id);
-
-            // Check if account exists
-            if (!accountRepository.existsById(Long.valueOf(id))) {
+            if (!accountRepository.existsById(Long.valueOf(accountId))) {
                 response.put("success", false);
-                response.put("message", "Account not found with ID: " + id);
+                response.put("message", "Account not found");
                 return response;
             }
 
-            // Delete the account
-            accountRepository.deleteById(Long.valueOf(id));
+            // 1. Delete the User first
+            // Because User has the ForeignKey (account_id), we must remove User first
+            // or we get a Foreign Key Constraint violation.
+            userRepository.deleteByAccountId(accountId);
 
-            System.out.println("=== DEBUG: Account deleted successfully ===");
+            // 2. Delete the Account
+            accountRepository.deleteById(Long.valueOf(accountId));
 
             response.put("success", true);
-            response.put("message", "Account deleted successfully!");
-            response.put("deletedAccountId", id);
+            response.put("message", "Account and User deleted successfully");
 
         } catch (Exception e) {
-            System.out.println("=== DEBUG: Error deleting account ===");
-            System.out.println("Error: " + e.getMessage());
-            e.printStackTrace();
             response.put("success", false);
-            response.put("message", "Error deleting account: " + e.getMessage());
+            response.put("message", "Error deleting: " + e.getMessage());
         }
 
         return response;
@@ -204,30 +225,22 @@ public class AccountService {
 
     public Map<String, Object> getAllAccounts() {
         Map<String, Object> response = new HashMap<>();
-        try {
-            var accounts = accountRepository.findAll();
-            response.put("success", true);
-            response.put("accounts", accounts);
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "Error fetching accounts: " + e.getMessage());
-        }
+        // Note: You might want to return Users instead of Accounts to get names
+        response.put("success", true);
+        response.put("accounts", accountRepository.findAll());
         return response;
     }
 
-    // HARDCODED MAPPING - Role to account_type ID
     private Integer getAccountTypeIdByRole(String role) {
+        if (role == null) return null;
         switch (role.toLowerCase()) {
-            case "student":
-                return 1;
-            case "faculty":
-                return 2;
-            case "staff":
-                return 3;
-            case "admin":
-                return 4;
-            default:
-                return null;
+            case "student": return 1;
+            case "professor": return 2; // Fixed mapping
+            case "staff": return 2;     // Legacy support
+            case "admin": return 3;
+            case "assistant": return 4;
+            case "parent": return 5;
+            default: return null;
         }
     }
 }

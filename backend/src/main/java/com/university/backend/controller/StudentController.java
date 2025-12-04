@@ -8,8 +8,11 @@ import com.university.backend.service.Mapping_Enrolled_Service;
 import com.university.backend.service.Student_Enrolled_Classes_Service;
 import com.university.backend.service.Mapping_Enrolled_Service; // New Import
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +24,8 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/students")
+@Slf4j
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class StudentController {
 
     private final Student_Enrolled_Classes_Service studentService;
@@ -35,7 +40,8 @@ public class StudentController {
     public ResponseEntity<Set<EnrolledCourseDTO>> getMyEnrolledCourses(HttpSession session) {
 
         // ✅ Get userId from session
-        String userIdStr = (String) session.getAttribute("userID");
+        Integer userIdStr = (Integer) session.getAttribute("userID");
+        System.out.println(userIdStr + "user id mn el courses enrolled");
         if (userIdStr == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

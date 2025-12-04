@@ -33,7 +33,7 @@ public class ProfessorDashboardController {
 
         // 1. Retrieve Professor's User ID from the session
         // The AuthController stores the User ID as a String.
-        String userIDString = (String) session.getAttribute("userID");
+        Integer userIDString = (Integer) session.getAttribute("userID");
         String userRole = (String) session.getAttribute("userRole");
 
         // --- Basic Validation and Authorization ---
@@ -52,7 +52,7 @@ public class ProfessorDashboardController {
         try {
             // 2. Convert the String User ID from session to the Integer type required by the service
             // Note: Your service uses Integer for the parameter, but converts it to Long for repository.
-            Integer professorId = Integer.parseInt(userIDString);
+            Integer professorId = Integer.parseInt(String.valueOf(userIDString));
 
             // 3. Call the Service to get the aggregated dashboard data
             ProfessorDashboardDTO dashboardData = professorDashboardService.getProfessorDashboardData(professorId);

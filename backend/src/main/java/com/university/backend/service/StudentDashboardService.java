@@ -19,7 +19,7 @@ public class StudentDashboardService {
 
 
     /** Get student data for dashboard display */
-    public StudentDashboardDTO getStudentDashboard(int userId) {
+    public StudentDashboardDTO getStudentDashboard(Integer userId) {
         Student student = studentRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 

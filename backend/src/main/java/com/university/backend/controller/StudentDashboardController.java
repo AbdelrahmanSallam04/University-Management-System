@@ -18,6 +18,7 @@ public class StudentDashboardController {
     @GetMapping("/dashboard")
     public ResponseEntity<StudentDashboardDTO> getStudentDashboard(HttpSession session) {
         int userID = (int) session.getAttribute("userID");
+        System.out.println(userID + "aaaaaaaaaaaaaaaaaaa");
         StudentDashboardDTO dashboard = studentDashboardService.getStudentDashboard(userID);
         return ResponseEntity.ok(dashboard);
     }

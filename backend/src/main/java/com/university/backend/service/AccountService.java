@@ -217,14 +217,14 @@ public class AccountService {
 
     // HARDCODED MAPPING - Role to account_type ID
     private Integer getAccountTypeIdByRole(String role) {
-        switch (role.toLowerCase()) {
-            case "student":
+        switch (role) {
+            case "ADMIN":
                 return 1;
-            case "faculty":
+            case "PROFESSOR":
                 return 2;
-            case "staff":
+            case "STUDENT":
                 return 3;
-            case "admin":
+            case "PARENT":
                 return 4;
             default:
                 return null;

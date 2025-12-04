@@ -22,7 +22,7 @@ const StudentDashboard = () => {
       const response = await axios.get(
           `http://localhost:8080/api/student/dashboard`,
           {
-            withCredentials: true  // This is crucial for sending cookies/session
+            withCredentials: true
           }
       );
       setDashboardData(response.data);

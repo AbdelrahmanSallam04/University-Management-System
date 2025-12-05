@@ -31,6 +31,13 @@ public class Course {
     @JoinColumn(name = "course_type_id", nullable = false)
     private CourseType courseType;
 
+    // Add these fields to your existing Course.java
+    @Column(name = "capacity")
+    private Integer capacity; // NULL means unlimited
+
+    @Column(name = "current_enrollment")
+    private Integer currentEnrollment = 0;
+
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
     private Department department;
@@ -46,4 +53,6 @@ public class Course {
             inverseJoinColumns = @JoinColumn(name = "prerequisite_id")
     )
     private Set<Course> prerequisites;
+
+
 }

@@ -1,8 +1,16 @@
 package com.university.backend.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "student_courses")
 public class StudentCourses {
 
@@ -24,6 +32,13 @@ public class StudentCourses {
 
     @Column(name = "status")
     private Status status;
+
+    // Add these fields to your existing StudentCourses.java
+    @Column(name = "registration_date")
+    private LocalDateTime registrationDate;
+
+    @Column(name = "term")
+    private String term = "Fall 2024"; // Default value
 }
 
 enum Status {

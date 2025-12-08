@@ -1,156 +1,262 @@
-import React, { useState } from 'react';
-import AnnouncementForm from '../components/AnnouncementForm';
+import React, { useState } from 'react';// Make sure to import the CSS file
 import '../styles/AnnouncementsManagement.css';
 
 const AnnouncementsManagement = () => {
-  const [announcements, setAnnouncements] = useState([
-    { 
-      id: 1, 
-      title: 'University Holiday', 
-      content: 'The university will be closed on December 25th for Christmas holiday.', 
-      priority: 'high', 
-      targetAudience: 'all',
-      createdAt: '2024-12-01'
-    },
-    { 
-      id: 2, 
-      title: 'Registration Deadline', 
-      content: 'Last day for course registration is December 10th. Please complete your registration before the deadline.', 
-      priority: 'normal', 
-      targetAudience: 'students',
-      createdAt: '2024-12-02'
-    }
-  ]);
+  // --- STATE MANAGEMENT ---
   const [showForm, setShowForm] = useState(false);
-  const [editingAnnouncement, setEditingAnnouncement] = useState(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  const [customFieldName, setCustomFieldName] = useState("");
 
-  const handleCreateAnnouncement = (announcementData) => {
-    const newAnnouncement = {
-      id: announcements.length + 1,
-      ...announcementData,
-      createdAt: new Date().toISOString().split('T')[0]
+  // Standard fields
+  const [mandatoryFields, setMandatoryFields] = useState({
+    Title: "",
+    Date: "",
+    Summary: "",
+    Content: ""
+  });
+
+  // Dynamic fields
+  const [dynamicFields, setDynamicFields] = useState([]);
+
+  // Pre-defined options
+  const fieldOptions = ["Audience", "Priority", "Category", "Link"];
+
+  // --- HANDLERS ---
+
+  const handleMandatoryChange = (e) => {
+    setMandatoryFields({ ...mandatoryFields, [e.target.name]: e.target.value });
+  };
+
+  const handleDynamicChange = (index, value) => {
+    const updatedFields = [...dynamicFields];
+    updatedFields[index].value = value;
+    setDynamicFields(updatedFields);
+  };
+
+  const handleAddField = (fieldKey) => {
+    if (fieldKey === "Custom") {
+      setShowCustomInput(true);
+      setIsDropdownOpen(false);
+    } else {
+      if (!dynamicFields.some(f => f.key === fieldKey)) {
+        setDynamicFields([...dynamicFields, { key: fieldKey, value: "" }]);
+      }
+      setIsDropdownOpen(false);
+    }
+  };
+
+  const confirmCustomField = () => {
+    if (customFieldName.trim() !== "") {
+      setDynamicFields([...dynamicFields, { key: customFieldName, value: "" }]);
+      setCustomFieldName("");
+      setShowCustomInput(false);
+    }
+  };
+
+  const removeDynamicField = (index) => {
+    const updatedFields = dynamicFields.filter((_, i) => i !== index);
+    setDynamicFields(updatedFields);
+  };
+
+  // --- SUBMIT HANDLER ---
+  const handleSubmit = async () => {
+    // 1. VALIDATION CHECK
+    if (
+        !mandatoryFields.Title.trim() ||
+        !mandatoryFields.Date ||
+        !mandatoryFields.Summary.trim() ||
+        !mandatoryFields.Content.trim()
+    ) {
+      alert("⚠️ Please fill in all mandatory fields (Title, Date, Summary, Content) before saving.");
+      return;
+    }
+
+    // 2. Structure the data
+    const payload = {
+      name: mandatoryFields.Title,
+      attributes: {
+        ...mandatoryFields,
+        ...dynamicFields.reduce((acc, field) => {
+          if(field.value.trim() !== "") {
+            acc[field.key] = field.value;
+          }
+          return acc;
+        }, {})
+      }
     };
-    setAnnouncements([...announcements, newAnnouncement]);
-    setShowForm(false);
-  };
 
-  const handleEditAnnouncement = (announcement) => {
-    setEditingAnnouncement(announcement);
-    setShowForm(true);
-  };
+    console.log("Sending to DB:", payload);
 
-  const handleUpdateAnnouncement = (announcementData) => {
-    setAnnouncements(announcements.map(announcement => 
-      announcement.id === editingAnnouncement.id ? 
-      { ...announcement, ...announcementData } : announcement
-    ));
-    setEditingAnnouncement(null);
-    setShowForm(false);
-  };
+    try {
+      const response = await fetch('http://localhost:8080/api/announcements/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
 
-  const handleDeleteAnnouncement = (announcementId) => {
-    setAnnouncements(announcements.filter(announcement => announcement.id !== announcementId));
-  };
+      if (response.ok) {
+        const successMessage = await response.text();
+        alert(`✅ ${successMessage}`);
 
-  const getPriorityIcon = (priority) => {
-    const icons = {
-      low: '🔵',
-      normal: '🟢',
-      high: '🟡',
-      urgent: '🔴'
-    };
-    return icons[priority] || '🟢';
-  };
-
-  const getAudienceIcon = (audience) => {
-    const icons = {
-      all: '👥',
-      students: '🎓',
-      faculty: '👨‍🏫',
-      staff: '👔'
-    };
-    return icons[audience] || '👥';
+        // Reset Form and Close Modal
+        setShowForm(false);
+        setMandatoryFields({ Title: "", Date: "", Summary: "", Content: "" });
+        setDynamicFields([]);
+      } else {
+        const errorText = await response.text();
+        alert(`❌ Failed to save. Server said: ${errorText}`);
+      }
+    } catch (error) {
+      console.error("Connection Error:", error);
+      alert("❌ Error: Could not connect to the server. Is the backend running?");
+    }
   };
 
   return (
-    <div className="announcements-management">
-      <div className="page-header">
-        <h1>Announcements Management</h1>
-        <button 
-          className="primary-button"
-          onClick={() => setShowForm(true)}
-        >
-          📢 Create Announcement
-        </button>
-      </div>
+      <div className="announcement-container">
 
-      {showForm && (
-        <div className="form-modal">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h2>{editingAnnouncement ? 'Edit Announcement' : 'Create New Announcement'}</h2>
-              <button 
-                className="close-button"
-                onClick={() => {
-                  setShowForm(false);
-                  setEditingAnnouncement(null);
-                }}
-              >
-                ✕
-              </button>
-            </div>
-            <AnnouncementForm
-              onSubmit={editingAnnouncement ? handleUpdateAnnouncement : handleCreateAnnouncement}
-              initialData={editingAnnouncement || {}}
-            />
-          </div>
+        {/* --- PAGE HEADER --- */}
+        <div className="header-section">
+          <h1>Announcements Management</h1>
+          <button
+              onClick={() => setShowForm(true)}
+              className="btn btn-primary"
+          >
+            📢 Create Announcement
+          </button>
         </div>
-      )}
 
-      <div className="announcements-list">
-        {announcements.map(announcement => (
-          <div key={announcement.id} className={`announcement-card priority-${announcement.priority}`}>
-            <div className="announcement-header">
-              <div className="announcement-meta">
-                <span className="priority-icon">
-                  {getPriorityIcon(announcement.priority)}
-                </span>
-                <span className="audience-icon">
-                  {getAudienceIcon(announcement.targetAudience)}
-                </span>
-                <span className="announcement-date">
-                  {announcement.createdAt}
-                </span>
-              </div>
-              <div className="announcement-actions">
-                <button 
-                  className="edit-button"
-                  onClick={() => handleEditAnnouncement(announcement)}
-                >
-                  ✏️
-                </button>
-                <button 
-                  className="delete-button"
-                  onClick={() => handleDeleteAnnouncement(announcement.id)}
-                >
-                  🗑️
-                </button>
+        {/* --- MOCK LIST --- */}
+        <div className="empty-state">
+          <p>No announcements yet. (You need to implement a GET request to fetch them!)</p>
+        </div>
+
+        {/* --- CREATE MODAL --- */}
+        {showForm && (
+            <div className="modal-overlay">
+              <div className="modal-content">
+
+                <div className="modal-header">
+                  <h2>New Announcement</h2>
+                  <button onClick={() => setShowForm(false)} className="close-btn">
+                    ✕
+                  </button>
+                </div>
+
+                <div className="form-container">
+
+                  {/* Mandatory Fields */}
+                  {['Title', 'Date', 'Summary'].map((field) => (
+                      <div key={field} className="form-group">
+                        <label className="form-label">{field} *</label>
+                        <input
+                            type={field === 'Date' ? 'date' : 'text'}
+                            name={field}
+                            value={mandatoryFields[field]}
+                            onChange={handleMandatoryChange}
+                            className="form-control"
+                        />
+                      </div>
+                  ))}
+
+                  <div className="form-group">
+                    <label className="form-label">Content *</label>
+                    <textarea
+                        name="Content"
+                        value={mandatoryFields.Content}
+                        onChange={handleMandatoryChange}
+                        rows="3"
+                        className="form-control"
+                    />
+                  </div>
+
+                  {/* Dynamic Fields */}
+                  {dynamicFields.map((field, index) => (
+                      <div key={index} className="form-group">
+                        <label className="form-label">{field.key}</label>
+                        <div className="dynamic-row">
+                          <input
+                              type="text"
+                              value={field.value}
+                              onChange={(e) => handleDynamicChange(index, e.target.value)}
+                              className="form-control"
+                          />
+                          <button
+                              onClick={() => removeDynamicField(index)}
+                              className="btn btn-danger"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                  ))}
+
+                  {/* Add Field Buttons */}
+                  <div className="add-field-container">
+                    {!showCustomInput ? (
+                        <>
+                          <button
+                              type="button"
+                              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                              className="btn btn-add-attr"
+                          >
+                            + Add Attribute
+                          </button>
+
+                          {isDropdownOpen && (
+                              <div className="dropdown-menu">
+                                {fieldOptions.map(opt => (
+                                    <div
+                                        key={opt}
+                                        onClick={() => handleAddField(opt)}
+                                        className="dropdown-item"
+                                    >
+                                      {opt}
+                                    </div>
+                                ))}
+                                <div
+                                    onClick={() => handleAddField("Custom")}
+                                    className="dropdown-item custom"
+                                >
+                                  + Custom Field...
+                                </div>
+                              </div>
+                          )}
+                        </>
+                    ) : (
+                        <div className="custom-input-group">
+                          <input
+                              type="text"
+                              placeholder="Field name..."
+                              value={customFieldName}
+                              onChange={(e) => setCustomFieldName(e.target.value)}
+                              className="form-control"
+                              autoFocus
+                          />
+                          <button onClick={confirmCustomField} className="btn btn-success">Save</button>
+                          <button onClick={() => setShowCustomInput(false)} className="btn btn-secondary">Cancel</button>
+                        </div>
+                    )}
+                  </div>
+
+                  {/* Submit Button */}
+                  <div className="modal-footer">
+                    <button
+                        onClick={handleSubmit}
+                        className="btn btn-primary"
+                    >
+                      Publish Announcement
+                    </button>
+                  </div>
+
+                </div>
               </div>
             </div>
-            <h3 className="announcement-title">{announcement.title}</h3>
-            <p className="announcement-content">{announcement.content}</p>
-            <div className="announcement-footer">
-              <span className={`priority-badge priority-${announcement.priority}`}>
-                {announcement.priority}
-              </span>
-              <span className="audience-badge">
-                For: {announcement.targetAudience}
-              </span>
-            </div>
-          </div>
-        ))}
+        )}
       </div>
-    </div>
   );
 };
 

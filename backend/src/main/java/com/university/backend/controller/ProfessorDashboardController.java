@@ -33,7 +33,7 @@ public class ProfessorDashboardController {
 
         // 1. Retrieve Professor's User ID from the session
         // The AuthController stores the User ID as a String.
-        String userIDString = (String) session.getAttribute("userID");
+        String userIDString = String.valueOf(session.getAttribute("userID"));
         String userRole = (String) session.getAttribute("userRole");
 
         // --- Basic Validation and Authorization ---

@@ -1,6 +1,6 @@
 package com.university.backend.service;
 
-import com.university.backend.dto.Advised_By_ProfessorDTO;
+//import com.university.backend.dto.Advised_By_ProfessorDTO;
 import com.university.backend.dto.Course_by_ProfessorDTO;
 import com.university.backend.dto.ProfessorDashboardDTO;
 import com.university.backend.model.Course;
@@ -26,16 +26,15 @@ public class ProfessorDashboardService {
 
     private final ProfessorRepository professorRepository;
     private final CourseRepository courseRepository;
-    private final StudentRepository studentRepository;
 
     public ProfessorDashboardService(ProfessorRepository professorRepository, CourseRepository courseRepository, StudentRepository studentRepository) {
         this.professorRepository = professorRepository;
         this.courseRepository = courseRepository;
-        this.studentRepository = studentRepository;
     }
 
     /**
      * Retrieves all data required for the professor's dashboard view.
+     *
      * @param professorId The ID of the professor (Integer).
      * @return ProfessorDashboardDTO containing profile, courses, and advisees.
      * @throws RuntimeException if the professor is not found.
@@ -54,8 +53,6 @@ public class ProfessorDashboardService {
         // 2. Fetch Taught Courses
         List<Course> taughtCourses = courseRepository.findByProfessor(professor);
 
-//        // 3. Fetch Advisee Students
-//        List<Student> adviseeStudents = studentRepository.findByAdvisor(professor);
 
         // 4. Map entities to the ProfessorDashboardDTO
         return mapToProfessorDashboardDTO(professor, taughtCourses);
@@ -66,8 +63,7 @@ public class ProfessorDashboardService {
      */
     private ProfessorDashboardDTO mapToProfessorDashboardDTO(
             Professor professor,
-            List<Course> taughtCourses
-            ) {
+            List<Course> taughtCourses) {
 
         ProfessorDashboardDTO dto = new ProfessorDashboardDTO();
 
@@ -98,12 +94,6 @@ public class ProfessorDashboardService {
                 .collect(Collectors.toList());
         dto.setTaughtCourses(courseDTOs);
 
-        // --- 3. Advisee Students ---
-//        List<Advised_By_ProfessorDTO> adviseeDTOs = adviseeStudents.stream()
-//                .map(this::mapToAdviseeDTO)
-//                .collect(Collectors.toList());
-//        dto.setAdviseeStudents(adviseeDTOs);
-
         return dto;
     }
 
@@ -116,26 +106,6 @@ public class ProfessorDashboardService {
         dto.setCode(course.getCode());
         dto.setName(course.getName());
         dto.setCreditHours(course.getCreditHours());
-        return dto;
-    }
-
-    /**
-     * Helper method to map Student entity to Advised_By_ProfessorDTO.
-     */
-    private Advised_By_ProfessorDTO mapToAdviseeDTO(Student student) {
-        Advised_By_ProfessorDTO dto = new Advised_By_ProfessorDTO();
-        // Uses Integer PK:
-        dto.setStudentId(student.getUserId());
-        dto.setFirstName(student.getFirstName());
-        dto.setLastName(student.getLastName());
-
-        // Email is fetched via the Account entity
-        if (student.getAccount() != null) {
-            dto.setEmail(student.getAccount().getEmail());
-        } else {
-            dto.setEmail("N/A");
-        }
-
         return dto;
     }
 }

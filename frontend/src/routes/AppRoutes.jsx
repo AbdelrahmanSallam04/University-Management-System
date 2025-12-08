@@ -8,7 +8,8 @@ import EnrolledCoursesView from "../components/EnrolledCourses";
 import ProfessorDashboard from "../components/ProfessorDashboard";
 import AdminDashboard from "../pages/AdminDashboard";
 import RoomCalendar from "../pages/RoomCalendar"; // make sure this import exists
-
+import CourseAssignments from "../pages/CourseAssignments"
+import AssignmentSubmission from "../pages/AssignmentSubmission"
 const AppRoutes = () => {
   return (
       <Routes>
@@ -20,6 +21,8 @@ const AppRoutes = () => {
            <Route path="/course-catalog" element={<CoursesCatalog />} />
            <Route path="/EnrolledCourses" element={<EnrolledCoursesView/>} /> {/* ✅ Fixed */}
           <Route path="/RoomCalendar" element={<RoomCalendar/>} /> {/* ✅ Fixed */}
+          <Route path="/course/:courseId/assignments" element={<CourseAssignments />} />
+           <Route path="/assignment/:assignmentId" element={<AssignmentSubmission />} />
 
            {/* Default route - always go to login */}
            <Route path="/" element={<Navigate to="/login" />} />

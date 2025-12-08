@@ -1,5 +1,6 @@
 package com.university.backend.service;
 
+import com.university.backend.dto.CourseMaterialsResponse;
 import com.university.backend.model.Assignment;
 import com.university.backend.model.Course;
 import com.university.backend.model.Exam;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProfessorCourseService {
@@ -45,7 +48,7 @@ public class ProfessorCourseService {
 
         // 3. Set relationships and defaults
         // Note: Using 'setCourse_id' because your entity field is named 'course_id'
-        assignmentDetails.setCourse_id(course);
+        assignmentDetails.setCourse(course);
         assignmentDetails.setCreatedAt(LocalDateTime.now());
 
         // 4. Save to Database
@@ -69,9 +72,49 @@ public class ProfessorCourseService {
 
         // 3. Set relationships
         // Note: Using 'setCourse_id' because your entity field is named 'course_id'
-        examDetails.setCourse_id(course);
+        examDetails.setCourse(course);
 
         // 4. Save to Database
         return examRepository.save(examDetails);
+    }
+
+
+    public CourseMaterialsResponse getCourseMaterials(Long courseId) {
+        // Convert Long to int if your DB uses int
+        int cId = courseId.intValue();
+
+        // 1. Fetch
+        List<Exam> exams = examRepository.findByCourseCourseId(cId);
+        List<Assignment> assignments = assignmentRepository.findByCourseCourseId(cId);
+
+        // 2. Map Exams
+        List<CourseMaterialsResponse.ExamResponse> examDTOs = exams.stream().map(exam -> {
+            CourseMaterialsResponse.ExamResponse dto = new CourseMaterialsResponse.ExamResponse();
+            // FIX: Using getExamId() (assuming Exam entity follows Assignment pattern)
+            dto.setId((long) exam.getExam_id());
+            dto.setTitle(exam.getTitle());
+            dto.setDescription(exam.getDescription());
+            dto.setExamDate(exam.getExam_date());
+            dto.setMarks(exam.getMarks());
+            return dto;
+        }).collect(Collectors.toList());
+
+        // 3. Map Assignments
+        List<CourseMaterialsResponse.AssignmentResponse> assignmentDTOs = assignments.stream().map(assign -> {
+            CourseMaterialsResponse.AssignmentResponse dto = new CourseMaterialsResponse.AssignmentResponse();
+            // FIX: Using getAssignmentId() instead of getId()
+            dto.setId((long) assign.getAssignmentId());
+            dto.setTitle(assign.getTitle());
+            dto.setDescription(assign.getDescription());
+            dto.setDueDate(assign.getDueDate());
+            dto.setMarks(assign.getMarks());
+            return dto;
+        }).collect(Collectors.toList());
+
+        CourseMaterialsResponse response = new CourseMaterialsResponse();
+        response.setExams(examDTOs);
+        response.setAssignments(assignmentDTOs);
+
+        return response;
     }
 }

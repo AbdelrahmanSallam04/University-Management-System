@@ -19,7 +19,7 @@ public class Exam {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
-    private Course course_id;
+    private Course course;
 
     @Column(name = "title", nullable = false, length = 255)
     private String title;

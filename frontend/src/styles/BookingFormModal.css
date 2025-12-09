@@ -1,0 +1,36 @@
+/* Dedicated styles for the Booking Modal to ensure it works in both Admin and Professor dashboards */
+
+.booking-summary p {
+    color: #334155;
+    line-height: 1.5;
+}
+
+.book-confirm-button {
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1), 0 2px 4px -1px rgba(37, 99, 235, 0.06);
+}
+
+.book-confirm-button:hover:not(:disabled) {
+    background-color: #1d4ed8 !important; /* Darker blue on hover */
+    transform: translateY(-1px);
+    box-shadow: 0 6px 8px -1px rgba(37, 99, 235, 0.15), 0 4px 6px -1px rgba(37, 99, 235, 0.1);
+}
+
+.book-confirm-button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.book-cancel-button {
+    transition: all 0.2s ease;
+}
+
+.book-cancel-button:hover {
+    background-color: #f1f5f9 !important; /* Light gray on hover */
+    color: #475569 !important;
+}
+
+/* Animation for the modal entrance */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}

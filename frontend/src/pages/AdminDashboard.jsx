@@ -1,167 +1,181 @@
 import React, { useState } from 'react';
 import AdminSidebar from '../components/AdminSidebar';
-import UserManagement from './UserManagement';
-import CreateAccount from './CreateAccount';
-import RoomCalendar from './RoomCalendar'; // ADD THIS IMPORT
-import EventsManagement from './EventsManagement';
-import AnnouncementsManagement from './AnnouncementsManagement';
+import UserManagement from '../pages/UserManagement';
+import CreateAccount from '../components/CreateAccount';
+import RoomAvailabilityComponent from '../components/RoomAvailabilityComponent'; // <--- NEW IMPORT
 import '../styles/AdminDashboard.css';
 
 const AdminDashboard = () => {
-  const [activeComponent, setActiveComponent] = useState('dashboard');
+    const [activeComponent, setActiveComponent] = useState('dashboard');
 
-  const renderComponent = () => {
-    switch (activeComponent) {
-      case 'dashboard':
-        return <AdminOverview />;
-      case 'user-management':
-        return <UserManagement />;
-      case 'create-account':
-        return <CreateAccount />;
-      case 'room-availability': // ADD THIS CASE
-        return <RoomCalendar />;
-      case 'events':
-        return <EventsManagement />;
-      case 'announcements':
-        return <AnnouncementsManagement />;
-      default:
-        return <AdminOverview />;
-    }
-  };
+    // MOCK/Placeholder for Admin User ID (Needed for the booking FK in the service layer)
+    const adminUserId = 1;
+    const [myBookings, setMyBookings] = useState([]); // State for tracking bookings
 
-  return (
-    <div className="admin-dashboard">
-      <AdminSidebar onMenuChange={setActiveComponent} />
-      <div className="admin-main-content">
-        {renderComponent()}
-      </div>
-    </div>
-  );
+    const renderComponent = () => {
+        switch (activeComponent) {
+            case 'dashboard':
+                return <AdminOverview setActiveComponent={setActiveComponent} />;
+            case 'user-management':
+                return <UserManagement />;
+            case 'create-account':
+                return <CreateAccount />;
+            case 'room-availability':
+                // CRITICAL: Render the reusable component and pass the Admin user ID
+                return (
+                    <RoomAvailabilityComponent/>
+                );
+            case 'events':
+                return <EventsManagement />;
+            case 'announcements':
+                return <AnnouncementsManagement />;
+            default:
+                return <AdminOverview setActiveComponent={setActiveComponent} />;
+        }
+    };
+
+    return (
+        <div className="admin-dashboard">
+            <AdminSidebar onMenuChange={setActiveComponent} />
+            <div className="admin-main-content">
+                {renderComponent()}
+            </div>
+        </div>
+    );
 };
 
-// Admin Overview Component - Enhanced with Room Availability stats
-const AdminOverview = () => {
-  const stats = [
-    { label: 'Total Users', value: '1,234', icon: '👥', color: '#3498db' },
-    { label: 'Active Students', value: '890', icon: '🎓', color: '#2ecc71' },
-    { label: 'Faculty Members', value: '156', icon: '👨‍🏫', color: '#9b59b6' },
-    { label: 'Staff Members', value: '188', icon: '👔', color: '#f39c12' },
-    { label: 'Available Rooms', value: '42', icon: '🏢', color: '#27ae60' }, // ADDED ROOM STAT
-    { label: 'Active Events', value: '15', icon: '📅', color: '#e74c3c' },
-    { label: 'Announcements', value: '8', icon: '📢', color: '#1abc9c' },
-    { label: 'System Status', value: 'Online', icon: '✅', color: '#16a085' }
-  ];
+// --- Updated AdminOverview to pass setActiveComponent ---
+const AdminOverview = ({ setActiveComponent }) => {
+    // ... (content remains the same) ...
 
-  const quickActions = [
-    {
-      label: 'Create User Account',
-      icon: '➕',
-      component: 'create-account',
-      description: 'Add new students, faculty, or staff'
-    },
-    {
-      label: 'Manage Users',
-      icon: '👥',
-      component: 'user-management',
-      description: 'Edit, update, or remove user accounts'
-    },
-    {
-      label: 'Room Availability',
-      icon: '🏢',
-      component: 'room-availability',
-      description: 'View and manage classroom bookings'
-    },
-    {
-      label: 'Events Management',
-      icon: '📅',
-      component: 'events',
-      description: 'Schedule and manage university events'
-    }
-  ];
-
-  const [activeAction, setActiveAction] = useState(null);
-
-  const handleActionClick = (component) => {
-    setActiveAction(component);
-    // You might want to navigate to the component here
-    console.log('Quick action clicked:', component);
-  };
-
-  return (
-    <div className="admin-overview">
-      <div className="admin-header">
-        <h1>Admin Dashboard</h1>
-        <p>Welcome to University Management System Admin Panel</p>
-      </div>
-
-      {/* Stats Grid */}
-      <div className="stats-grid">
-        {stats.map((stat, index) => (
-          <div key={index} className="stat-card" style={{ borderLeftColor: stat.color }}>
-            <div className="stat-icon" style={{ color: stat.color }}>{stat.icon}</div>
-            <h3>{stat.label}</h3>
-            <div className="stat-number">{stat.value}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Quick Actions Section */}
-      <div className="quick-actions-section">
-        <h2>Quick Actions</h2>
-        <div className="quick-actions-grid">
-          {quickActions.map((action, index) => (
-            <div
-              key={index}
-              className="quick-action-card"
-              onClick={() => handleActionClick(action.component)}
-            >
-              <div className="action-icon">{action.icon}</div>
-              <div className="action-content">
-                <h4>{action.label}</h4>
-                <p>{action.description}</p>
-              </div>
-              <div className="action-arrow">→</div>
+    return (
+        <div className="admin-overview">
+            <div className="admin-header">
+                <h1>Admin Dashboard</h1>
+                <p>Welcome to University Management System Admin Panel</p>
             </div>
-          ))}
+
+            <div className="stats-grid">
+                {/* ... Stat Cards ... */}
+                <div className="stat-card">
+                    <div className="stat-icon">👥</div>
+                    <h3>Total Users</h3>
+                    <div className="stat-number">1,234</div>
+                    <div className="stat-change positive">+12% from last month</div>
+                </div>
+                <div className="stat-card">
+                    <div className="stat-icon">📅</div>
+                    <h3>Active Events</h3>
+                    <div className="stat-number">15</div>
+                    <div className="stat-change positive">+3 today</div>
+                </div>
+                <div className="stat-card">
+                    <div className="stat-icon">📢</div>
+                    <h3>Announcements</h3>
+                    <div className="stat-number">8</div>
+                    <div className="stat-change">2 new</div>
+                </div>
+                <div className="stat-card">
+                    <div className="stat-icon">🏢</div>
+                    <h3>Available Rooms</h3>
+                    <div className="stat-number">42</div>
+                    <div className="stat-change positive">65% availability</div>
+                </div>
+                <div className="stat-card">
+                    <div className="stat-icon">⏰</div>
+                    <h3>Pending Requests</h3>
+                    <div className="stat-number">23</div>
+                    <div className="stat-change negative">+5 urgent</div>
+                </div>
+                <div className="stat-card">
+                    <div className="stat-icon">✅</div>
+                    <h3>System Status</h3>
+                    <div className="stat-number">Online</div>
+                    <div className="stat-change positive">All systems operational</div>
+                </div>
+            </div>
+
+            {/* Quick Actions (Updated onClick handlers) */}
+            <div className="quick-actions">
+                <h2>Quick Actions</h2>
+                <div className="actions-grid">
+                    <div className="action-card" onClick={() => setActiveComponent('create-account')}>
+                        <div className="action-icon">➕</div>
+                        <h4>Create User Account</h4>
+                        <p>Add new students, faculty, or staff</p>
+                    </div>
+                    <div className="action-card" onClick={() => setActiveComponent('room-availability')}>
+                        {/* Direct action button to open the Room Availability view */}
+                        <div className="action-icon">🏢</div>
+                        <h4>Check Room Availability</h4>
+                        <p>View and manage classroom bookings</p>
+                    </div>
+                    <div className="action-card" onClick={() => setActiveComponent('user-management')}>
+                        <div className="action-icon">👥</div>
+                        <h4>Manage Users</h4>
+                        <p>Edit, update, or remove user accounts</p>
+                    </div>
+                    <div className="action-card">
+                        <div className="action-icon">📊</div>
+                        <h4>View Reports</h4>
+                        <p>Generate system usage reports</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Recent Activity */}
+            <div className="recent-activity">
+                <h2>Recent Activity</h2>
+                <div className="activity-list">
+                    <div className="activity-item">
+                        <div className="activity-icon">👤</div>
+                        <div className="activity-content">
+                            <p><strong>New user registered</strong> - John Doe (Faculty)</p>
+                            <span className="activity-time">2 minutes ago</span>
+                        </div>
+                    </div>
+                    <div className="activity-item">
+                        <div className="activity-icon">🏢</div>
+                        <div className="activity-content">
+                            <p><strong>Room booked</strong> - Science Building 101</p>
+                            <span className="activity-time">15 minutes ago</span>
+                        </div>
+                    </div>
+                    <div className="activity-item">
+                        <div className="activity-icon">📢</div>
+                        <div className="activity-content">
+                            <p><strong>Announcement published</strong> - Campus Maintenance</p>
+                            <span className="activity-time">1 hour ago</span>
+                        </div>
+                    </div>
+                    <div className="activity-item">
+                        <div className="activity-icon">✅</div>
+                        <div className="activity-content">
+                            <p><strong>System backup completed</strong></p>
+                            <span className="activity-time">2 hours ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-
-      {/* Recent Activity */}
-      <div className="recent-activity">
-        <h2>Recent Activity</h2>
-        <div className="activity-list">
-          <div className="activity-item">
-            <div className="activity-icon">👤</div>
-            <div className="activity-details">
-              <p><strong>New faculty member added</strong></p>
-              <span className="activity-time">10 minutes ago</span>
-            </div>
-          </div>
-          <div className="activity-item">
-            <div className="activity-icon">🏢</div>
-            <div className="activity-details">
-              <p><strong>Room 201 booked for workshop</strong></p>
-              <span className="activity-time">1 hour ago</span>
-            </div>
-          </div>
-          <div className="activity-item">
-            <div className="activity-icon">📢</div>
-            <div className="activity-details">
-              <p><strong>New campus announcement published</strong></p>
-              <span className="activity-time">2 hours ago</span>
-            </div>
-          </div>
-          <div className="activity-item">
-            <div className="activity-icon">✅</div>
-            <div className="activity-details">
-              <p><strong>System maintenance completed</strong></p>
-              <span className="activity-time">4 hours ago</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+    );
 };
+
+// Placeholder components for other menu items
+const EventsManagement = () => (
+    <div className="component-placeholder">
+        <div className="placeholder-icon">📅</div>
+        <h2>Events Management</h2>
+        <p>This feature is coming soon. You'll be able to manage university events and schedules here.</p>
+    </div>
+);
+
+const AnnouncementsManagement = () => (
+    <div className="component-placeholder">
+        <div className="placeholder-icon">📢</div>
+        <h2>Announcements Management</h2>
+        <p>This feature is coming soon. You'll be able to create and manage campus announcements here.</p>
+    </div>
+);
 
 export default AdminDashboard;

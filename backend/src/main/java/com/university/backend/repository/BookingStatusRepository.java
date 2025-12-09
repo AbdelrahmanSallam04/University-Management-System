@@ -9,6 +9,4 @@ import java.util.Optional;
 @Repository
 public interface BookingStatusRepository extends JpaRepository<BookingStatus, Integer> {
 
-    // Allows service layer to fetch status by its name, if needed for admin logic
-    Optional<BookingStatus> findByStatus(String status);
 }

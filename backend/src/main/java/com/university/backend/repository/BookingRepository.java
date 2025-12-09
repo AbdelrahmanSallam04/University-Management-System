@@ -3,6 +3,7 @@ package com.university.backend.repository;
 import com.university.backend.model.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -21,4 +22,17 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
      */
     @Query("SELECT b FROM Booking b WHERE b.status.id = :statusId AND b.startTime < :endOfDay AND b.endTime > :startOfDay")
     List<Booking> findByDayAndStatus(LocalDateTime startOfDay, LocalDateTime endOfDay, Integer statusId);
+
+
+
+    @Query("SELECT b FROM Booking b WHERE b.room.room_id = :roomId AND b.status.id = 1 AND b.startTime < :newEndTime AND b.endTime > :newStartTime")
+    List<Booking> findConflictingBookings(
+            @Param("roomId") Integer roomId,
+            @Param("newStartTime") LocalDateTime newStartTime,
+            @Param("newEndTime") LocalDateTime newEndTime
+    );
+
+
+    @Query("SELECT b FROM Booking b WHERE b.bookedByFaculty.userId = :facultyId ORDER BY b.startTime DESC")
+    List<Booking> findByBookedByFacultyId(@Param("facultyId") Integer facultyId);
 }

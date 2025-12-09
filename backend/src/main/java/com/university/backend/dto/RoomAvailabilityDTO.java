@@ -8,15 +8,17 @@ public class RoomAvailabilityDTO {
     private String roomType;
     private String status;
     private String timeSlot;  // Either the booked purpose or the free time range
+    private String purpose;
 
     // Constructor for all fields
-    public RoomAvailabilityDTO(Integer id, String roomCode, Integer capacity, String roomType, String status, String timeSlot) {
+    public RoomAvailabilityDTO(Integer id, String roomCode, Integer capacity, String roomType, String status, String timeSlot, String purpose) {
         this.id = id;
         this.roomCode = roomCode;
         this.capacity = capacity;
         this.roomType = roomType;
         this.status = status;
         this.timeSlot = timeSlot;
+        this.purpose = purpose;
     }
 
     // Getters for JSON serialization
@@ -26,6 +28,7 @@ public class RoomAvailabilityDTO {
     public String getRoomType() { return roomType; }
     public String getStatus() { return status; }
     public String getTimeSlot() { return timeSlot; }
+    public String getPurpose() { return purpose; }
 
     // Setters (optional, but good practice)
     public void setId(Integer id) { this.id = id; }
@@ -34,4 +37,5 @@ public class RoomAvailabilityDTO {
     public void setRoomType(String roomType) { this.roomType = roomType; }
     public void setStatus(String status) { this.status = status; }
     public void setTimeSlot(String timeSlot) { this.timeSlot = timeSlot; }
+    public void setPurpose(String purpose) { this.purpose = purpose; }
 }

@@ -1,10 +1,14 @@
 package com.university.backend.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "exam")
 public class Exam {
 
@@ -15,7 +19,7 @@ public class Exam {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
-    private Course course_id;
+    private Course course;
 
     @Column(name = "title", nullable = false, length = 255)
     private String title;

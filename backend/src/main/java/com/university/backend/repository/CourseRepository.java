@@ -27,4 +27,5 @@ public interface CourseRepository extends JpaRepository<Course, Integer> { // Ch
             "WHERE c.courseId = :courseId")
     Optional<Course> findByIdWithRelationships(@Param("courseId") Integer courseId); // Changed to Integer
     List<Course> findByProfessor(Professor professor);
+
 }

@@ -23,7 +23,6 @@ public class ProfessorDashboardDTO {
 
     // Relationship Info
     private List<Course_by_ProfessorDTO> taughtCourses;
-    private List<Advised_By_ProfessorDTO> adviseeStudents;
 
 
 }

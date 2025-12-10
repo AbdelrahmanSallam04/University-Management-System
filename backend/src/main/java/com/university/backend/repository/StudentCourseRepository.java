@@ -13,7 +13,23 @@ import java.util.Optional;
 
 public interface StudentCourseRepository extends JpaRepository<StudentCourses, Integer> {
 
+    // FIXED: Query should select Course, not StudentCourses
     @Query("SELECT sc.course FROM StudentCourses sc WHERE sc.student.userId = :studentId")
-    List<Course> findCoursesById(@Param("studentId") int studentId);
+    List<Course> findCoursesById(@Param("studentId") Integer studentId);
+
+    // NEW methods needed for registration
+
+    // Check if student is enrolled in a specific course
+    @Query("SELECT CASE WHEN COUNT(sc) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM StudentCourses sc " +
+            "WHERE sc.student.userId = :studentId AND sc.course.courseId = :courseId")
+    boolean existsByStudentUserIdAndCourseCourseId(@Param("studentId") Integer studentId,
+                                                   @Param("courseId") Integer courseId);
+
+    // Find specific enrollment
+    @Query("SELECT sc FROM StudentCourses sc " +
+            "WHERE sc.student.userId = :studentId AND sc.course.courseId = :courseId")
+    Optional<StudentCourses> findByStudentUserIdAndCourseCourseId(@Param("studentId") Integer studentId,
+                                                                  @Param("courseId") Integer courseId);
 
 }

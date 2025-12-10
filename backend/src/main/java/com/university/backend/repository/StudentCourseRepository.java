@@ -13,6 +13,7 @@ import java.util.Optional;
 
 public interface StudentCourseRepository extends JpaRepository<StudentCourses, Integer> {
 
-    @Query("SELECT sc FROM StudentCourses sc WHERE sc.student = :studentId")
-    List<Course> findCoursesById(@Param("studentId") int studentId);;
+    @Query("SELECT sc.course FROM StudentCourses sc WHERE sc.student.userId = :studentId")
+    List<Course> findCoursesById(@Param("studentId") int studentId);
+
 }

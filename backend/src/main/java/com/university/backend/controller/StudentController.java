@@ -35,11 +35,10 @@ public class StudentController {
     public ResponseEntity<Set<EnrolledCourseDTO>> getMyEnrolledCourses(HttpSession session) {
 
         // ✅ Get userId from session
-        String userIdStr = (String) session.getAttribute("userID");
-        if (userIdStr == null) {
+        Integer authenticatedStudentId = (Integer) session.getAttribute("userID");
+        if (authenticatedStudentId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        Integer authenticatedStudentId = Integer.valueOf(userIdStr);
 
         // Fetch enrolled courses
         List<Course> courses = studentService.getEnrolledCourses(authenticatedStudentId);

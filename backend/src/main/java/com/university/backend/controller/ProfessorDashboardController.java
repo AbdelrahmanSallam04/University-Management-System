@@ -33,12 +33,12 @@ public class ProfessorDashboardController {
 
         // 1. Retrieve Professor's User ID from the session
         // The AuthController stores the User ID as a String.
-        String userIDString = (String) session.getAttribute("userID");
+        Integer userID = (Integer) session.getAttribute("userID");
         String userRole = (String) session.getAttribute("userRole");
 
         // --- Basic Validation and Authorization ---
 
-        if (userIDString == null) {
+        if (userID == null) {
             // No User ID in session means the user is not logged in or session expired
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -52,17 +52,17 @@ public class ProfessorDashboardController {
         try {
             // 2. Convert the String User ID from session to the Integer type required by the service
             // Note: Your service uses Integer for the parameter, but converts it to Long for repository.
-            Integer professorId = Integer.parseInt(userIDString);
+            //Integer professorId = Integer.parseInt(userID);
 
             // 3. Call the Service to get the aggregated dashboard data
-            ProfessorDashboardDTO dashboardData = professorDashboardService.getProfessorDashboardData(professorId);
+            ProfessorDashboardDTO dashboardData = professorDashboardService.getProfessorDashboardData(userID);
 
             // 4. Return the data with an OK status
             return ResponseEntity.ok(dashboardData);
 
         } catch (NumberFormatException e) {
             // Handle case where the stored userID is not a valid number
-            System.err.println("Session userID is not a valid number: " + userIDString);
+            System.err.println("Session userID is not a valid number: " + userID);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (RuntimeException e) {
             // Catch the 'Professor not found' exception thrown by the service

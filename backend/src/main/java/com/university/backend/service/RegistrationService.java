@@ -111,53 +111,6 @@ public class RegistrationService {
         return response;
     }
 
-    @Transactional
-    public RegistrationResponseDTO dropCourse(Integer studentId, RegistrationRequestDTO request) {
-        RegistrationResponseDTO response = new RegistrationResponseDTO();
-
-        try {
-            // Find enrollment using YOUR repository method
-            Optional<StudentCourses> enrollment = studentCourseRepository
-                    .findByStudentUserIdAndCourseCourseId(studentId, request.getCourseId());
-
-            if (enrollment.isEmpty()) {
-                response.setSuccess(false);
-                response.setMessage("You are not enrolled in this course");
-                return response;
-            }
-
-            StudentCourses studentCourse = enrollment.get();
-            Course course = studentCourse.getCourse();
-
-            // Delete enrollment
-            studentCourseRepository.delete(studentCourse);
-
-            // Update course enrollment count
-            if (course.getCurrentEnrollment() != null && course.getCurrentEnrollment() > 0) {
-                course.setCurrentEnrollment(course.getCurrentEnrollment() - 1);
-                courseRepository.save(course);
-            }
-
-            // Get updated credits
-            RegistrationConfig config = getRegistrationConfig();
-            int remainingCredits = getStudentCurrentCredits(studentId, config.getCurrentTerm());
-
-            response.setSuccess(true);
-            response.setMessage("Successfully dropped " + course.getCode());
-            response.setCourseId(course.getCourseId());
-            response.setCourseCode(course.getCode());
-            response.setCourseName(course.getName());
-            response.setCurrentCredits(remainingCredits);
-            response.setMaxCredits(config.getMaxCreditsPerStudent());
-
-        } catch (Exception e) {
-            response.setSuccess(false);
-            response.setMessage("Failed to drop course: " + e.getMessage());
-        }
-
-        return response;
-    }
-
     // Helper method - gets student's current credits
     private int getStudentCurrentCredits(Integer studentId, String term) {
         // Use YOUR existing repository method

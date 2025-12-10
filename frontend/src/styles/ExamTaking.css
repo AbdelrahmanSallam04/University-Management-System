@@ -1,0 +1,672 @@
+/* ExamTaking.css */
+.exam-taking-wrapper {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f0f2f5 0%, #e6e9ef 100%);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Bar */
+.exam-header-bar {
+    background: white;
+    padding: 20px 30px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e9ecef;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.back-btn {
+    background: none;
+    border: 2px solid #e9ecef;
+    color: #495057;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 1rem;
+}
+
+.back-btn:hover {
+    background: #f8f9fa;
+    border-color: #dee2e6;
+    transform: translateX(-3px);
+}
+
+.exam-title-info h1 {
+    margin: 0 0 8px 0;
+    font-size: 1.8rem;
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+.course-info {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.course-code {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.course-name {
+    color: #5d6d7e;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.header-right {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.time-display {
+    text-align: center;
+    background: #f8f9fa;
+    padding: 15px 25px;
+    border-radius: 12px;
+    min-width: 160px;
+}
+
+.time-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.time-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #27ae60;
+    font-family: 'Courier New', monospace;
+}
+
+.time-value.warning {
+    color: #f39c12;
+    animation: pulse 1s infinite;
+}
+
+.time-value.critical {
+    color: #e74c3c;
+    animation: pulse 0.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.marks-info {
+    text-align: center;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    padding: 15px 25px;
+    border-radius: 12px;
+    min-width: 120px;
+}
+
+.marks-label {
+    font-size: 0.9rem;
+    color: #1976d2;
+    margin-bottom: 5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.marks-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0d47a1;
+}
+
+/* Exam Content */
+.exam-content {
+    flex: 1;
+    padding: 30px;
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 30px;
+    max-width: 1600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Question Section */
+.question-section {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f0f2f5;
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+.marks-badge {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.question-content {
+    height: calc(100% - 80px);
+}
+
+.question-text {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: #2c3e50;
+    margin-bottom: 40px;
+    padding: 25px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border-left: 4px solid #667eea;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.answer-section {
+    margin-top: 40px;
+}
+
+.answer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.answer-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.word-counter {
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.answer-textarea {
+    width: 100%;
+    padding: 25px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    resize: vertical;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: all 0.3s;
+    background: white;
+}
+
+.answer-textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.answer-textarea:disabled {
+    background: #f8f9fa;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.textarea-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.save-draft-btn {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.95rem;
+}
+
+.save-draft-btn:hover:not(:disabled) {
+    background: #5a6268;
+    transform: translateY(-2px);
+}
+
+.save-draft-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.format-tips {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.tip {
+    background: #fff3cd;
+    color: #856404;
+    padding: 6px 12px;
+    border-radius: 4px;
+    border-left: 3px solid #ffc107;
+}
+
+/* Instructions Panel */
+.instructions-panel {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    height: fit-content;
+    position: sticky;
+    top: 100px;
+}
+
+.instructions-panel h3 {
+    margin: 0 0 25px 0;
+    font-size: 1.5rem;
+    color: #2c3e50;
+    font-weight: 700;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f2f5;
+}
+
+.instructions-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 30px 0;
+}
+
+.instructions-list li {
+    padding: 12px 0;
+    color: #5d6d7e;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-bottom: 1px solid #f0f2f5;
+    display: flex;
+    align-items: flex-start;
+}
+
+.instructions-list li:last-child {
+    border-bottom: none;
+}
+
+.instructions-list li::before {
+    content: "•";
+    color: #667eea;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-right: 10px;
+    line-height: 1;
+}
+
+.time-info {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 25px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.info-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.95rem;
+}
+
+.info-value {
+    font-weight: 700;
+    color: #2c3e50;
+    font-size: 1rem;
+}
+
+/* Action Bar */
+.action-bar {
+    background: white;
+    padding: 20px 30px;
+    box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.08);
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+}
+
+.action-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #6c757d;
+}
+
+.status-dot.in-progress {
+    background: #4facfe;
+    animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.status-text {
+    font-weight: 600;
+    color: #495057;
+    font-size: 1rem;
+}
+
+.action-right {
+    display: flex;
+    gap: 20px;
+}
+
+.cancel-btn {
+    background: #e9ecef;
+    color: #495057;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 1rem;
+}
+
+.cancel-btn:hover:not(:disabled) {
+    background: #dee2e6;
+    transform: translateY(-2px);
+}
+
+.cancel-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.submit-exam-btn {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    border: none;
+    padding: 14px 40px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 1rem;
+    min-width: 180px;
+}
+
+.submit-exam-btn:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+}
+
+.submit-exam-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Loading and Error States */
+.loading-section,
+.error-section,
+.time-up-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    padding: 20px;
+}
+
+.loading-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 25px;
+}
+
+.loading-section p {
+    color: #7f8c8d;
+    font-size: 1.1rem;
+}
+
+.error-icon,
+.time-up-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.error-icon {
+    color: #e74c3c;
+}
+
+.time-up-icon {
+    color: #f39c12;
+}
+
+.error-section h3,
+.time-up-section h2 {
+    color: #2c3e50;
+    margin: 0 0 15px 0;
+    font-size: 1.8rem;
+}
+
+.error-section p,
+.time-up-section p {
+    color: #7f8c8d;
+    max-width: 400px;
+    margin: 0 auto 25px;
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+.back-button,
+.back-to-exams-btn {
+    padding: 12px 30px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    font-size: 1rem;
+}
+
+.back-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.back-to-exams-btn {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+}
+
+.back-button:hover,
+.back-to-exams-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .exam-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .instructions-panel {
+        position: static;
+    }
+}
+
+@media (max-width: 768px) {
+    .exam-header-bar {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .header-left {
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+    }
+
+    .back-btn {
+        align-self: flex-start;
+    }
+
+    .exam-title-info {
+        width: 100%;
+    }
+
+    .header-right {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .exam-content {
+        padding: 20px;
+    }
+
+    .question-section,
+    .instructions-panel {
+        padding: 20px;
+    }
+
+    .action-bar {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .action-left,
+    .action-right {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .action-right {
+        flex-direction: column;
+    }
+
+    .cancel-btn,
+    .submit-exam-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .exam-header-bar {
+        padding: 15px;
+    }
+
+    .exam-content {
+        padding: 15px;
+    }
+
+    .question-section,
+    .instructions-panel {
+        padding: 15px;
+    }
+
+    .exam-title-info h1 {
+        font-size: 1.5rem;
+    }
+
+    .time-value {
+        font-size: 1.5rem;
+    }
+
+    .marks-value {
+        font-size: 1.5rem;
+    }
+
+    .section-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .answer-textarea {
+        padding: 15px;
+        font-size: 1rem;
+    }
+}

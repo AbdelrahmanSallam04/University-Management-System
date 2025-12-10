@@ -37,7 +37,7 @@ const StudentDashboard = () => {
   const dashboardCards = [
     { id: 1, name: "Courses", icon: "📚", path: "/EnrolledCourses", color: "#f5576c" },
     { id: 2, name: "Courses Catalog", icon: "📊", path: "/course-catalog", color: "#667eea" },
-    { id: 3, name: "Results", icon: "📝", path: "/grades", color: "#4facfe" },
+    { id: 3, name: "Exams", icon: "📝", path: "/exams", color: "#4facfe" },
     { id: 4, name: "Profile", icon: "👤", path: "/profile", color: "#43e97b" },
     { id: 5, name: "Schedule", icon: "📅", path: "/schedule", color: "#fa709a" },
     { id: 6, name: "Notice", icon: "📢", path: "/notice", color: "#a8edea" },

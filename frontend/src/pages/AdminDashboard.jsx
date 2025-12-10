@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AdminSidebar from '../components/AdminSidebar';
 import UserManagement from './UserManagement';
 import CreateAccount from './CreateAccount';
-import RoomCalendar from './RoomCalendar'; // ADD THIS IMPORT
+import RoomCalendar from './RoomCalendar';
 import EventsManagement from './EventsManagement';
 import AnnouncementsManagement from './AnnouncementsManagement';
 import '../styles/AdminDashboard.css';
@@ -13,19 +13,19 @@ const AdminDashboard = () => {
   const renderComponent = () => {
     switch (activeComponent) {
       case 'dashboard':
-        return <AdminOverview />;
+        return <AdminOverview setActiveComponent={setActiveComponent} />;
       case 'user-management':
         return <UserManagement />;
       case 'create-account':
         return <CreateAccount />;
-      case 'room-availability': // ADD THIS CASE
+      case 'room-availability':
         return <RoomCalendar />;
       case 'events':
         return <EventsManagement />;
       case 'announcements':
         return <AnnouncementsManagement />;
       default:
-        return <AdminOverview />;
+        return <AdminOverview setActiveComponent={setActiveComponent} />;
     }
   };
 
@@ -39,17 +39,73 @@ const AdminDashboard = () => {
   );
 };
 
-// Admin Overview Component - Enhanced with Room Availability stats
-const AdminOverview = () => {
+// Admin Overview Component - Updated with proper CSS classes
+const AdminOverview = ({ setActiveComponent }) => {
   const stats = [
-    { label: 'Total Users', value: '1,234', icon: '👥', color: '#3498db' },
-    { label: 'Active Students', value: '890', icon: '🎓', color: '#2ecc71' },
-    { label: 'Faculty Members', value: '156', icon: '👨‍🏫', color: '#9b59b6' },
-    { label: 'Staff Members', value: '188', icon: '👔', color: '#f39c12' },
-    { label: 'Available Rooms', value: '42', icon: '🏢', color: '#27ae60' }, // ADDED ROOM STAT
-    { label: 'Active Events', value: '15', icon: '📅', color: '#e74c3c' },
-    { label: 'Announcements', value: '8', icon: '📢', color: '#1abc9c' },
-    { label: 'System Status', value: 'Online', icon: '✅', color: '#16a085' }
+    {
+      label: 'Total Users',
+      value: '1,234',
+      icon: '👥',
+      color: '#667eea',
+      trend: '+5%',
+      description: 'Active system users'
+    },
+    {
+      label: 'Active Students',
+      value: '890',
+      icon: '🎓',
+      color: '#2ecc71',
+      trend: '+12%',
+      description: 'Currently enrolled students'
+    },
+    {
+      label: 'Faculty Members',
+      value: '156',
+      icon: '👨‍🏫',
+      color: '#9b59b6',
+      trend: '+3%',
+      description: 'Teaching staff'
+    },
+    {
+      label: 'Staff Members',
+      value: '188',
+      icon: '👔',
+      color: '#f39c12',
+      trend: '+2%',
+      description: 'Administrative staff'
+    },
+    {
+      label: 'Available Rooms',
+      value: '42',
+      icon: '🏢',
+      color: '#27ae60',
+      trend: '+8%',
+      description: 'Classrooms available'
+    },
+    {
+      label: 'Active Events',
+      value: '15',
+      icon: '📅',
+      color: '#e74c3c',
+      trend: '+25%',
+      description: 'Scheduled events'
+    },
+    {
+      label: 'Announcements',
+      value: '8',
+      icon: '📢',
+      color: '#1abc9c',
+      trend: '0%',
+      description: 'Recent announcements'
+    },
+    {
+      label: 'System Status',
+      value: 'Online',
+      icon: '✅',
+      color: '#16a085',
+      trend: '100%',
+      description: 'System operational'
+    }
   ];
 
   const quickActions = [
@@ -79,35 +135,64 @@ const AdminOverview = () => {
     }
   ];
 
-  const [activeAction, setActiveAction] = useState(null);
-
   const handleActionClick = (component) => {
-    setActiveAction(component);
-    // You might want to navigate to the component here
-    console.log('Quick action clicked:', component);
+    setActiveComponent(component);
   };
 
   return (
     <div className="admin-overview">
+      {/* Header */}
       <div className="admin-header">
-        <h1>Admin Dashboard</h1>
-        <p>Welcome to University Management System Admin Panel</p>
+        <div className="header-left">
+          <h1>Welcome back, Admin 👋</h1>
+          <p className="header-subtitle">Here's what's happening with your university today</p>
+        </div>
+        <div className="header-right">
+          <div className="date-display">
+            <span className="date">{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</span>
+            <span className="time">{new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+          </div>
+        </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="stats-grid">
-        {stats.map((stat, index) => (
-          <div key={index} className="stat-card" style={{ borderLeftColor: stat.color }}>
-            <div className="stat-icon" style={{ color: stat.color }}>{stat.icon}</div>
-            <h3>{stat.label}</h3>
-            <div className="stat-number">{stat.value}</div>
-          </div>
-        ))}
+      {/* Stats Section */}
+      <div className="stats-section">
+        <div className="section-header">
+          <h2>Overview Statistics</h2>
+          <span className="section-subtitle">Real-time system metrics</span>
+        </div>
+        <div className="stats-grid">
+          {stats.map((stat, index) => (
+            <div
+              key={index}
+              className="stat-card"
+              style={{ borderLeftColor: stat.color }}
+            >
+              <div className="stat-icon-wrapper" style={{ background: `${stat.color}15` }}>
+                <span className="stat-icon">{stat.icon}</span>
+              </div>
+              <h3>{stat.label}</h3>
+              <div className="stat-value">
+                <div className="stat-number">{stat.value}</div>
+                <span className="stat-trend" style={{
+                  background: stat.trend.startsWith('+') ? 'rgba(46, 204, 113, 0.1)' : 'rgba(231, 76, 60, 0.1)',
+                  color: stat.trend.startsWith('+') ? '#27ae60' : '#e74c3c'
+                }}>
+                  {stat.trend}
+                </span>
+              </div>
+              <div className="stat-label">{stat.description}</div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Quick Actions Section */}
       <div className="quick-actions-section">
-        <h2>Quick Actions</h2>
+        <div className="section-header">
+          <h2>Quick Actions</h2>
+          <span className="section-subtitle">Frequently used admin tasks</span>
+        </div>
         <div className="quick-actions-grid">
           {quickActions.map((action, index) => (
             <div
@@ -128,12 +213,16 @@ const AdminOverview = () => {
 
       {/* Recent Activity */}
       <div className="recent-activity">
-        <h2>Recent Activity</h2>
+        <div className="section-header">
+          <h2>Recent Activity</h2>
+          <span className="section-subtitle">Latest system updates</span>
+        </div>
         <div className="activity-list">
           <div className="activity-item">
             <div className="activity-icon">👤</div>
             <div className="activity-details">
               <p><strong>New faculty member added</strong></p>
+              <p className="activity-description">Dr. Sarah Johnson joined Computer Science department</p>
               <span className="activity-time">10 minutes ago</span>
             </div>
           </div>
@@ -141,6 +230,7 @@ const AdminOverview = () => {
             <div className="activity-icon">🏢</div>
             <div className="activity-details">
               <p><strong>Room 201 booked for workshop</strong></p>
+              <p className="activity-description">Machine Learning workshop scheduled for tomorrow</p>
               <span className="activity-time">1 hour ago</span>
             </div>
           </div>
@@ -148,6 +238,7 @@ const AdminOverview = () => {
             <div className="activity-icon">📢</div>
             <div className="activity-details">
               <p><strong>New campus announcement published</strong></p>
+              <p className="activity-description">Holiday schedule for upcoming semester break</p>
               <span className="activity-time">2 hours ago</span>
             </div>
           </div>
@@ -155,6 +246,7 @@ const AdminOverview = () => {
             <div className="activity-icon">✅</div>
             <div className="activity-details">
               <p><strong>System maintenance completed</strong></p>
+              <p className="activity-description">Database optimization and security updates applied</p>
               <span className="activity-time">4 hours ago</span>
             </div>
           </div>

@@ -43,29 +43,6 @@ public class RegistrationController {
         }
     }
 
-    @PostMapping("/drop")
-    public ResponseEntity<RegistrationResponseDTO> dropCourse(
-            @RequestBody RegistrationRequestDTO request,
-            HttpSession session) {
-
-        Integer studentId = (Integer) session.getAttribute("userID");
-
-        if (studentId == null) {
-            RegistrationResponseDTO errorResponse = new RegistrationResponseDTO();
-            errorResponse.setSuccess(false);
-            errorResponse.setMessage("Please login first");
-            return ResponseEntity.status(401).body(errorResponse);
-        }
-
-        RegistrationResponseDTO response = registrationService.dropCourse(studentId, request);
-
-        if (response.isSuccess()) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
-
     @GetMapping("/status")
     public ResponseEntity<?> getRegistrationStatus(HttpSession session) {
         Integer studentId = (Integer) session.getAttribute("userID");

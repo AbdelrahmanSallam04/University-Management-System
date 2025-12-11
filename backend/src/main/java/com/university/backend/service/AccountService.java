@@ -28,6 +28,8 @@ public class AccountService {
 
     @Autowired
     private ProfessorRepository professorRepository;
+    @Autowired
+    private DepartmentRepository departmentRepository;
 
 //    @Autowired
 //    private AdminRepository adminRepository;
@@ -37,7 +39,7 @@ public class AccountService {
 
     @Transactional // Important: Ensures Account and User are created together or rolled back
     public Map<String, Object> createUserAccount(String firstName, String lastName, String email,
-                                                 String role, String password, String phone, String department) {
+                                                 String role, String password, String phone, String departmentName) {
         Map<String, Object> response = new HashMap<>();
 
         try {
@@ -56,6 +58,14 @@ public class AccountService {
                 return response;
             }
 
+            Department department = departmentRepository.findByDepartmentName(departmentName);
+            if (department == null)
+            {
+                response.put("success", false);
+                response.put("message", "Department does not exist" + departmentName);
+                return response;
+            }
+
             AccountType accountType = accountTypeRepository.findById(accountTypeId)
                     .orElseThrow(() -> new RuntimeException("Account type not found"));
 
@@ -64,7 +74,7 @@ public class AccountService {
             account.setEmail(email);
             account.setPassword(password); // Ensure this is hashed in production!
             account.setAccountType(accountType);
-            account.setDepartment(department != null ? department : "General"); // String dept on Account
+            account.setDepartment(department);
             account.setCreatedAt(LocalDateTime.now());
             account.setIsActive(true);
 
@@ -76,7 +86,7 @@ public class AccountService {
             switch (role.toLowerCase()) {
                 case "student":
                     Student student = new Student();
-                    // Set student specific fields here if needed
+                    student.setDepartment(department);
                     newUser = student;
                     break;
 
@@ -133,7 +143,7 @@ public class AccountService {
     @Transactional
     public Map<String, Object> updateUserAccount(Integer accountId, String firstName, String lastName,
                                                  String email, String role, String password,
-                                                 String phone, String department) {
+                                                 String phone, String departmentName) {
         Map<String, Object> response = new HashMap<>();
 
         try {
@@ -155,12 +165,20 @@ public class AccountService {
                 response.put("message", "User profile not found for this account");
                 return response;
             }
+
+            Department department = departmentRepository.findByDepartmentName(departmentName);
+            if (department == null)
+            {
+                response.put("success", false);
+                response.put("message", "Department does not exist" + departmentName);
+                return response;
+            }
             User user = userOpt.get();
 
             // 3. Update Account Details (Auth info)
             if (email != null && !email.isEmpty()) account.setEmail(email);
             if (password != null && !password.isEmpty()) account.setPassword(password);
-            if (department != null) account.setDepartment(department);
+            account.setDepartment(department);
 
             // Update Role (AccountType) - Careful, this doesn't change the User Subclass (Table)
             // Changing a Student to a Professor requires deleting the Student entity and creating a Professor entity.

@@ -16,10 +16,14 @@ public class Department {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer departmentId;
 
+    @Column(name = "department_name")
+    private String departmentName;
+
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "department_head_id")
     private Professor departmentHead;
-//prof
+
     @OneToMany(mappedBy = "department")
     @JsonIgnore
     private List<Course> courses;

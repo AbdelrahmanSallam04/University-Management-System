@@ -35,7 +35,8 @@ public class Account {
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
-    @Column(name = "department", nullable = false)
-    private String department;
+    @ManyToOne
+    @JoinColumn(name = "department_id", nullable = false)
+    private Department department;
 
 }

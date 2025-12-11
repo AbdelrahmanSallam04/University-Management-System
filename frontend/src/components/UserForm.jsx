@@ -30,34 +30,16 @@ const UserForm = ({ onSubmit, initialData = {} }) => {
 
         // Handle both arrays of objects and arrays of strings
         let processedDepartments;
-        if (Array.isArray(data) && data.length > 0) {
-          if (typeof data[0] === 'object' && data[0] !== null) {
-            // Extract department names from objects
-            processedDepartments = data.map(dept =>
-                dept.departmentName || dept.department_name || JSON.stringify(dept)
-            );
-          } else {
-            // Already strings
-            processedDepartments = data;
-          }
-        } else {
-          processedDepartments = [];
-        }
+        processedDepartments = data.map(dept => {
+          if (typeof dept === 'object') return dept.departmentName;
+          return dept;
+        });
 
         setDepartments(processedDepartments);
       } catch (err) {
         console.error('Error fetching departments:', err);
         setError(err.message);
 
-        // Fallback to your hardcoded list if API fails
-        setDepartments([
-          'Computer',
-          'Mathematics',
-          'Physics',
-          'Chemistry',
-          'Humanities',
-          'Mechanics'
-        ]);
       } finally {
         setLoadingDepartments(false);
       }
@@ -82,9 +64,10 @@ const UserForm = ({ onSubmit, initialData = {} }) => {
   const getRoleIcon = (role) => {
     const icons = {
       student: '🎓',
-      faculty: '👨‍🏫',
-      staff: '💼',
-      admin: '⚙️'
+      assistant: '👨‍🏫',
+      professor: '💼',
+      admin: '⚙️',
+      parent: '👤'
     };
     return icons[role] || '👤';
   };
@@ -181,9 +164,10 @@ const UserForm = ({ onSubmit, initialData = {} }) => {
                     className="role-select"
                 >
                   <option value="student">🎓 Student</option>
-                  <option value="faculty">👨‍🏫 Faculty</option>
-                  <option value="staff">💼 Staff</option>
+                  <option value="assistant">👨‍🏫 Assistant</option>
+                  <option value="professor">💼 Professor</option>
                   <option value="admin">⚙️ Admin</option>
+                  <option value="parent">👤️ Parent</option>
                 </select>
               </div>
             </div>

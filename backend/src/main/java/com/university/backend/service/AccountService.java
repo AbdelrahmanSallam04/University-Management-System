@@ -83,33 +83,36 @@ public class AccountService {
             // 4. Create the specific USER subclass based on role
             User newUser;
 
-            switch (role.toLowerCase()) {
-                case "student":
-                    Student student = new Student();
-                    student.setDepartment(department);
-                    newUser = student;
-                    break;
-
-                case "professor": // Renamed from staff as requested
-                case "staff":
-                    Professor professor = new Professor();
-                    professor.setSalary(0.0); // Mandatory field in StaffMember, setting default
-                    // Note: Professor also has a 'Department' entity field.
-                    // You need to fetch the Department entity and set it here eventually.
-                    newUser = professor;
-                    break;
+            switch (accountType.getName().toLowerCase()) {
 
                 case "admin":
                     Admin admin = new Admin();
                     newUser = admin;
                     break;
 
-                case "assistant": // Assuming this is TA
-                case "ta":
-                    TA ta = new TA();
-                    ta.setSalary(0.0);
-                    newUser = ta;
+                case "professor":
+                    Professor professor = new Professor();
+                    professor.setSalary(0.0); // Mandatory field in StaffMember, setting default
+                    professor.setDepartment(department);
+                    newUser = professor;
                     break;
+
+                case "student":
+                    Student student = new Student();
+                    student.setDepartment(department);
+                    newUser = student;
+                    break;
+
+                case "parent":
+                    Parent parent = new Parent();
+                    newUser = parent;
+                    break;
+
+                case "assistant":
+                TA ta = new TA();
+                ta.setSalary(0.0);
+                newUser = ta;
+                break;
 
                 default:
                     throw new RuntimeException("Logic not implemented for role: " + role);
@@ -250,15 +253,6 @@ public class AccountService {
     }
 
     private Integer getAccountTypeIdByRole(String role) {
-        if (role == null) return null;
-        switch (role.toLowerCase()) {
-            case "student": return 1;
-            case "professor": return 2; // Fixed mapping
-            case "staff": return 2;     // Legacy support
-            case "admin": return 3;
-            case "assistant": return 4;
-            case "parent": return 5;
-            default: return null;
-        }
+        return accountTypeRepository.findIdByName(role);
     }
 }

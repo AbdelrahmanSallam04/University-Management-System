@@ -23,4 +23,5 @@ public class DepartmentController {
         List<Department> departments = departmentService.getAllDepartments();
         return ResponseEntity.ok(departments);
     }
+
 }

@@ -85,7 +85,7 @@ const UserManagement = () => {
       lastName: user.lastName,
       email: user.email,
       role: user.accountType?.name || user.role,
-      department: user.department,
+      department: user.department.departmentName,
       phone: user.phone || ''
     });
     setShowForm(true);
@@ -165,9 +165,10 @@ const UserManagement = () => {
   const getRoleColor = (role) => {
     const colors = {
       student: '#3498db',
-      faculty: '#9b59b6',
-      staff: '#f39c12',
-      admin: '#e74c3c'
+      assistant: '#9b59b6',
+      professor: '#f39c12',
+      admin: '#e74c3c',
+      parent: '#2ecc71'
     };
     return colors[role] || '#3498db';
   };
@@ -176,9 +177,10 @@ const UserManagement = () => {
   const getRoleGradient = (role) => {
     const gradients = {
       student: 'linear-gradient(135deg, #3498db, #2980b9)',
-      faculty: 'linear-gradient(135deg, #9b59b6, #8e44ad)',
-      staff: 'linear-gradient(135deg, #f39c12, #e67e22)',
-      admin: 'linear-gradient(135deg, #e74c3c, #c0392b)'
+      assistant: 'linear-gradient(135deg, #9b59b6, #8e44ad)',
+      professor: 'linear-gradient(135deg, #f39c12, #e67e22)',
+      admin: 'linear-gradient(135deg, #e74c3c, #c0392b)',
+      parent: 'linear-gradient(135deg, #2ecc71, #27ae60)'
     };
     return gradients[role] || 'linear-gradient(135deg, #3498db, #2980b9)';
   };
@@ -187,9 +189,10 @@ const UserManagement = () => {
   const getRoleIcon = (role) => {
     const icons = {
       student: '🎓',
-      faculty: '👨‍🏫',
-      staff: '💼',
-      admin: '⚙️'
+      assistant: '👨‍🏫',
+      professor: '💼',
+      admin: '⚙️',
+      parent: '👤'
     };
     return icons[role] || '👤';
   };
@@ -343,8 +346,8 @@ const UserManagement = () => {
                       </span>
                     </td>
                     <td className="user-department">
-                      {getDepartmentIcon(user.department)} {/* ADDED ICON */}
-                      {user.department}
+                      {getDepartmentIcon(user.department.departmentName)} {/* ADDED ICON */}
+                      {user.department.departmentName}
                     </td>
                     <td className="user-phone">{user.phone || 'N/A'}</td>
                     <td>

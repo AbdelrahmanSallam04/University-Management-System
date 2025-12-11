@@ -19,7 +19,7 @@ public class Department {
     @ManyToOne
     @JoinColumn(name = "department_head_id")
     private Professor departmentHead;
-//prof
+    //prof
     @OneToMany(mappedBy = "department")
     @JsonIgnore
     private List<Course> courses;

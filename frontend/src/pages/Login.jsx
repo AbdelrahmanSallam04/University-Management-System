@@ -26,6 +26,9 @@ const Login = () => {
                 navigate('/admin-dashboard');
             } else if (result.role === "STUDENT") {
                 navigate('/student-dashboard');
+                   } else if (result.role === "PARENT") {
+                                navigate('/parent-dashboard');
+
             } else {
                 console.log('Role unidentified!!', result)
             }

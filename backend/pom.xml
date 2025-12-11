@@ -46,7 +46,16 @@
             <artifactId>mssql-jdbc</artifactId>
         </dependency>
 
-<!--            <dependency>-->
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.12.2</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <!--            <dependency>-->
 <!--                <groupId>org.springframework.boot</groupId>-->
 <!--                <artifactId>spring-boot-starter-security</artifactId>-->
 <!--            </dependency>-->
@@ -58,6 +67,8 @@
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
+
+
 
         <dependency>
             <groupId>org.projectlombok</groupId>

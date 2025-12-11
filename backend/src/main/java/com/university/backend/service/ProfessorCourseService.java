@@ -48,7 +48,7 @@ public class ProfessorCourseService {
 
         // 3. Set relationships and defaults
         // Note: Using 'setCourse_id' because your entity field is named 'course_id'
-        assignmentDetails.setCourse(course);
+       // assignmentDetails.setCourse(course);
         assignmentDetails.setCreatedAt(LocalDateTime.now());
 
         // 4. Save to Database

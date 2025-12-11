@@ -1,7 +1,8 @@
 package com.university.backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,4 +12,5 @@ import lombok.Setter;
 @Setter
 public class Professor extends StaffMember {
     // Additional professor-specific fields can be added here
+
 }

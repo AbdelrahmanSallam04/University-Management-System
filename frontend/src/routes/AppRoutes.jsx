@@ -9,6 +9,8 @@ import ProfessorDashboard from "../components/ProfessorDashboard";
 import AdminDashboard from "../pages/AdminDashboard";
 import RoomCalendar from "../pages/RoomCalendar"; // make sure this import exists
 
+import ParentDashboard from "../pages/ParentDashboard";
+
 const AppRoutes = () => {
   return (
       <Routes>
@@ -20,7 +22,7 @@ const AppRoutes = () => {
            <Route path="/course-catalog" element={<CoursesCatalog />} />
            <Route path="/EnrolledCourses" element={<EnrolledCoursesView/>} /> {/* ✅ Fixed */}
           <Route path="/RoomCalendar" element={<RoomCalendar/>} /> {/* ✅ Fixed */}
-
+          <Route path="/parent-dashboard" element={<ParentDashboard />} /> {/* Add this route */}
            {/* Default route - always go to login */}
            <Route path="/" element={<Navigate to="/login" />} />
 

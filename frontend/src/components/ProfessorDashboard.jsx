@@ -5,6 +5,7 @@ import '../styles/ProfessorDashboard.css';
 import { fetchAvailableRooms, bookRoom, fetchUserBookings } from '../services/roomService';
 import BookingFormModal from '../pages/BookingFormModal';
 import axios from 'axios';
+import ProfessorGradingPage from './ProfessorGradingPage'; // Import the grading component
 
 function ProfessorDashboard() {
     const navigate = useNavigate();
@@ -43,6 +44,10 @@ function ProfessorDashboard() {
         selectedSlot: null,
         myBookings: [] // To track session bookings
     });
+
+    // --- Grading State ---
+    const [gradingPage, setGradingPage] = useState(null); // 'assignment' or 'exam'
+    const [currentItemForGrading, setCurrentItemForGrading] = useState(null);
 
     // --- DATA FETCHING ---
     const fetchDashboardData = async () => {
@@ -198,6 +203,28 @@ function ProfessorDashboard() {
         }
     };
 
+    // --- GRADING HANDLERS ---
+    const handleGradeAssignment = (assignment) => {
+        setCurrentItemForGrading(assignment);
+        setGradingPage('assignment');
+    };
+
+    const handleGradeExam = (exam) => {
+        setCurrentItemForGrading(exam);
+        setGradingPage('exam');
+    };
+
+    const handleBackToMaterials = () => {
+        setGradingPage(null);
+        setCurrentItemForGrading(null);
+        // If we were in materials view, stay there
+        if (currentView === 'view_materials') {
+            // Do nothing - we'll stay in materials view
+        } else {
+            setCurrentView('view_materials');
+        }
+    };
+
     const handleLogout = async () => {
         console.log('Logging out...');
         try {
@@ -210,6 +237,11 @@ function ProfessorDashboard() {
 
     const handleSidebarNavigation = (viewId) => {
         setCurrentView(viewId);
+        // If navigating away, reset grading
+        if (viewId !== 'view_materials') {
+            setGradingPage(null);
+            setCurrentItemForGrading(null);
+        }
     };
 
     const handleDateChange = (e) => {
@@ -320,7 +352,7 @@ function ProfessorDashboard() {
                 <h3 style={{marginTop: '20px', color: '#333'}}>Assignments</h3>
                 <div className="list-container">
                     <table className="data-table">
-                        <thead><tr><th>Title</th><th>Marks</th><th>Due Date</th><th>Action</th></tr></thead>
+                        <thead><tr><th>Title</th><th>Marks</th><th>Due Date</th><th>Actions</th></tr></thead>
                         <tbody>
                         {courseMaterials.assignments && courseMaterials.assignments.length > 0 ? (
                             courseMaterials.assignments.map(a => (
@@ -329,13 +361,25 @@ function ProfessorDashboard() {
                                         <td>{a.title}</td>
                                         <td>{a.marks}</td>
                                         <td>{new Date(a.dueDate).toLocaleDateString()}</td>
-                                        <td>
+                                        <td style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                                             <button
                                                 className="submit-btn"
                                                 style={{padding: '5px 10px', width: 'auto', fontSize: '0.8rem'}}
                                                 onClick={() => toggleExpand('assignment', a.id)}
                                             >
                                                 {expandedItem?.id === a.id && expandedItem?.type === 'assignment' ? 'Hide Details' : 'View Details'}
+                                            </button>
+                                            <button
+                                                className="submit-btn"
+                                                style={{
+                                                    padding: '5px 10px',
+                                                    width: 'auto',
+                                                    fontSize: '0.8rem',
+                                                    backgroundColor: '#28a745'
+                                                }}
+                                                onClick={() => handleGradeAssignment(a)}
+                                            >
+                                                Grade Assignment
                                             </button>
                                         </td>
                                     </tr>
@@ -361,7 +405,7 @@ function ProfessorDashboard() {
                 <h3 style={{marginTop: '30px', color: '#333'}}>Exams</h3>
                 <div className="list-container">
                     <table className="data-table">
-                        <thead><tr><th>Title</th><th>Marks</th><th>Exam Date</th><th>Action</th></tr></thead>
+                        <thead><tr><th>Title</th><th>Marks</th><th>Exam Date</th><th>Actions</th></tr></thead>
                         <tbody>
                         {courseMaterials.exams && courseMaterials.exams.length > 0 ? (
                             courseMaterials.exams.map(e => (
@@ -370,13 +414,25 @@ function ProfessorDashboard() {
                                         <td>{e.title}</td>
                                         <td>{e.marks}</td>
                                         <td>{new Date(e.examDate).toLocaleDateString()}</td>
-                                        <td>
+                                        <td style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                                             <button
                                                 className="submit-btn"
                                                 style={{padding: '5px 10px', width: 'auto', fontSize: '0.8rem'}}
                                                 onClick={() => toggleExpand('exam', e.id)}
                                             >
                                                 {expandedItem?.id === e.id && expandedItem?.type === 'exam' ? 'Hide Details' : 'View Details'}
+                                            </button>
+                                            <button
+                                                className="submit-btn"
+                                                style={{
+                                                    padding: '5px 10px',
+                                                    width: 'auto',
+                                                    fontSize: '0.8rem',
+                                                    backgroundColor: '#28a745'
+                                                }}
+                                                onClick={() => handleGradeExam(e)}
+                                            >
+                                                Grade Exam
                                             </button>
                                         </td>
                                     </tr>
@@ -963,7 +1019,16 @@ function ProfessorDashboard() {
                 handleLogout={handleLogout}
             />
             <main className="main-content">
-                {renderMainContent()}
+                {gradingPage ? (
+                    <ProfessorGradingPage
+
+                        gradingType={gradingPage}
+                        currentItem={currentItemForGrading}
+                        onBackToMaterials={handleBackToMaterials}
+                    />
+                ) : (
+                    renderMainContent()
+                )}
             </main>
         </div>
     );

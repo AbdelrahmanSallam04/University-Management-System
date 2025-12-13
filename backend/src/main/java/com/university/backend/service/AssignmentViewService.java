@@ -62,7 +62,7 @@ public class AssignmentViewService {
 
         // Check if student is enrolled in the course
         boolean isEnrolled = studentCourseRepository.existsByStudentUserIdAndCourseCourseId(
-                studentId, assignment.getCourse_id().getCourseId());
+                studentId, assignment.getCourse().getCourseId());
         if (!isEnrolled) {
             throw new RuntimeException("Student is not enrolled in this course");
         }
@@ -75,7 +75,7 @@ public class AssignmentViewService {
         dto.setTotalMarks(assignment.getMarks());
 
         // Course info
-        Course course = assignment.getCourse_id();
+        Course course = assignment.getCourse();
         dto.setCourseId(course.getCourseId());
         dto.setCourseCode(course.getCode());
         dto.setCourseName(course.getName());
@@ -140,9 +140,9 @@ public class AssignmentViewService {
     private AssignmentDTO convertToDTO(Assignment assignment, Integer studentId) {
         AssignmentDTO dto = new AssignmentDTO();
         dto.setAssignmentId(assignment.getAssignmentId());
-        dto.setCourseId(assignment.getCourse_id().getCourseId());
-        dto.setCourseCode(assignment.getCourse_id().getCode());
-        dto.setCourseName(assignment.getCourse_id().getName());
+        dto.setCourseId(assignment.getCourse().getCourseId());
+        dto.setCourseCode(assignment.getCourse().getCode());
+        dto.setCourseName(assignment.getCourse().getName());
         dto.setTitle(assignment.getTitle());
         dto.setDescription(assignment.getDescription());
         dto.setDueDate(assignment.getDueDate());

@@ -31,7 +31,7 @@ public class AssignmentSubmissionService {
         // Check if student is enrolled in the course
         boolean isEnrolled = studentCourseRepository.existsByStudentUserIdAndCourseCourseId(
                 studentId,
-                assignment.getCourse_id().getCourseId());
+                assignment.getCourse().getCourseId());
         if (!isEnrolled) {
             throw new RuntimeException("Student is not enrolled in this course");
         }
@@ -72,7 +72,7 @@ public class AssignmentSubmissionService {
 
         // Check if student is enrolled in the course
         boolean isEnrolled = studentCourseRepository.existsByStudentUserIdAndCourseCourseId(
-                studentId, assignment.getCourse_id().getCourseId());
+                studentId, assignment.getCourse().getCourseId());
         if (!isEnrolled) {
             throw new RuntimeException("Student is not enrolled in this course");
         }

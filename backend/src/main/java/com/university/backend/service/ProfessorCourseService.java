@@ -85,17 +85,17 @@ public class ProfessorCourseService {
 
         // 1. Fetch
         List<Exam> exams = examRepository.findByCourseCourseId(cId);
-        List<Assignment> assignments = assignmentRepository.findByCourseCourseId(cId);
+        List<Assignment> assignments = assignmentRepository.findByCourseId(cId);
 
         // 2. Map Exams
         List<CourseMaterialsResponse.ExamResponse> examDTOs = exams.stream().map(exam -> {
             CourseMaterialsResponse.ExamResponse dto = new CourseMaterialsResponse.ExamResponse();
             // FIX: Using getExamId() (assuming Exam entity follows Assignment pattern)
-            dto.setId((long) exam.getExam_id());
+            dto.setId((long) exam.getExamId());
             dto.setTitle(exam.getTitle());
             dto.setDescription(exam.getDescription());
-            dto.setExamDate(exam.getExam_date());
-            dto.setMarks(exam.getMarks());
+            dto.setExamDate(exam.getStartTime());
+            dto.setMarks(exam.getTotalMarks());
             return dto;
         }).collect(Collectors.toList());
 

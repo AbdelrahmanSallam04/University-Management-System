@@ -6,8 +6,6 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter
-@Setter
 @Table(name = "assignment")
 @Getter // Add this
 @Setter

@@ -1,6 +1,8 @@
 package com.university.backend.repository;
 
 import com.university.backend.model.Assignment;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

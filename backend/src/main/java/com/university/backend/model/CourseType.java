@@ -19,9 +19,8 @@ public class CourseType {
     @Column(nullable = false)
     private String type;
 
-    // FIX: Add @JsonIgnore here to break the serialization loop.
-    // When a CourseType is returned, it will NOT include the list of Courses.
+    // ✅ FIXED: @JsonIgnore added to break the serialization loop
     @OneToMany(mappedBy = "courseType")
-
+    @JsonIgnore  // This prevents the courses list from being included in JSON
     private List<Course> courses;
 }

@@ -2,8 +2,14 @@ package com.university.backend.service;
 
 import com.university.backend.dto.RegistrationRequestDTO;
 import com.university.backend.dto.RegistrationResponseDTO;
-import com.university.backend.model.*;
-import com.university.backend.repository.*;
+import com.university.backend.model.Course;
+import com.university.backend.model.RegistrationConfig;
+import com.university.backend.model.Student;
+import com.university.backend.model.StudentCourses;
+import com.university.backend.repository.CourseRepository;
+import com.university.backend.repository.RegistrationConfigRepository;
+import com.university.backend.repository.StudentCourseRepository;
+import com.university.backend.repository.StudentRepository;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.Setter;

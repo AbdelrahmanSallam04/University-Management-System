@@ -22,6 +22,10 @@ public interface AssignmentSubmissionRepository extends JpaRepository<Assignment
     boolean existsByAssignmentIdAndStudentId(@Param("assignmentId") Integer assignmentId,
                                              @Param("studentId") Integer studentId);
 
+    @Query("SELECT a FROM AssignmentSubmission a " +
+            "LEFT JOIN FETCH a.student s " +
+            "WHERE a.assignment_id.assignmentId = :assignmentId")
+    List<AssignmentSubmission> findSubmissionsWithStudent(@Param("assignmentId") int assignmentId);
     // Find all submissions for a student
     @Query("SELECT s FROM AssignmentSubmission s WHERE s.student.userId = :studentId")
     List<AssignmentSubmission> findByStudentId(@Param("studentId") Integer studentId);

@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table(name = "assignment")
+@Getter // Add this
+@Setter
 public class Assignment {
 
     @Id

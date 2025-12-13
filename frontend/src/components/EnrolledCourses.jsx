@@ -1,15 +1,17 @@
 // src/components/EnrolledCourses.jsx
 
 import React, { useState, useEffect } from "react";
-import Sidebar from "./StudentSidebar"; // ✅ Import the dashboard sidebar
+import Sidebar from "./StudentSidebar";
 import "../styles/EnrolledCourses.css";
-import "../styles/StudentDashboard.css"; // optional: reuse dashboard styles
+import "../styles/StudentDashboard.css";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const EnrolledCoursesView = () => {
     const [courses, setCourses] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     const fetchEnrolledCourses = async () => {
         try {
@@ -61,7 +63,7 @@ const EnrolledCoursesView = () => {
                         <td>
                             <button
                                 className="view-details-btn"
-                                onClick={() => alert(`Viewing details for: ${course.name}`)}
+                                onClick={() => navigate(`/course/${course.courseId}/assignments`)}
                             >
                                 View Details
                             </button>

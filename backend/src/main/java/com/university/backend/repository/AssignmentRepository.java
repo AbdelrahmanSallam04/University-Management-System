@@ -4,9 +4,22 @@ import com.university.backend.model.Assignment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface AssignmentRepository extends JpaRepository<Assignment, Integer> {
-    List<Assignment> findByCourseCourseId(int courseId);
+
+    // Find assignments by course ID
+    @Query("SELECT a FROM Assignment a WHERE a.course_id.courseId = :courseId")
+    List<Assignment> findByCourseId(@Param("courseId") Integer courseId);
+
+    // Find assignments by multiple course IDs
+    @Query("SELECT a FROM Assignment a WHERE a.course_id.courseId IN :courseIds")
+    List<Assignment> findByCourseIdIn(@Param("courseIds") List<Integer> courseIds);
+
+    // Find assignments due after a specific date
+    @Query("SELECT a FROM Assignment a WHERE a.course_id.courseId = :courseId AND a.dueDate > :date")
+    List<Assignment> findByCourseIdAndDueAfter(@Param("courseId") Integer courseId,
+                                               @Param("date") LocalDateTime date);
 }

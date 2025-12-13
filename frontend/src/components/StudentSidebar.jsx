@@ -11,7 +11,7 @@ const Sidebar = () => {
     { path: "/student-dashboard", label: "Dashboard", icon: "📊" },
     { path: "/enrolledCourses", label: "Courses", icon: "📚" },
     { path: "/course-catalog", label: "Courses Catalog", icon: "📊" },
-    { path: "/grades", label: "Results", icon: "📝" },
+    { path: "/exams", label: "Exams", icon: "📝" },
     { path: "/profile", label: "Profile", icon: "👤" },
     { path: "/schedule", label: "Schedule", icon: "📅" },
     { path: "/notice", label: "Notice", icon: "📢" },

@@ -1,6 +1,6 @@
 package com.university.backend.model.ResourceAllocation.EquipmentAllocation;
 
-import com.university.backend.model.ResourceAllocation.EquipmentEAVw.EquipmentEntities;
+import com.university.backend.model.ResourceAllocation.EquipmentEAV.EquipmentEntities;
 import com.university.backend.model.StaffMember;
 import jakarta.persistence.*;
 

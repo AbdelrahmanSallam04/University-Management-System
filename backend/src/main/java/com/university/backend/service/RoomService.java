@@ -1,8 +1,6 @@
 package com.university.backend.service;
 
-import com.university.backend.dto.BookingRequestDTO;
-import com.university.backend.dto.BookingResponseDTO;
-import com.university.backend.dto.RoomAvailabilityDTO;
+import com.university.backend.dto.*;
 import com.university.backend.model.BookingStatus;
 import com.university.backend.model.Room;
 import com.university.backend.model.Booking;
@@ -171,5 +169,24 @@ public class RoomService {
         return bookings.stream()
                 .map(BookingResponseDTO::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    public List<RoomDTO> getAllRooms() {
+        return roomRepository.findAll().stream()
+                .filter(Room::isActive) // Only get active rooms
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private RoomDTO convertToDTO(Room room) {
+        return RoomDTO.builder()
+                .id(room.getRoom_id())
+                .roomCode(room.getRoom_code())
+                .roomType(room.getRoom_type() != null ? room.getRoom_type().getType() : "Unknown")
+                .capacity(room.getCapacity())
+                .building(room.getBuilding())
+                .floor(room.getFloor())
+                .isActive(room.isActive())
+                .build();
     }
 }

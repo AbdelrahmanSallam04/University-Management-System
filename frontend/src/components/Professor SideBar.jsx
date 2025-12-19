@@ -9,6 +9,7 @@ const Sidebar = ({ currentView, setCurrentView, handleLogout }) => {
         { id: 'room_availability', label: 'Room Availability', icon: '📅' },
         // New Menu Item
         { id: 'publish_content', label: 'Publish Content', icon: '📝' },
+        { id: 'Maintenance_Report', label: 'Maintenance Report', icon: '⚙️'}
     ];
 
     return (

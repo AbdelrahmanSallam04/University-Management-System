@@ -1,7 +1,14 @@
 package com.university.backend.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 // DTO to structure the output for the React frontend
+@Setter
+@Getter
 public class RoomAvailabilityDTO {
+    // Setters (optional, but good practice)
+    // Getters for JSON serialization
     private Integer id;
     private String roomCode;
     private Integer capacity;
@@ -21,21 +28,4 @@ public class RoomAvailabilityDTO {
         this.purpose = purpose;
     }
 
-    // Getters for JSON serialization
-    public Integer getId() { return id; }
-    public String getRoomCode() { return roomCode; }
-    public Integer getCapacity() { return capacity; }
-    public String getRoomType() { return roomType; }
-    public String getStatus() { return status; }
-    public String getTimeSlot() { return timeSlot; }
-    public String getPurpose() { return purpose; }
-
-    // Setters (optional, but good practice)
-    public void setId(Integer id) { this.id = id; }
-    public void setRoomCode(String roomCode) { this.roomCode = roomCode; }
-    public void setCapacity(Integer capacity) { this.capacity = capacity; }
-    public void setRoomType(String roomType) { this.roomType = roomType; }
-    public void setStatus(String status) { this.status = status; }
-    public void setTimeSlot(String timeSlot) { this.timeSlot = timeSlot; }
-    public void setPurpose(String purpose) { this.purpose = purpose; }
 }

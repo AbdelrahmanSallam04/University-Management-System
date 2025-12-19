@@ -5,6 +5,7 @@ import CreateAccount from './CreateAccount';
 import RoomAvailabilityComponent from '../components/RoomAvailabilityComponent';
 import EventsManagement from './EventsManagement';
 import AnnouncementsManagement from './AnnouncementsManagement';
+import ResourcesManagement from './ResourceManagement';
 import '../styles/AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -24,6 +25,8 @@ const AdminDashboard = () => {
                 return <EventsManagement />;
             case 'announcements':
                 return <AnnouncementsManagement />;
+                case 'resources-management':
+                    return <ResourcesManagement />;
             default:
                 return <AdminOverview setActiveComponent={setActiveComponent} />;
         }

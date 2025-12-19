@@ -1,4 +1,4 @@
-package com.university.backend.model.EquipmentEAV;
+package com.university.backend.model.ResourceAllocation.EquipmentEAV;
 
 import jakarta.persistence.*;
 

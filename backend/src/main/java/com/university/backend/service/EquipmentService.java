@@ -1,5 +1,6 @@
 package com.university.backend.service;
 
+import com.university.backend.dto.EquipmentAllocationDTO;
 import com.university.backend.model.ResourceAllocation.EquipmentEAV.EquipmentEntities;
 import com.university.backend.repository.EquipmentAllocationRepository.EquipmentDepartmentRepository;
 import com.university.backend.repository.EquipmentAllocationRepository.EquipmentFacultyRepository;
@@ -17,21 +18,21 @@ public class EquipmentService {
     private final EquipmentFacultyRepository equipmentFacultyRepository;
     private final EquipmentStudentRepository equipmentStudentRepository;
 
-    public List<EquipmentEntities> getDepartmentEquipments() {
+    public List<EquipmentAllocationDTO> getDepartmentEquipments() {
 
-        List<EquipmentEntities> departmentEquipments = equipmentDepartmentRepository.findAllDepartmentEquipments();
+        List<EquipmentAllocationDTO> departmentEquipments = equipmentDepartmentRepository.findAllDepartmentEquipmentsWithNames();
         return departmentEquipments;
     }
 
-    public List<EquipmentEntities> getFacultyEquipments() {
+    public List<EquipmentAllocationDTO> getFacultyEquipments() {
 
-        List<EquipmentEntities> facultyEquipments = equipmentFacultyRepository.findAllFacultyEquipments();
+        List<EquipmentAllocationDTO> facultyEquipments = equipmentFacultyRepository.findAllFacultyEquipmentsWithNames();
         return facultyEquipments;
     }
 
-    public List<EquipmentEntities> getStudentEquipments() {
+    public List<EquipmentAllocationDTO> getStudentEquipments() {
 
-        List<EquipmentEntities> studentEquipments = equipmentStudentRepository.findAllStudentEquipments();
+        List<EquipmentAllocationDTO> studentEquipments = equipmentStudentRepository.findAllStudentEquipmentsWithNames();
         return studentEquipments;
     }
 }

@@ -1,5 +1,6 @@
 package com.university.backend.controller;
 
+import com.university.backend.dto.EquipmentAllocationDTO;
 import com.university.backend.model.ResourceAllocation.EquipmentEAV.EquipmentEntities;
 import com.university.backend.service.EquipmentService;
 import lombok.RequiredArgsConstructor;
@@ -21,20 +22,20 @@ public class EquipmentController {
     private final EquipmentService equipmentService;
 
     @GetMapping("/filters/departments")
-    public ResponseEntity<List<EquipmentEntities>> getDepartmentEquipments() {
-        List<EquipmentEntities> departmentEquipments = equipmentService.getDepartmentEquipments();
+    public ResponseEntity<List<EquipmentAllocationDTO>> getDepartmentEquipments() {
+        List<EquipmentAllocationDTO> departmentEquipments = equipmentService.getDepartmentEquipments();
         return ResponseEntity.ok(departmentEquipments);
     }
 
     @GetMapping("/filters/faculty")
-    public ResponseEntity<List<EquipmentEntities>> getFacultyEquipments() {
-        List<EquipmentEntities> facultyEquipments = equipmentService.getFacultyEquipments();
+    public ResponseEntity<List<EquipmentAllocationDTO>> getFacultyEquipments() {
+        List<EquipmentAllocationDTO> facultyEquipments = equipmentService.getFacultyEquipments();
         return ResponseEntity.ok(facultyEquipments);
     }
 
     @GetMapping("/filters/students")
-    public ResponseEntity<List<EquipmentEntities>> getStudentEquipments() {
-        List<EquipmentEntities> studentEquipments = equipmentService.getStudentEquipments();
+    public ResponseEntity<List<EquipmentAllocationDTO>> getStudentEquipments() {
+        List<EquipmentAllocationDTO> studentEquipments = equipmentService.getStudentEquipments();
         return ResponseEntity.ok(studentEquipments);
     }
 }

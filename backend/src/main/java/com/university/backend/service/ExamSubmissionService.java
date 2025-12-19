@@ -59,6 +59,8 @@ public class ExamSubmissionService {
         submission.setStatus("IN_PROGRESS");
         submission.setAnswers("");
         submission.setTimeTakenMinutes(0);
+        submission.setObtainedMarks(0);
+        submission.setFeedback("");
 
         examSubmissionRepository.save(submission);
         return convertToDTO(submission);

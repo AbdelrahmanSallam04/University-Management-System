@@ -28,7 +28,7 @@ const ProfessorGradingPage = ({ gradingType, currentItem, onBackToMaterials }) =
                 endpoint = `/api/assignments/${itemId}/submissions`;
             } else if (gradingType === 'exam') {
                 itemId = currentItem.exam_id || currentItem.id;
-                endpoint = `/api/exams/${itemId}/results`;
+                endpoint = `/api/exams/${itemId}/submissions`;
             }
 
             console.log(`📡 Fetching from: ${endpoint}`);
@@ -50,18 +50,18 @@ const ProfessorGradingPage = ({ gradingType, currentItem, onBackToMaterials }) =
            };
        } else {
            return {
-               id: item.exam_result_id ?? item.examResultId,
-               examId: item.exam_id ?? item.examId,
-               studentId: item.student_id ?? item.studentId ?? 'Unknown',
-               studentName: item.student_name || `Student ${item.student_id ?? item.studentId ?? 'Unknown'}`,
-               score: item.score ?? 0,
-               feedback: item.feedback || '',
-               type: 'exam'
+               id: item.examSubmissionId,  // From ExamSubmissionDTO
+                            examId: item.examId,        // From ExamSubmissionDTO
+                            studentId: item.studentId,  // From ExamSubmissionDTO
+                            studentName: item.studentName || `Student ${item.studentId ?? 'Unknown'}`,
+                            submittedAt: item.submittedAt,  // From ExamSubmissionDTO
+                            answer: item.answers || '',     // Note: "answers" not "answer"
+                            score: item.obtainedMarks ?? 0, // Note: "obtainedMarks" not "score"
+                            feedback: item.feedback || '',
+                            type: 'exam'
            };
        }
    });
-
-
 
             setSubmissions(processedData);
             console.log('✅ Processed data:', processedData);
@@ -89,7 +89,7 @@ const ProfessorGradingPage = ({ gradingType, currentItem, onBackToMaterials }) =
                     feedback: feedbackValue
                 };
             } else if (gradingType === 'exam') {
-                endpoint = `/api/exams/results/${submissionId}`;
+                endpoint = `/api/exams/submissions/${submissionId}`;
                 payload = {
                     score: parseInt(gradeValue),
                     feedback: feedbackValue

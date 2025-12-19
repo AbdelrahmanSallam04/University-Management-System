@@ -19,4 +19,10 @@ public interface ExamSubmissionRepository extends JpaRepository<ExamSubmission, 
             "FROM ExamSubmission es WHERE es.exam.examId = :examId AND es.student.userId = :studentId")
     boolean existsByExamIdAndStudentId(@Param("examId") Integer examId,
                                        @Param("studentId") Integer studentId);
-}
+
+    @Query("SELECT es FROM ExamSubmission es " +
+            "JOIN FETCH es.exam e " +
+            "JOIN FETCH es.student s " +
+            "WHERE es.exam.examId = :examId")
+    List<ExamSubmission> findSubmissionsByExamId(@Param("examId") Integer examId);
+    }

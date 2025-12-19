@@ -2,6 +2,7 @@ package com.university.backend.controller;
 
 import com.university.backend.dto.AssignmentSubmissionDTO;
 import com.university.backend.dto.ExamResultDTO;
+import com.university.backend.dto.ExamSubmissionDTO;
 import com.university.backend.dto.GradeUpdateRequestDTO;
 import com.university.backend.service.GradingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class GradingController {
     }
 
     // ========== EXAM ENDPOINTS ==========
-
+/*
     @GetMapping("/exams/{examId}/results")
     public ResponseEntity<List<ExamResultDTO>> getExamResults(
             @PathVariable int examId) {
@@ -76,6 +77,20 @@ public class GradingController {
       //  System.out.println("✅ Successfully updated exam result ID: " + updated.getExam_result_id());
 
         return ResponseEntity.ok(updated);
+    }
+ */
+
+    // Get all submissions for an exam
+    @GetMapping("/exams/{examId}/submissions")
+    public List<ExamSubmissionDTO> getExamSubmissions(@PathVariable Integer examId) {
+        return gradingService.getExamSubmissions(examId);
+    }
+
+    // Update grade and feedback for a submission
+    @PutMapping("/exams/submissions/{submissionId}")
+    public ExamSubmissionDTO gradeExamSubmission(@PathVariable Integer submissionId,
+                                             @RequestBody GradeUpdateRequestDTO request) {
+        return gradingService.gradeExamSubmission(submissionId, request);
     }
 
     // ========== HEALTH CHECK ==========

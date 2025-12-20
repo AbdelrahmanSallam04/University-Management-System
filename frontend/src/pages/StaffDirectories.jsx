@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/StudentSidebar';
-import StaffCard from '../pages/StaffCard';
+import StaffCard from './StaffCard';
+import OfficeHoursModal from './OfficeHoursModal';
 import '../styles/StaffDirectories.css';
 
 const StaffDirectories = () => {
@@ -11,6 +12,7 @@ const StaffDirectories = () => {
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState('all');
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedStaff, setSelectedStaff] = useState(null);
 
     useEffect(() => {
         fetchStaff();
@@ -44,8 +46,20 @@ const StaffDirectories = () => {
         }
     };
 
+    const handleViewOfficeHours = (staffMember) => {
+        setSelectedStaff(staffMember);
+        // Prevent body scroll when modal is open
+        document.body.classList.add('modal-open');
+    };
+
+    const handleCloseModal = () => {
+        setSelectedStaff(null);
+        // Re-enable body scroll when modal closes
+        document.body.classList.remove('modal-open');
+    };
+
     const handleBackToDashboard = () => {
-        navigate('/student-dashboard'); // Adjust path as needed
+        navigate('/student-dashboard');
     };
 
     const filteredStaff = staff.filter(staffMember => {
@@ -149,6 +163,7 @@ const StaffDirectories = () => {
                                     <div key={staffMember.id} className="staff-grid-item">
                                         <StaffCard
                                             staffMember={staffMember}
+                                            onViewOfficeHours={handleViewOfficeHours}
                                         />
                                     </div>
                                 ))}
@@ -157,6 +172,14 @@ const StaffDirectories = () => {
                     </div>
                 )}
             </div>
+
+            {/* Office Hours Modal - Rendered at root level */}
+            {selectedStaff && (
+                <OfficeHoursModal
+                    staffMember={selectedStaff}
+                    onClose={handleCloseModal}
+                />
+            )}
         </div>
     );
 };

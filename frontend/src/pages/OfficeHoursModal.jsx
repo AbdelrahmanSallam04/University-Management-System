@@ -4,10 +4,20 @@ import '../styles/OfficeHoursModal.css';
 const OfficeHoursModal = ({ staffMember, onClose }) => {
     const [officeHours, setOfficeHours] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [bookingSlot, setBookingSlot] = useState(null);
+    const [purpose, setPurpose] = useState('');
     const [error, setError] = useState('');
+    const [bookingInProgress, setBookingInProgress] = useState(false);
 
     useEffect(() => {
         fetchOfficeHours();
+        // Prevent body scroll
+        document.body.classList.add('modal-open');
+
+        return () => {
+            // Cleanup
+            document.body.classList.remove('modal-open');
+        };
     }, [staffMember.id]);
 
     const fetchOfficeHours = async () => {
@@ -32,6 +42,48 @@ const OfficeHoursModal = ({ staffMember, onClose }) => {
             setError('Failed to load office hours. Please try again.');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleBookSlot = async (slotId) => {
+        if (!purpose.trim()) {
+            alert('Please enter a purpose for the meeting');
+            return;
+        }
+
+        try {
+            setBookingInProgress(true);
+            setError('');
+
+            const response = await fetch(
+                `http://localhost:8080/api/staff-directory/slots/${slotId}/book`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ purpose: purpose.trim() })
+                }
+            );
+
+            if (!response.ok) {
+                const errorData = await response.text();
+                throw new Error(errorData || 'Failed to book slot');
+            }
+
+            const result = await response.json();
+
+            alert('✅ Office hour slot booked successfully!');
+            setBookingSlot(null);
+            setPurpose('');
+            fetchOfficeHours(); // Refresh the list
+        } catch (err) {
+            console.error('Error booking slot:', err);
+            setError(err.message);
+            alert(`❌ ${err.message}`);
+        } finally {
+            setBookingInProgress(false);
         }
     };
 
@@ -157,6 +209,15 @@ const OfficeHoursModal = ({ staffMember, onClose }) => {
                                                                         </div>
                                                                     )}
                                                                 </div>
+                                                                {/* FIXED: Use bookable property from backend */}
+                                                                {slot.status === 'AVAILABLE' && slot.bookable && (
+                                                                    <button
+                                                                        className="book-btn"
+                                                                        onClick={() => setBookingSlot(slot)}
+                                                                    >
+                                                                        Book Slot
+                                                                    </button>
+                                                                )}
                                                             </div>
                                                         ))}
                                                     </div>
@@ -174,10 +235,69 @@ const OfficeHoursModal = ({ staffMember, onClose }) => {
                     )}
                 </div>
 
-                <div className="modal-footer">
-                    <div className="info-note">
-                        <p>ℹ️ Office hours display only. Booking functionality coming soon.</p>
+                {/* Booking Modal */}
+                {bookingSlot && (
+                    <div className="booking-modal-overlay">
+                        <div className="booking-modal">
+                            <div className="booking-header">
+                                <h3>📅 Confirm Booking</h3>
+                                <button
+                                    className="modal-close"
+                                    onClick={() => setBookingSlot(null)}
+                                    disabled={bookingInProgress}
+                                >
+                                    ×
+                                </button>
+                            </div>
+                            <div className="booking-details">
+                                <p><strong>Staff Member:</strong> {staffMember.firstName} {staffMember.lastName}</p>
+                                <p><strong>Date:</strong> {formatDate(bookingSlot.slotDateTime)}</p>
+                                <p><strong>Time:</strong> {formatTime(bookingSlot.slotDateTime)} - {formatTime(bookingSlot.endDateTime)}</p>
+                            </div>
+                            <div className="booking-form">
+                                <label htmlFor="purpose">Meeting Purpose:</label>
+                                <textarea
+                                    id="purpose"
+                                    value={purpose}
+                                    onChange={(e) => setPurpose(e.target.value)}
+                                    placeholder="Please describe what you'd like to discuss..."
+                                    rows={4}
+                                    maxLength={500}
+                                    disabled={bookingInProgress}
+                                />
+                                <div className="char-count">{purpose.length}/500 characters</div>
+                            </div>
+                            <div className="modal-footer">
+                                <button
+                                    className="btn-cancel"
+                                    onClick={() => {
+                                        setBookingSlot(null);
+                                        setPurpose('');
+                                    }}
+                                    disabled={bookingInProgress}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    className="btn-register"
+                                    onClick={() => handleBookSlot(bookingSlot.id)}
+                                    disabled={!purpose.trim() || bookingInProgress}
+                                >
+                                    {bookingInProgress ? (
+                                        <>
+                                            <span className="spinner"></span>
+                                            Booking...
+                                        </>
+                                    ) : (
+                                        'Confirm Booking'
+                                    )}
+                                </button>
+                            </div>
+                        </div>
                     </div>
+                )}
+
+                <div className="modal-footer">
                     <button className="btn-close-modal" onClick={onClose}>
                         Close
                     </button>

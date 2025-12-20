@@ -89,7 +89,7 @@ const StudentDashboard = () => {
         <div className="welcome-section">
           <div className="welcome-text">
             <h1>Welcome back, {dashboardData?.firstName || 'Student'}! 👋</h1>
-            <p>Here's your academic overview for today</p>
+             <p style={{ color: 'white' }}>Here's your academic overview for today</p>
           </div>
           <div className="date-display">
             {new Date().toLocaleDateString('en-US', {

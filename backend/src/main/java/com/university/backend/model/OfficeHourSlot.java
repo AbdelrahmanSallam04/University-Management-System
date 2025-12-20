@@ -3,6 +3,8 @@ package com.university.backend.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,14 +17,21 @@ public class OfficeHourSlot {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "office_hours_id", nullable = false)
-    private OfficeHours officeHours;
+    @JoinColumn(name = "staff_member_id", nullable = false)
+    private StaffMember staffMember;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private DayOfWeek dayOfWeek;
 
     @Column(nullable = false)
-    private LocalDateTime slotDateTime;
+    private LocalDateTime startTime;
 
     @Column(nullable = false)
-    private LocalDateTime endDateTime;
+    private LocalDateTime endTime;
+
+    @Column(nullable = false)
+    private Integer slotDuration = 30; // in minutes
 
     @ManyToOne
     @JoinColumn(name = "student_id")

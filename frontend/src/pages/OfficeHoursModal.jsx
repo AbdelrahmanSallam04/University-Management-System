@@ -127,6 +127,9 @@ const OfficeHoursModal = ({ staffMember, onClose }) => {
             }, {});
     };
 
+    // Get grouped slots
+    const groupedSlots = groupSlotsByDate(officeHours);
+
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -163,75 +166,55 @@ const OfficeHoursModal = ({ staffMember, onClose }) => {
                             </button>
                         </div>
                     ) : (
-                        officeHours.map((oh) => {
-                            // Group slots by date
-                            const allSlots = oh.slots || [];
-                            const slotsByDate = groupSlotsByDate(allSlots);
-
-                            return (
-                                <div key={oh.id} className="office-hours-group">
-                                    <div className="schedule-header">
-                                        <h3>
-                                            <span className="day">{oh.dayOfWeek}</span>
-                                            <span className="time-range">
-                                                {oh.startTime} - {oh.endTime}
-                                            </span>
-                                            <span className="slot-info">
-                                                ({oh.slotDuration} minute slots)
-                                            </span>
-                                        </h3>
-                                    </div>
-
-                                    {Object.keys(slotsByDate).length > 0 ? (
-                                        <div className="slots-section">
-                                            <h4>📅 Scheduled Time Slots:</h4>
-                                            {Object.entries(slotsByDate).map(([date, slots]) => (
-                                                <div key={date} className="date-group">
-                                                    <h5 className="date-header">{formatDate(date)}</h5>
-                                                    <div className="time-slots">
-                                                        {slots.map((slot) => (
-                                                            <div
-                                                                key={slot.id}
-                                                                className={`time-slot ${slot.status === 'BOOKED' ? 'booked' : 'available'}`}
-                                                            >
-                                                                <div className="slot-info-container">
-                                                                    <span className="slot-time">
-                                                                        {formatTime(slot.slotDateTime)} - {formatTime(slot.endDateTime)}
-                                                                    </span>
-                                                                    <span className={`slot-status ${slot.status === 'BOOKED' ? 'booked' : 'available'}`}>
-                                                                        {slot.status === 'BOOKED' ?
-                                                                            `Booked by ${slot.studentName || 'student'}` :
-                                                                            'Available'}
-                                                                    </span>
-                                                                    {slot.status === 'BOOKED' && slot.purpose && (
-                                                                        <div className="slot-purpose">
-                                                                            Purpose: {slot.purpose}
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                                {/* FIXED: Use bookable property from backend */}
-                                                                {slot.status === 'AVAILABLE' && slot.bookable && (
-                                                                    <button
-                                                                        className="book-btn"
-                                                                        onClick={() => setBookingSlot(slot)}
-                                                                    >
-                                                                        Book Slot
-                                                                    </button>
-                                                                )}
+                        <div className="slots-section">
+                            <h4>📅 Available Time Slots:</h4>
+                            {Object.keys(groupedSlots).length > 0 ? (
+                                Object.entries(groupedSlots).map(([date, slots]) => (
+                                    <div key={date} className="date-group">
+                                        <h5 className="date-header">{formatDate(date)}</h5>
+                                        <div className="time-slots">
+                                            {slots.map((slot) => (
+                                                <div
+                                                    key={slot.id}
+                                                    className={`time-slot ${slot.status === 'BOOKED' ? 'booked' : 'available'}`}
+                                                >
+                                                    <div className="slot-info-container">
+                                                        <div className="slot-time-container">
+                                                            <span className="slot-time">
+                                                                {formatTime(slot.slotDateTime)} - {formatTime(slot.endDateTime)}
+                                                            </span>
+                                                        </div>
+                                                        <span className={`slot-status ${slot.status === 'BOOKED' ? 'booked' : 'available'}`}>
+                                                            {slot.status === 'BOOKED' ?
+                                                                `Booked by ${slot.studentName || 'student'}` :
+                                                                'Available'}
+                                                        </span>
+                                                        {slot.status === 'BOOKED' && slot.purpose && (
+                                                            <div className="slot-purpose">
+                                                                Purpose: {slot.purpose}
                                                             </div>
-                                                        ))}
+                                                        )}
                                                     </div>
+                                                    {/* Check if slot is available and bookable */}
+                                                    {slot.status === 'AVAILABLE' && slot.bookable && (
+                                                        <button
+                                                            className="book-btn"
+                                                            onClick={() => setBookingSlot(slot)}
+                                                        >
+                                                            Book Slot
+                                                        </button>
+                                                    )}
                                                 </div>
                                             ))}
                                         </div>
-                                    ) : (
-                                        <div className="no-available-slots">
-                                            <p>No upcoming slots scheduled for this office hours schedule.</p>
-                                        </div>
-                                    )}
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="no-available-slots">
+                                    <p>No upcoming office hour slots available.</p>
                                 </div>
-                            );
-                        })
+                            )}
+                        </div>
                     )}
                 </div>
 

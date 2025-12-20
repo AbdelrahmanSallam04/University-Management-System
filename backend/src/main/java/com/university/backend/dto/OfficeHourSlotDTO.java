@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,7 +15,8 @@ public class OfficeHourSlotDTO {
     private String studentName;
     private String purpose;
     private String status;
-    private boolean isBookable;
+    private boolean bookable;
     private String staffName;
     private String staffType;
+    private List<IndividualSlotDTO> slots;
 }

@@ -24,5 +24,5 @@ public abstract class StaffMember extends User {
     // Add office hours relationship
     @OneToMany(mappedBy = "staffMember")
     @JsonIgnore
-    private List<OfficeHours> officeHours;
+    private List<OfficeHourSlot> officeHourSlots;
 }

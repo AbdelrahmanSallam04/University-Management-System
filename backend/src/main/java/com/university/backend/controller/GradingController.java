@@ -1,7 +1,6 @@
 package com.university.backend.controller;
 
 import com.university.backend.dto.AssignmentSubmissionDTO;
-import com.university.backend.dto.ExamResultDTO;
 import com.university.backend.dto.ExamSubmissionDTO;
 import com.university.backend.dto.GradeUpdateRequestDTO;
 import com.university.backend.service.GradingService;

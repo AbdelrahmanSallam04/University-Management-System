@@ -133,10 +133,13 @@ const ExamTaking = () => {
                     return 0;
                 }
 
-                // Show warning when 5 minutes left
-                if (prev <= 300 && !warningShown) {
+                // Show warning when 5 minutes left - FIXED
+                if (prev === 300 && !warningShown) { // Check for exact 300 seconds
                     setWarningShown(true);
-                    alert('Warning: 5 minutes remaining!');
+                    // Use setTimeout to avoid blocking the interval
+                    setTimeout(() => {
+                        alert('Warning: 5 minutes remaining!');
+                    }, 0);
                 }
 
                 return prev - 1;
@@ -149,7 +152,6 @@ const ExamTaking = () => {
             }
         }, 1000);
     };
-
     const handleAutoSubmit = async () => {
         if (submitting) return;
 

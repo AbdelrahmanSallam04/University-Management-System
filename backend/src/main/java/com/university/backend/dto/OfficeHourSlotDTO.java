@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class OfficeHourSlotDTO {
-    private Long id;
+    private Integer id;
     private LocalDateTime slotDateTime;
     private LocalDateTime endDateTime;
     private String studentName;

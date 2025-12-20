@@ -6,6 +6,7 @@ import { fetchAvailableRooms, bookRoom, fetchUserBookings } from '../services/ro
 import BookingFormModal from '../pages/BookingFormModal';
 import axios from 'axios';
 import ProfessorGradingPage from './ProfessorGradingPage'; // Import the grading component
+import OfficeHoursManager from './OfficeHoursManager'; // Adjust path as needed
 
 function ProfessorDashboard() {
     const navigate = useNavigate();
@@ -1186,6 +1187,8 @@ function ProfessorDashboard() {
 
             case 'publish_content':
                 return <PublishContentView />;
+            case 'office_hours':
+                return <OfficeHoursManager professorId={dashboardData.professorId} />;
 
             default:
                 return <div className="p-8 text-center text-red-500">Unknown view selected.</div>;

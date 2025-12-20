@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface OfficeHourSlotRepository extends JpaRepository<OfficeHourSlot, Long> {
+public interface OfficeHourSlotRepository extends JpaRepository<OfficeHourSlot, Integer> {
 
     // Find slots by staff member user ID
     @Query("SELECT os FROM OfficeHourSlot os WHERE os.staffMember.userId = :staffMemberId")
@@ -41,4 +41,17 @@ public interface OfficeHourSlotRepository extends JpaRepository<OfficeHourSlot, 
             @Param("dayOfWeek") String dayOfWeek,
             @Param("staffMemberId") Integer staffMemberId,
             @Param("now") LocalDateTime now);
+
+    @Query("SELECT COUNT(s) > 0 FROM OfficeHourSlot s " +
+            "WHERE s.staffMember.userId = :staffId " +
+            "AND s.startTime < :endTime " +
+            "AND s.endTime > :startTime " +
+            "AND s.status != com.university.backend.model.OfficeHourSlot.SlotStatus.CANCELLED")
+    boolean existsOverlappingSlot(
+            @Param("staffId") Integer staffId,
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime
+    );
+
+    //List<OfficeHourSlot> findByStaffMemberUserIdOrderByStartTimeAsc(Integer userId);
 }

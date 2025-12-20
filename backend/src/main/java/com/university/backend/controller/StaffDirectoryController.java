@@ -42,7 +42,7 @@ public class StaffDirectoryController {
 
     @PostMapping("/slots/{slotId}/book")
     public ResponseEntity<?> bookOfficeHourSlot(
-            @PathVariable Long slotId,
+            @PathVariable Integer slotId,
             @RequestBody BookSlotRequest request,
             HttpSession session) {
         try {

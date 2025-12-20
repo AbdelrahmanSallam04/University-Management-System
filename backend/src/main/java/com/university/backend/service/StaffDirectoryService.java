@@ -186,7 +186,7 @@ public class StaffDirectoryService {
     }
 
     // Booking method - returns OfficeHourSlotDTO
-    public OfficeHourSlotDTO bookOfficeHourSlot(Long slotId, String purpose) {
+    public OfficeHourSlotDTO bookOfficeHourSlot(Integer slotId, String purpose) {
         Student currentStudent = getCurrentStudent();
         if (currentStudent == null) {
             throw new RuntimeException("Student not authenticated. Please log in.");

@@ -12,6 +12,7 @@ import CourseAssignments from "../pages/CourseAssignments"
 import AssignmentSubmission from "../pages/AssignmentSubmission"
 import ExamView from '../pages/ExamView';
 import ExamTaking from '../pages/ExamTaking';
+import StaffDirectories from '../pages/StaffDirectories'
 
 import ParentDashboard from "../pages/ParentDashboard";
 
@@ -30,8 +31,13 @@ const AppRoutes = () => {
            <Route path="/assignment/:assignmentId" element={<AssignmentSubmission />} />
            <Route path="/exams" element={<ExamView />} />
            <Route path="/exam/:examId" element={<ExamTaking />} />
+           <Route path="/StaffDirectories" element={<StaffDirectories />} />
 
           <Route path="/parent-dashboard" element={<ParentDashboard />} /> {/* Add this route */}
+
+
+
+
            {/* Default route - always go to login */}
            <Route path="/" element={<Navigate to="/login" />} />
 

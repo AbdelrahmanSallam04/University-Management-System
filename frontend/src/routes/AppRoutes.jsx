@@ -15,6 +15,8 @@ import ExamTaking from '../pages/ExamTaking';
 import StaffDirectories from '../pages/StaffDirectories'
 
 import ParentDashboard from "../pages/ParentDashboard";
+import PublicAnnouncements from "../pages/AnnouncementsPage";
+import AnnouncementDetail from "../pages/AnnouncementDetail";
 
 const AppRoutes = () => {
   return (
@@ -34,6 +36,8 @@ const AppRoutes = () => {
            <Route path="/StaffDirectories" element={<StaffDirectories />} />
 
           <Route path="/parent-dashboard" element={<ParentDashboard />} /> {/* Add this route */}
+          <Route path="/public-announcements" element={<PublicAnnouncements />} />
+          <Route path="/announcements/:id" element={<AnnouncementDetail />} />
 
 
 

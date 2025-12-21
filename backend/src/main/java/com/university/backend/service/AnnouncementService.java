@@ -9,7 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,27 +22,21 @@ public class AnnouncementService {
     private final AnnouncementAttributeRepository attributeRepository;
     private final AnnouncementValueRepository valueRepository;
 
-    // 1. Define the list of attributes that MUST be present
-    // Adjust these strings to match exactly what your Frontend sends
-    private static final List<String> MANDATORY_KEYS = List.of("Title", "Date", "Content","Summary");
+    private static final List<String> MANDATORY_KEYS = List.of("Title", "Date", "Content", "Summary");
 
     @Transactional
     public void createAnnouncement(AnnouncementDTO request) {
-
-        // 2. Validation: Check if all mandatory keys exist in the request
         if (request.getAttributes() == null ||
                 !request.getAttributes().keySet().containsAll(MANDATORY_KEYS)) {
             throw new IllegalArgumentException("Missing mandatory attributes. Required: " + MANDATORY_KEYS);
         }
 
-        // 3. Create and Save the Parent Entity
         AnnouncementEntities entity = AnnouncementEntities.builder()
                 .announcementName(request.getName())
                 .build();
 
         AnnouncementEntities savedEntity = entityRepository.save(entity);
 
-        // 4. Loop through dynamic attributes and save them
         request.getAttributes().forEach((key, value) -> {
             if (value != null) {
                 saveAttribute(savedEntity, key, value);
@@ -48,13 +45,11 @@ public class AnnouncementService {
     }
 
     private void saveAttribute(AnnouncementEntities entity, String key, Object rawValue) {
-        // A. Check if the Attribute definition exists, if not, create it
         AnnouncementAttributes attribute = attributeRepository.findByName(key)
                 .orElseGet(() -> attributeRepository.save(
                         AnnouncementAttributes.builder().name(key).build()
                 ));
 
-        // B. Save the Value as a String
         AnnouncementValues valueEntry = AnnouncementValues.builder()
                 .announcement(entity)
                 .attribute(attribute)
@@ -62,5 +57,48 @@ public class AnnouncementService {
                 .build();
 
         valueRepository.save(valueEntry);
+    }
+
+    // --- NEW FUNCTIONS ---
+
+    /**
+     * Fetches all announcements and transforms them into DTOs
+     */
+    public List<AnnouncementDTO> getAllAnnouncements() {
+        return entityRepository.findAll().stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Fetches a single announcement by ID for the details page
+     */
+    public AnnouncementDTO getAnnouncementById(Integer id) {
+        AnnouncementEntities entity = entityRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Announcement not found with ID: " + id));
+        return mapToDTO(entity);
+    }
+
+    /**
+     * Helper to transform EAV Entity structure to a flat DTO
+     */
+    private AnnouncementDTO mapToDTO(AnnouncementEntities entity) {
+        AnnouncementDTO dto = new AnnouncementDTO();
+        dto.setName(entity.getAnnouncementName());
+
+        Map<String, Object> attributes = new HashMap<>();
+
+        // Ensure the ID is included in attributes so the frontend can use it for routing
+        attributes.put("id", entity.getId());
+
+        // Map each EAV value back to the attributes map
+        if (entity.getValues() != null) {
+            for (AnnouncementValues val : entity.getValues()) {
+                attributes.put(val.getAttribute().getName(), val.getStringValue());
+            }
+        }
+
+        dto.setAttributes(attributes);
+        return dto;
     }
 }

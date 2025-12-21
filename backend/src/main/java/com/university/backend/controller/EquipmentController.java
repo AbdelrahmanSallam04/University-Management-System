@@ -39,7 +39,7 @@ public class EquipmentController {
         return ResponseEntity.ok(studentEquipments);
     }
 
-    @GetMapping("/equipment/{equipmentId}")
+    @GetMapping("/{equipmentId}")
     public ResponseEntity<List<EquipmentDTO>> getEquipmentById(@PathVariable Integer equipmentId) {
         List<EquipmentDTO> equipmentValues = equipmentService.getEquipmentById(equipmentId);
         return ResponseEntity.ok(equipmentValues);

@@ -21,3 +21,20 @@ export const fetchEquipmentByFilter = async (filterType) => {
         throw error;
     }
 };
+
+export const fetchEquipmentDetails = async (equipmentId) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/equipments/${equipmentId}`);
+        return response.data.map(item => ({
+            equipmentId: item.equipmentId,
+            equipmentName: item.equipmentName,
+            equipmentAttributeId: item.equipmentAttributeId,
+            equipmentAttributeName: item.equipmentAttributeName,
+            equipmentValueId: item.equipmentValueId,
+            equipmentValueName: item.equipmentValueName,
+        }));
+    } catch (error) {
+        console.error(`Error fetching equipment ${equipmentId} details:`, error);
+        throw error;
+    }
+};

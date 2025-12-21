@@ -1,10 +1,12 @@
 package com.university.backend.service;
 
 import com.university.backend.dto.EquipmentAllocationDTO;
-import com.university.backend.model.ResourceAllocation.EquipmentEAV.EquipmentEntities;
-import com.university.backend.repository.EquipmentAllocationRepository.EquipmentDepartmentRepository;
-import com.university.backend.repository.EquipmentAllocationRepository.EquipmentFacultyRepository;
-import com.university.backend.repository.EquipmentAllocationRepository.EquipmentStudentRepository;
+import com.university.backend.dto.EquipmentDTO;
+import com.university.backend.model.ResourceAllocation.EquipmentEAV.EquipmentValues;
+import com.university.backend.repository.ResourceAllocationRepository.EquipmentAllocationRepository.EquipmentDepartmentRepository;
+import com.university.backend.repository.ResourceAllocationRepository.EquipmentAllocationRepository.EquipmentFacultyRepository;
+import com.university.backend.repository.ResourceAllocationRepository.EquipmentAllocationRepository.EquipmentStudentRepository;
+import com.university.backend.repository.ResourceAllocationRepository.EquipmentValueRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,7 @@ public class EquipmentService {
     private final EquipmentDepartmentRepository equipmentDepartmentRepository;
     private final EquipmentFacultyRepository equipmentFacultyRepository;
     private final EquipmentStudentRepository equipmentStudentRepository;
+    private final EquipmentValueRepository equipmentValueRepository;
 
     public List<EquipmentAllocationDTO> getDepartmentEquipments() {
 
@@ -34,5 +37,10 @@ public class EquipmentService {
 
         List<EquipmentAllocationDTO> studentEquipments = equipmentStudentRepository.findAllStudentEquipmentsWithNames();
         return studentEquipments;
+    }
+
+    public List<EquipmentDTO> getEquipmentById(Integer equipmentId) {
+        List<EquipmentDTO> equipmentValues = equipmentValueRepository.findByEquipmentId(equipmentId);
+        return equipmentValues;
     }
 }

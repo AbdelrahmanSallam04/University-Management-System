@@ -1,16 +1,16 @@
 package com.university.backend.controller;
 
 import com.university.backend.dto.EquipmentAllocationDTO;
+import com.university.backend.dto.EquipmentDTO;
 import com.university.backend.model.ResourceAllocation.EquipmentEAV.EquipmentEntities;
+import com.university.backend.model.ResourceAllocation.EquipmentEAV.EquipmentValues;
 import com.university.backend.service.EquipmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/equipments")
@@ -37,5 +37,11 @@ public class EquipmentController {
     public ResponseEntity<List<EquipmentAllocationDTO>> getStudentEquipments() {
         List<EquipmentAllocationDTO> studentEquipments = equipmentService.getStudentEquipments();
         return ResponseEntity.ok(studentEquipments);
+    }
+
+    @GetMapping("/equipment/{equipmentId}")
+    public ResponseEntity<List<EquipmentDTO>> getEquipmentById(@PathVariable Integer equipmentId) {
+        List<EquipmentDTO> equipmentValues = equipmentService.getEquipmentById(equipmentId);
+        return ResponseEntity.ok(equipmentValues);
     }
 }

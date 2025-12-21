@@ -2,6 +2,7 @@ package com.university.backend.service;
 
 import com.university.backend.model.*;
 import com.university.backend.repository.*;
+import com.university.backend.repository.DepartmentRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

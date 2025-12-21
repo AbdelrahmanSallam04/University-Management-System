@@ -1,5 +1,5 @@
 // EquipmentStaffAllocationRepository.java
-package com.university.backend.repository.EquipmentAllocationRepository;
+package com.university.backend.repository.ResourceAllocationRepository.EquipmentAllocationRepository;
 
 import com.university.backend.dto.EquipmentAllocationDTO;
 import com.university.backend.model.ResourceAllocation.EquipmentAllocation.EquipmentFacultyAllocation;

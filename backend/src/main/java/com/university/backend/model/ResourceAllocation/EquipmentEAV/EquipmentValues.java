@@ -18,4 +18,7 @@ public class EquipmentValues {
     @ManyToOne
     @JoinColumn(name = "equipment_attribute_id", nullable = false)
     private EquipmentAttributes attribute;
+
+    @Column(name = "value", columnDefinition = "TEXT")
+    private String value;
 }

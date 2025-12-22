@@ -14,6 +14,7 @@ import ExamView from '../pages/ExamView';
 import ExamTaking from '../pages/ExamTaking';
 
 import ParentDashboard from "../pages/ParentDashboard";
+import AddEquipment from "../pages/AddEquipment";
 
 const AppRoutes = () => {
   return (
@@ -30,6 +31,7 @@ const AppRoutes = () => {
            <Route path="/assignment/:assignmentId" element={<AssignmentSubmission />} />
            <Route path="/exams" element={<ExamView />} />
            <Route path="/exam/:examId" element={<ExamTaking />} />
+          <Route path="/admin/add-equipment" element={<AddEquipment />} />
 
           <Route path="/parent-dashboard" element={<ParentDashboard />} /> {/* Add this route */}
            {/* Default route - always go to login */}

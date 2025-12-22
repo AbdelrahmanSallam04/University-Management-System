@@ -2,9 +2,11 @@ package com.university.backend.controller;
 
 import com.university.backend.dto.AddEquipmentDTOs.CreateEquipmentRequestDTO;
 import com.university.backend.dto.AddEquipmentDTOs.CreateEquipmentResponseDTO;
+import com.university.backend.dto.AddEquipmentDTOs.EquipmentAttributeDTO;
 import com.university.backend.dto.EquipmentAllocationDTO;
 import com.university.backend.dto.EquipmentDTO;
 import com.university.backend.model.Department;
+import com.university.backend.model.ResourceAllocation.EquipmentEAV.EquipmentAttributes;
 import com.university.backend.model.ResourceAllocation.EquipmentEAV.EquipmentEntities;
 import com.university.backend.model.ResourceAllocation.EquipmentEAV.EquipmentValues;
 import com.university.backend.model.StaffMember;
@@ -16,6 +18,7 @@ import com.university.backend.service.EquipmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.university.backend.repository.ResourceAllocationRepository.EquipmentEAVRepository.EquipmentAttributeRepository;
 
 import java.util.List;
 import java.util.Map;
@@ -28,6 +31,7 @@ import java.util.Map;
 public class EquipmentController {
 
     private final EquipmentService equipmentService;
+    private final EquipmentAttributeRepository equipmentAttributeRepository;
 
     @GetMapping("/filters/departments")
     public ResponseEntity<List<EquipmentAllocationDTO>> getDepartmentEquipments() {
@@ -79,4 +83,23 @@ public class EquipmentController {
         List<Student> students = equipmentService.searchStudents(email, name);
         return ResponseEntity.ok(students);
     }
+
+//    @GetMapping("/attributes")
+//    public ResponseEntity<List<EquipmentAttributeDTO>> getAllAttributes() {
+//        try {
+//            List<EquipmentAttributes> attributes = equipmentAttributeRepository.findAll();
+//            List<EquipmentAttributeDTO> attributeDTOs = attributes.stream()
+//                    .map(attr -> {
+//                        EquipmentAttributeDTO dto = new EquipmentAttributeDTO();
+//                        dto.setAttributeId(attr.getAttributeId());
+//                        dto.setAttributeName(attr.getName()); // Assuming EquipmentAttributes has getName()
+//                        dto.setAttributeValue(""); // Empty value for dropdown
+//                        return dto;
+//                    })
+//                    .collect(Collectors.toList());
+//            return ResponseEntity.ok(attributeDTOs);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(500).body(Collections.emptyList());
+//        }
+//    }
 }

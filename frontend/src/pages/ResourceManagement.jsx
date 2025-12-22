@@ -2,13 +2,19 @@ import React, { useState, useEffect } from 'react';
 import EquipmentFilter from '../components/EquipmentFilter';
 import EquipmentList from '../components/EquipmentList';
 import '../styles/ResourceManagement.css';
-import {fetchEquipmentByFilter} from "../services/equipmentService";
+import { fetchEquipmentByFilter } from "../services/equipmentService";
+import { useNavigate } from 'react-router-dom';
 
 const ResourcesManagement = () => {
     const [selectedFilter, setSelectedFilter] = useState('department');
     const [equipmentData, setEquipmentData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    const handleAddEquipment = () => {
+        navigate('/admin/add-equipment', { state: { filterType: selectedFilter } });
+    };
 
     // Fetch equipment data when filter changes
     useEffect(() => {
@@ -38,6 +44,12 @@ const ResourcesManagement = () => {
         <div className="resources-management">
             <div className="page-header">
                 <h1>📦 Resources Management</h1>
+                <button
+                    className="add-equipment-btn"
+                    onClick={handleAddEquipment}
+                >
+                    ➕ Add Equipment
+                </button>
             </div>
 
             <EquipmentFilter
@@ -52,9 +64,17 @@ const ResourcesManagement = () => {
                             selectedFilter === 'faculty' ? '👨‍🏫 Faculty Equipment' :
                                 '🎓 Student Equipment'}
                     </h2>
-                    <span className="badge count-badge">
-                        {loading ? '...' : equipmentData.length} items
-                    </span>
+                    <div className="header-actions">
+                        <span className="badge count-badge">
+                            {loading ? '...' : equipmentData.length} items
+                        </span>
+                        <button
+                            className="btn-secondary"
+                            onClick={handleAddEquipment}
+                        >
+                            ➕ Add New
+                        </button>
+                    </div>
                 </div>
 
                 {error && (

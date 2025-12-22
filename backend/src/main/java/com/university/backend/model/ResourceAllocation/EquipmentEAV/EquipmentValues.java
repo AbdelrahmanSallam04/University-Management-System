@@ -1,8 +1,10 @@
 package com.university.backend.model.ResourceAllocation.EquipmentEAV;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "equipment_values")
 public class EquipmentValues {
 

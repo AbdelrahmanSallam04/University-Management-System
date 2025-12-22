@@ -15,4 +15,7 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
 
     // Or if you don't need courses immediately:
     Optional<Student> findByUserId(int userId);
+    Student findByEmailOrName(String email, String name);
+    List<Student> findByEmailContainingIgnoreCase(String emailFragment);
+    List<Student> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(String firstNameFragment, String lastNameFragment);
 }

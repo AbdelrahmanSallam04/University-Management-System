@@ -1,10 +1,7 @@
-package com.university.backend.repository.ResourceAllocationRepository;
+package com.university.backend.repository.ResourceAllocationRepository.EquipmentEAVRepository;
 
-import com.university.backend.dto.EquipmentAllocationDTO;
 import com.university.backend.dto.EquipmentDTO;
-import com.university.backend.model.ResourceAllocation.EquipmentAllocation.EquipmentDepartmentAllocation;
 import com.university.backend.model.ResourceAllocation.EquipmentEAV.EquipmentEntities;
-import com.university.backend.model.ResourceAllocation.EquipmentEAV.EquipmentValues;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface EquipmentValueRepository extends JpaRepository<EquipmentValues, Integer> {
+public interface EquipmentEntityRepository extends JpaRepository<EquipmentEntities, Integer> {
 
     @Query("SELECT new com.university.backend.dto.EquipmentDTO(" +
             "e.equipmentId, e.name, " +

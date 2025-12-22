@@ -3,8 +3,10 @@ package com.university.backend.model.ResourceAllocation.EquipmentAllocation;
 import com.university.backend.model.ResourceAllocation.EquipmentEAV.EquipmentEntities;
 import com.university.backend.model.StaffMember;
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(
         name = "equipment_faculty_allocation",
         uniqueConstraints = {

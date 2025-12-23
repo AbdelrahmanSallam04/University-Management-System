@@ -9,6 +9,19 @@ import {
 } from '../services/equipmentService';
 import '../styles/AddEquipment.css';
 
+// Debounce function to limit API calls
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
 const AddEquipment = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -81,39 +94,76 @@ const AddEquipment = () => {
     };
 
     // Handle search for faculty/students
-    const handleSearch = async () => {
-        if (!searchTerm.trim()) return;
+    const handleSearch = async (searchValue) => {
+        if (!searchValue.trim()) {
+            // Clear results if search is empty
+            const key = formData.allocatedToType === 'faculty' ? 'faculty' : 'students';
+            setDropdownData(prev => ({ ...prev, [key]: [] }));
+            setSelectedEntity(null);
+            return;
+        }
 
         const key = formData.allocatedToType === 'faculty' ? 'faculty' : 'students';
         setLoading(prev => ({ ...prev, [key]: true }));
 
         try {
             const data = formData.allocatedToType === 'faculty'
-                ? await searchFaculty(searchTerm)
-                : await searchStudents(searchTerm);
+                ? await searchFaculty(searchValue)
+                : await searchStudents(searchValue);
 
             setDropdownData(prev => ({ ...prev, [key]: data }));
         } catch (error) {
             console.error('Error searching:', error);
+            // Optionally show error to user
+            const key = formData.allocatedToType === 'faculty' ? 'faculty' : 'students';
+            setDropdownData(prev => ({ ...prev, [key]: [] }));
         } finally {
             setLoading(prev => ({ ...prev, [key]: false }));
         }
     };
 
+    const debouncedSearch = React.useCallback(
+        debounce((searchValue) => {
+            if (searchValue.trim()) {
+                handleSearch(searchValue);
+            }
+        }, 50), // 50ms delay
+        [formData.allocatedToType] // Dependencies
+    );
+
     // Handle entity selection (department, faculty, or student)
     const handleEntitySelect = (entity) => {
         setSelectedEntity(entity);
+
+        // Determine which ID to use based on entity structure
+        let entityId;
+        if (formData.allocatedToType === 'department') {
+            entityId = entity.departmentId || entity.id;
+        } else if (formData.allocatedToType === 'faculty') {
+            entityId = entity.facultyId || entity.userId || entity.id;
+        } else {
+            entityId = entity.studentId || entity.userId || entity.id;
+        }
+
         setFormData(prev => ({
             ...prev,
-            allocatedToId: entity[
-                formData.allocatedToType === 'department' ? 'departmentId' :
-                    formData.allocatedToType === 'faculty' ? 'facultyId' : 'studentId'
-                ]
+            allocatedToId: entityId
         }));
-        setSearchTerm(
-            formData.allocatedToType === 'department' ? entity.departmentName :
-                `${entity.firstName} ${entity.lastName} (${entity.email})`
-        );
+
+        // Update search term display
+        let displayText = '';
+        if (formData.allocatedToType === 'department') {
+            displayText = entity.departmentName || entity.name;
+        } else {
+            const firstName = entity.firstName || '';
+            const lastName = entity.lastName || '';
+            const email = entity.email || entity.account?.email || '';
+            displayText = `${firstName} ${lastName}`.trim();
+            if (email) {
+                displayText += ` (${email})`;
+            }
+        }
+        setSearchTerm(displayText);
     };
 
     // Add a new attribute field
@@ -203,19 +253,42 @@ const AddEquipment = () => {
                         <label className="form-label">Select Department *</label>
                         <select
                             className="form-control"
-                            value={formData.allocatedToId}
+                            value={formData.allocatedToId || ''}
                             onChange={(e) => {
-                                const dept = dropdownData.departments.find(d => d.departmentId === parseInt(e.target.value));
-                                handleEntitySelect(dept);
+                                const selectedValue = e.target.value;
+
+                                if (!selectedValue) {
+                                    // If "Select Department" is chosen
+                                    setSelectedEntity(null);
+                                    setFormData(prev => ({ ...prev, allocatedToId: '' }));
+                                    return;
+                                }
+
+                                const departmentId = parseInt(selectedValue);
+
+                                // Find the department
+                                const dept = dropdownData.departments.find(d => {
+                                    return d.departmentId === departmentId;
+                                });
+
+                                if (dept) {
+                                    handleEntitySelect(dept);
+                                } else {
+                                    console.error('Department not found with ID:', departmentId);
+                                    setSelectedEntity(null);
+                                    setFormData(prev => ({ ...prev, allocatedToId: '' }));
+                                }
                             }}
                             disabled={loading.departments}
                         >
                             <option value="">-- Select Department --</option>
-                            {dropdownData.departments.map(dept => (
-                                <option key={dept.departmentId} value={dept.departmentId}>
-                                    {dept.departmentName} ({dept.departmentCode})
-                                </option>
-                            ))}
+                            {dropdownData.departments.map(dept => {
+                                return (
+                                    <option key={dept.departmentId} value={dept.departmentId}>
+                                        {dept.departmentName}
+                                    </option>
+                                );
+                            })}
                         </select>
                         {loading.departments && <small>Loading departments...</small>}
                         {errors.allocatedTo && <div className="error-text">{errors.allocatedTo}</div>}
@@ -234,46 +307,79 @@ const AddEquipment = () => {
                                 <input
                                     type="text"
                                     className="form-control"
-                                    placeholder={`Enter ${formData.allocatedToType === 'faculty' ? 'faculty' : 'student'} name or email`}
+                                    placeholder={`Type to search ${formData.allocatedToType === 'faculty' ? 'faculty' : 'student'} name or email`}
                                     value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        setSearchTerm(value);
+
+                                        // Trigger debounced search on each keystroke
+                                        if (value.trim().length >= 0) {
+                                            debouncedSearch(value);
+                                        } else {
+                                            // Clear results if less than 2 characters
+                                            const key = formData.allocatedToType === 'faculty' ? 'faculty' : 'students';
+                                            setDropdownData(prev => ({ ...prev, [key]: [] }));
+                                            setSelectedEntity(null);
+                                        }
+                                    }}
+                                    autoComplete="off"
                                 />
-                                <button
-                                    type="button"
-                                    className="search-btn"
-                                    onClick={handleSearch}
-                                    disabled={loading.faculty || loading.students}
-                                >
-                                    {loading.faculty || loading.students ? 'Searching...' : '🔍 Search'}
-                                </button>
+                                {(loading.faculty || loading.students) && (
+                                    <span className="search-loading-indicator">⏳ Searching...</span>
+                                )}
                             </div>
 
                             {errors.allocatedTo && <div className="error-text">{errors.allocatedTo}</div>}
 
                             {/* Search Results */}
-                            {dropdownData[formData.allocatedToType + 's']?.length > 0 && (
+                            {(dropdownData[formData.allocatedToType + 's']?.length > 0 || loading.faculty || loading.students) && (
                                 <div className="search-results">
-                                    <h4>Search Results:</h4>
-                                    <div className="results-list">
-                                        {dropdownData[formData.allocatedToType + 's'].map(entity => (
-                                            <div
-                                                key={entity[formData.allocatedToType === 'faculty' ? 'facultyId' : 'studentId']}
-                                                className={`result-item ${selectedEntity === entity ? 'selected' : ''}`}
-                                                onClick={() => handleEntitySelect(entity)}
-                                            >
-                                                <div className="entity-name">
-                                                    {entity.firstName} {entity.lastName}
-                                                </div>
-                                                <div className="entity-email">{entity.email}</div>
-                                                {entity.departmentName && (
-                                                    <div className="entity-department">{entity.departmentName}</div>
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
+                                    <h4>
+                                        {loading.faculty || loading.students ? 'Searching...' : 'Search Results:'}
+                                    </h4>
+                                    {loading.faculty || loading.students ? (
+                                        <div className="loading-message">
+                                            <div className="spinner-small"></div>
+                                            <span>Searching for "{searchTerm}"...</span>
+                                        </div>
+                                    ) : (
+                                        <div className="results-list">
+                                            {dropdownData[formData.allocatedToType + 's'].map((entity, index) => {
+                                                // Generate a unique key
+                                                const entityKey = entity.userId ||
+                                                    (formData.allocatedToType === 'faculty' ? entity.facultyId : entity.studentId) ||
+                                                    entity.id ||
+                                                    `entity-${index}`;
+
+                                                return (
+                                                    <div
+                                                        key={entityKey}
+                                                        className={`result-item ${selectedEntity === entity ? 'selected' : ''}`}
+                                                        onClick={() => handleEntitySelect(entity)}
+                                                    >
+                                                        <div className="entity-name">
+                                                            {entity.firstName} {entity.lastName}
+                                                        </div>
+                                                        <div className="entity-email">{entity.email}</div>
+                                                        {entity.departmentName && (
+                                                            <div className="entity-department">{entity.departmentName}</div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
                                 </div>
                             )}
+
+                            {/* No Results Message */}
+                            {!loading.faculty && !loading.students && searchTerm.length >= 0 &&
+                                dropdownData[formData.allocatedToType + 's']?.length === 0 && (
+                                    <div className="no-results">
+                                        No {formData.allocatedToType === 'faculty' ? 'faculty' : 'students'} found for "{searchTerm}"
+                                    </div>
+                                )}
 
                             {/* Selected Entity Display */}
                             {selectedEntity && (
@@ -288,9 +394,6 @@ const AddEquipment = () => {
                         </div>
                     </div>
                 );
-
-            default:
-                return null;
         }
     };
 
@@ -382,8 +485,8 @@ const AddEquipment = () => {
                                                 >
                                                     <option value="">-- Select Attribute --</option>
                                                     {dropdownData.attributes.map(attribute => (
-                                                        <option key={attribute.attributeId} value={attribute.attributeId}>
-                                                            {attribute.attributeName}
+                                                        <option key={attribute.equipmentAttributeId} value={attribute.equipmentAttributeId}>
+                                                            {attribute.name}
                                                             {attribute.description && ` - ${attribute.description}`}
                                                         </option>
                                                     ))}

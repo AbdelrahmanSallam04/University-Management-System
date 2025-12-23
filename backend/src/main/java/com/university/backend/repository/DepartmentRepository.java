@@ -10,6 +10,5 @@ import java.util.List;
 public interface DepartmentRepository extends JpaRepository<Department, Integer>
 {
     Department findByDepartmentName(String DepartmentName);
-
     List<Department> findAll();
 }

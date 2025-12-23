@@ -66,8 +66,7 @@ export const searchFaculty = async (searchTerm) => {
     try {
         const response = await axios.get(`${API_BASE_URL}/equipments/faculty/search`, {
             params: {
-                email: searchTerm.includes('@') ? searchTerm : null,
-                name: !searchTerm.includes('@') ? searchTerm : null
+                name: searchTerm
             }
         });
         return response.data;
@@ -82,8 +81,7 @@ export const searchStudents = async (searchTerm) => {
     try {
         const response = await axios.get(`${API_BASE_URL}/equipments/students/search`, {
             params: {
-                email: searchTerm.includes('@') ? searchTerm : null,
-                name: !searchTerm.includes('@') ? searchTerm : null
+                name: searchTerm
             }
         });
         return response.data;

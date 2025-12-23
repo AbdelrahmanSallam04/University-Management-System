@@ -64,6 +64,16 @@ public class EquipmentService {
     }
 
     public void addEquipment(CreateEquipmentRequestDTO equipment) {
+        System.out.println("=== ADD EQUIPMENT START ===");
+        System.out.println("Equipment name: " + equipment.getEquipmentName());
+        System.out.println("Allocated to type: " + equipment.getAllocatedToType());
+        System.out.println("Allocated to ID: " + equipment.getAllocatedToId());
+        System.out.println("Attributes count: " + (equipment.getAttributes() != null ? equipment.getAttributes().size() : 0));
+
+        if (equipment.getAllocatedToId() == null) {
+            System.err.println("ERROR: allocatedToId is NULL!");
+            throw new RuntimeException("Allocated To ID cannot be null");
+        }
         EquipmentEntities equipmentEntity = new EquipmentEntities();
         equipmentEntity.setName(equipment.getEquipmentName());
         equipmentEntity = equipmentEntityRepository.save(equipmentEntity);
@@ -92,7 +102,8 @@ public class EquipmentService {
             case "DEPARTMENT":
                 EquipmentDepartmentAllocation departmentAllocation = new EquipmentDepartmentAllocation();
                 departmentAllocation.setEquipment(equipment);
-                departmentAllocation.setAllocationId(allocatedToId);
+                departmentAllocation.setDepartment(departmentRepository.findById(allocatedToId)
+                        .orElseThrow(() -> new RuntimeException("Department not found with id: " + allocatedToId)));
                 equipmentDepartmentRepository.save(departmentAllocation);
                 break;
             case "FACULTY":
@@ -118,29 +129,15 @@ public class EquipmentService {
         return departmentRepository.findAll();
     }
 
-    public List<StaffMember> searchFaculty(String email, String name) {
+    public List<StaffMember> searchFaculty(String name) {
         List<StaffMember> faculty;
-        if (email != null) {
-            faculty = staffMemberRepository.findByEmailContainingIgnoreCase(email);
-        } else if (name != null) {
-            faculty = staffMemberRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(name, name);
-        } else {
-            faculty = staffMemberRepository.findAll();
-        }
-
+        faculty = staffMemberRepository.searchByNameOrEmail(name);
         return faculty;
     }
 
-    public List<Student> searchStudents(String email, String name) {
+    public List<Student> searchStudents(String name) {
         List<Student> students;
-        if (email != null) {
-            students = studentRepository.findByEmailContainingIgnoreCase(email);
-        } else if (name != null) {
-            students = studentRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(name, name);
-        } else {
-            students = studentRepository.findAll();
-        }
-
+        students = studentRepository.searchByNameOrEmail(name);
         return students;
     }
 }

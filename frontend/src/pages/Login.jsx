@@ -18,19 +18,30 @@ const Login = () => {
 
         try {
             const result = await authService.login(username, password);
+            console.log('Login successful:', result);
+            // Navigate based on user role
             if (result.role === "PROFESSOR") {
                 navigate('/professor-dashboard');
             } else if (result.role === "ADMIN") {
                 navigate('/admin-dashboard');
             } else if (result.role === "STUDENT") {
                 navigate('/student-dashboard');
-            } else if (result.role === "PARENT") {
-                navigate('/parent-dashboard');
-            } else {
-                console.log('Role unidentified!!', result);
+             } else if (result.role === "PARENT") {
+                                navigate('/parent-dashboard');
+
+             }else if (result.role=="ASSISTANT"){
+                 navigate('/ta-dashboard')
+                 }
+
+
+                                 else {
+                console.log('Role unidentified!!', result)
             }
+            // onLogin(); // Notify App component
         } catch (error) {
-            setError('Login failed. Please check your credentials.');
+            const errorMessage =
+                'Login failed. Please check your credentials.';
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -47,6 +58,7 @@ const Login = () => {
                 <div className="login-card-centered">
                     <h2>Welcome Back</h2>
 
+                    {/* Error Message Display */}
                     {error && (
                         <div className="error-message">
                             <span className="error-icon">⚠</span>
@@ -61,6 +73,7 @@ const Login = () => {
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             placeholder="Enter your username"
+                            error={error && !username.trim() ? 'Username is required' : ''}
                         />
 
                         <InputField
@@ -69,6 +82,7 @@ const Login = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="Enter your password"
+                            error={error && !password.trim() ? 'Password is required' : ''}
                         />
 
                         <div className="button-group">

@@ -2,6 +2,7 @@ package com.university.backend.controller;
 
 import com.university.backend.dto.BookingRequestDTO;
 import com.university.backend.dto.RoomAvailabilityDTO;
+import com.university.backend.dto.RoomDTO;
 import com.university.backend.model.Booking;
 import com.university.backend.service.RoomService;
 import jakarta.persistence.EntityNotFoundException;
@@ -79,6 +80,16 @@ public class RoomController {
         } catch (Exception e) {
             System.err.println("Error fetching user bookings: " + e.getMessage());
             return new ResponseEntity<>("Failed to fetch user bookings.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<RoomDTO>> getAllRooms() {
+        try {
+            List<RoomDTO> rooms = roomService.getAllRooms();
+            return new ResponseEntity<>(rooms, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

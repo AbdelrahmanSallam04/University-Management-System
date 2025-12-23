@@ -1,8 +1,10 @@
-package com.university.backend.model.EquipmentEAV;
+package com.university.backend.model.ResourceAllocation.EquipmentEAV;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "equipment_values")
 public class EquipmentValues {
 
@@ -18,4 +20,7 @@ public class EquipmentValues {
     @ManyToOne
     @JoinColumn(name = "equipment_attribute_id", nullable = false)
     private EquipmentAttributes attribute;
+
+    @Column(name = "value", columnDefinition = "TEXT")
+    private String value;
 }

@@ -2,17 +2,19 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Professor SideBar';
 import '../styles/ProfessorDashboard.css';
-import { fetchAvailableRooms, bookRoom, fetchUserBookings } from '../services/roomService';
+import { fetchAllRooms, fetchAvailableRooms, bookRoom, fetchUserBookings } from '../services/roomService';
 import BookingFormModal from '../pages/BookingFormModal';
 import axios from 'axios';
-import ProfessorGradingPage from './ProfessorGradingPage'; // Import the grading component
+import ProfessorGradingPage from './ProfessorGradingPage';
+import MaintenanceReportForm from "./MaintenanceReportForm";
+import OfficeHoursManager from './OfficeHoursManager';
 
 function ProfessorDashboard() {
     const navigate = useNavigate();
 
     // --- User/Dashboard State ---
     const [dashboardData, setDashboardData] = useState({
-        professorId: null,  // Added professorId
+        professorId: null,
         firstName: 'Professor',
         lastName: '',
         email: 'N/A',
@@ -24,10 +26,10 @@ function ProfessorDashboard() {
     const [error, setError] = useState(null);
     const [currentView, setCurrentView] = useState('dashboard');
 
-    // State for Viewing Materials (from first code)
+    // --- Course Materials State ---
     const [courseMaterials, setCourseMaterials] = useState(null);
     const [loadingMaterials, setLoadingMaterials] = useState(false);
-    const [expandedItem, setExpandedItem] = useState(null); // Track which item is expanded
+    const [expandedItem, setExpandedItem] = useState(null);
 
     // --- Room Availability State ---
     const [roomAvailability, setRoomAvailability] = useState({
@@ -38,46 +40,33 @@ function ProfessorDashboard() {
         error: null
     });
 
-    // --- Booking State (New) ---
+    // --- Booking State ---
     const [bookingState, setBookingState] = useState({
         isModalOpen: false,
         selectedSlot: null,
-        myBookings: [] // To track session bookings
+        myBookings: []
     });
 
     // --- Grading State ---
-    const [gradingPage, setGradingPage] = useState(null); // 'assignment' or 'exam'
+    const [gradingPage, setGradingPage] = useState(null);
     const [currentItemForGrading, setCurrentItemForGrading] = useState(null);
 
-    // --- DATA FETCHING ---
+    // --- Maintenance State ---
+    const [rooms, setRooms] = useState([]);
+
+    // --- Fetch Dashboard Data ---
     const fetchDashboardData = async () => {
         setLoading(true);
         setError(null);
 
         try {
-            const response = await fetch('/api/dashboard/professor', {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include'
+            const response = await axios.get('http://localhost:8080/api/dashboard/professor', {
+                withCredentials: true
             });
 
-            if (!response.ok) {
-                let message = `Failed to fetch dashboard data. Status: ${response.status}`;
-                if (response.status === 401) {
-                    console.log("Session expired or unauthorized. Redirecting...");
-                    navigate('/login', { replace: true });
-                    return;
-                } else if (response.status === 403) {
-                    message = "Forbidden. Not a Professor account.";
-                } else if (response.status === 404) {
-                    message = "Professor profile not found.";
-                }
-                throw new Error(message);
-            }
-
-            const data = await response.json();
+            const data = response.data;
             setDashboardData({
-                professorId: data.userId || data.professorId || null, // Added professorId
+                professorId: data.professorId || data.userId || null,
                 firstName: data.firstName || 'Professor',
                 lastName: data.lastName || '',
                 email: data.email || 'N/A',
@@ -86,15 +75,38 @@ function ProfessorDashboard() {
                 taughtCourses: data.taughtCourses || [],
             });
 
-        } catch (e) {
-            console.error("Fetch error:", e);
-            setError(e.message || "An unexpected network error occurred.");
+        } catch (err) {
+            let errorMessage = 'Failed to fetch dashboard data.';
+            if (err.response) {
+                if (err.response.status === 401) {
+                    console.log("Session expired or unauthorized. Redirecting...");
+                    navigate('/login', { replace: true });
+                    return;
+                } else if (err.response.status === 403) {
+                    errorMessage = "Forbidden. Not a Professor account.";
+                } else if (err.response.status === 404) {
+                    errorMessage = "Professor profile not found.";
+                } else {
+                    errorMessage = `Error: ${err.response.data}`;
+                }
+            } else if (err.request) {
+                errorMessage = "Network error. Please check your connection.";
+            }
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
     };
 
-    // --- ROOM AVAILABILITY LOGIC ---
+    // --- Fetch Rooms for Maintenance ---
+
+
+    // --- Load Dashboard Data ---
+    useEffect(() => {
+        fetchDashboardData();
+    }, []);
+
+    // --- Room Availability Functions ---
     const loadRooms = useCallback(async () => {
         setRoomAvailability(prev => ({ ...prev, isLoading: true, error: null }));
         try {
@@ -106,7 +118,7 @@ function ProfessorDashboard() {
         } catch (err) {
             let errorMessage = 'Failed to load room data. Check backend logs.';
             if (axios.isAxiosError(err) && !err.response) {
-                errorMessage = 'Connection Error: Cannot reach backend server. Is Spring Boot running on localhost:8080?';
+                errorMessage = 'Connection Error: Cannot reach backend server.';
             } else if (err.response && err.response.data) {
                 errorMessage = `API Error: ${err.response.data}`;
             }
@@ -117,16 +129,12 @@ function ProfessorDashboard() {
     }, [roomAvailability.selectedDate, roomAvailability.selectedRoomType]);
 
     useEffect(() => {
-        fetchDashboardData();
-    }, []);
-
-    useEffect(() => {
         if (currentView === 'room_availability') {
             loadRooms();
         }
     }, [currentView, loadRooms]);
 
-    // --- VIEW MATERIALS HANDLERS (from first code) ---
+    // --- Course Materials Handlers ---
     const handleViewMaterials = async (courseId) => {
         setLoadingMaterials(true);
         setExpandedItem(null);
@@ -151,12 +159,11 @@ function ProfessorDashboard() {
     };
 
     const handleBackToCourses = () => {
-        console.log("Back button clicked");
         setCourseMaterials(null);
         setCurrentView('courses');
     };
 
-    // --- BOOKING HANDLERS (New) ---
+    // --- Booking Handlers ---
     const handleBookClick = (item) => {
         const [startTimeStr, endTimeStr] = item.timeSlot.split('-');
 
@@ -189,21 +196,14 @@ function ProfessorDashboard() {
 
         try {
             await bookRoom(bookingPayload);
-
             setBookingState(prev => ({ ...prev, isModalOpen: false, selectedSlot: null }));
-
-            setBookingState(prev => ({
-                ...prev,
-                myBookings: [...prev.myBookings, { ...bookingPayload, roomCode: slot.roomCode, timeSlot: slot.timeSlot, date: slot.date }]
-            }));
-
             await loadRooms();
         } catch (err) {
             throw err;
         }
     };
 
-    // --- GRADING HANDLERS ---
+    // --- Grading Handlers ---
     const handleGradeAssignment = (assignment) => {
         setCurrentItemForGrading(assignment);
         setGradingPage('assignment');
@@ -217,19 +217,17 @@ function ProfessorDashboard() {
     const handleBackToMaterials = () => {
         setGradingPage(null);
         setCurrentItemForGrading(null);
-        // If we were in materials view, stay there
-        if (currentView === 'view_materials') {
-            // Do nothing - we'll stay in materials view
-        } else {
+        if (currentView !== 'view_materials') {
             setCurrentView('view_materials');
         }
     };
 
+    // --- Navigation Handlers ---
     const handleLogout = async () => {
         console.log('Logging out...');
         try {
             await fetch('/logout', { method: 'POST' });
-        } catch(err) {
+        } catch (err) {
             console.log("Backend logout failed, clearing frontend anyway");
         }
         navigate('/login', { replace: true });
@@ -237,7 +235,6 @@ function ProfessorDashboard() {
 
     const handleSidebarNavigation = (viewId) => {
         setCurrentView(viewId);
-        // If navigating away, reset grading
         if (viewId !== 'view_materials') {
             setGradingPage(null);
             setCurrentItemForGrading(null);
@@ -252,7 +249,7 @@ function ProfessorDashboard() {
         setRoomAvailability(prev => ({ ...prev, selectedRoomType: e.target.value }));
     };
 
-    // --- PUBLISH CONTENT COMPONENT (from first code) ---
+    // --- Publish Content Component ---
     const PublishContentView = () => {
         const [formData, setFormData] = useState({
             courseId: '',
@@ -260,7 +257,6 @@ function ProfessorDashboard() {
             title: '',
             description: '',
             marks: '',
-            // Exam specific fields
             startTime: '',
             endTime: '',
             examType: 'MIDTERM',
@@ -288,13 +284,12 @@ function ProfessorDashboard() {
                     dueDate: formData.date + "T00:00:00"
                 };
             } else {
-                // Exam payload with new structure
                 payload = {
                     title: formData.title,
                     description: formData.description,
                     totalMarks: parseInt(formData.marks),
-                    startTime: formData.startTime + ":00", // Convert to ISO format
-                    endTime: formData.endTime + ":00", // Convert to ISO format
+                    startTime: formData.startTime + ":00",
+                    endTime: formData.endTime + ":00",
                     examType: formData.examType,
                     durationMinutes: parseInt(formData.durationMinutes) || null
                 };
@@ -511,26 +506,26 @@ function ProfessorDashboard() {
         );
     };
 
-    // --- VIEW MATERIALS RENDER HELPER (from first code) ---
+    // --- Render Materials Section ---
     const renderMaterialsSection = () => {
         if (loadingMaterials) return <div className="p-8">Loading materials...</div>;
         if (!courseMaterials) return <div className="p-8">No data found.</div>;
 
         return (
             <div className="events-section">
-                <div className="page-header" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <h2>📂 Content for: {courseMaterials.courseName}</h2>
                     <button
                         type="button"
                         className="submit-btn"
-                        style={{width: 'auto', padding: '10px 20px', backgroundColor: '#6c757d', cursor: 'pointer', zIndex: 100}}
+                        style={{ width: 'auto', padding: '10px 20px', backgroundColor: '#6c757d', cursor: 'pointer', zIndex: 100 }}
                         onClick={handleBackToCourses}
                     >
                         ⬅ Back to Courses
                     </button>
                 </div>
 
-                <h3 style={{marginTop: '20px', color: '#333'}}>Assignments</h3>
+                <h3 style={{ marginTop: '20px', color: '#333' }}>Assignments</h3>
                 <div className="list-container">
                     <table className="data-table">
                         <thead><tr><th>Title</th><th>Marks</th><th>Due Date</th><th>Actions</th></tr></thead>
@@ -538,14 +533,14 @@ function ProfessorDashboard() {
                         {courseMaterials.assignments && courseMaterials.assignments.length > 0 ? (
                             courseMaterials.assignments.map(a => (
                                 <React.Fragment key={a.id}>
-                                    <tr style={{backgroundColor: expandedItem?.id === a.id && expandedItem?.type === 'assignment' ? '#f0f8ff' : 'transparent'}}>
+                                    <tr style={{ backgroundColor: expandedItem?.id === a.id && expandedItem?.type === 'assignment' ? '#f0f8ff' : 'transparent' }}>
                                         <td>{a.title}</td>
                                         <td>{a.marks}</td>
                                         <td>{new Date(a.dueDate).toLocaleDateString()}</td>
                                         <td style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                                             <button
                                                 className="submit-btn"
-                                                style={{padding: '5px 10px', width: 'auto', fontSize: '0.8rem'}}
+                                                style={{ padding: '5px 10px', width: 'auto', fontSize: '0.8rem' }}
                                                 onClick={() => toggleExpand('assignment', a.id)}
                                             >
                                                 {expandedItem?.id === a.id && expandedItem?.type === 'assignment' ? 'Hide Details' : 'View Details'}
@@ -566,9 +561,9 @@ function ProfessorDashboard() {
                                     </tr>
                                     {expandedItem?.id === a.id && expandedItem?.type === 'assignment' && (
                                         <tr>
-                                            <td colSpan="4" style={{backgroundColor: '#fafafa', padding: '20px', borderLeft: '4px solid #007bff'}}>
+                                            <td colSpan="4" style={{ backgroundColor: '#fafafa', padding: '20px', borderLeft: '4px solid #007bff' }}>
                                                 <div style={{ whiteSpace: 'pre-wrap' }}>
-                                                    <h4 style={{marginBottom:'10px', color:'#007bff'}}>Questions / Description:</h4>
+                                                    <h4 style={{ marginBottom: '10px', color: '#007bff' }}>Questions / Description:</h4>
                                                     {a.description ? a.description : "No content provided."}
                                                 </div>
                                             </td>
@@ -577,13 +572,13 @@ function ProfessorDashboard() {
                                 </React.Fragment>
                             ))
                         ) : (
-                            <tr><td colSpan="4" style={{textAlign:'center'}}>No assignments created yet.</td></tr>
+                            <tr><td colSpan="4" style={{ textAlign: 'center' }}>No assignments created yet.</td></tr>
                         )}
                         </tbody>
                     </table>
                 </div>
 
-                <h3 style={{marginTop: '30px', color: '#333'}}>Exams</h3>
+                <h3 style={{ marginTop: '30px', color: '#333' }}>Exams</h3>
                 <div className="list-container">
                     <table className="data-table">
                         <thead><tr><th>Title</th><th>Marks</th><th>Exam Date</th><th>Actions</th></tr></thead>
@@ -591,14 +586,14 @@ function ProfessorDashboard() {
                         {courseMaterials.exams && courseMaterials.exams.length > 0 ? (
                             courseMaterials.exams.map(e => (
                                 <React.Fragment key={e.id}>
-                                    <tr style={{backgroundColor: expandedItem?.id === e.id && expandedItem?.type === 'exam' ? '#f0f8ff' : 'transparent'}}>
+                                    <tr style={{ backgroundColor: expandedItem?.id === e.id && expandedItem?.type === 'exam' ? '#f0f8ff' : 'transparent' }}>
                                         <td>{e.title}</td>
                                         <td>{e.marks}</td>
                                         <td>{new Date(e.examDate).toLocaleDateString()}</td>
                                         <td style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                                             <button
                                                 className="submit-btn"
-                                                style={{padding: '5px 10px', width: 'auto', fontSize: '0.8rem'}}
+                                                style={{ padding: '5px 10px', width: 'auto', fontSize: '0.8rem' }}
                                                 onClick={() => toggleExpand('exam', e.id)}
                                             >
                                                 {expandedItem?.id === e.id && expandedItem?.type === 'exam' ? 'Hide Details' : 'View Details'}
@@ -619,9 +614,9 @@ function ProfessorDashboard() {
                                     </tr>
                                     {expandedItem?.id === e.id && expandedItem?.type === 'exam' && (
                                         <tr>
-                                            <td colSpan="4" style={{backgroundColor: '#fafafa', padding: '20px', borderLeft: '4px solid #dc3545'}}>
+                                            <td colSpan="4" style={{ backgroundColor: '#fafafa', padding: '20px', borderLeft: '4px solid #dc3545' }}>
                                                 <div style={{ whiteSpace: 'pre-wrap' }}>
-                                                    <h4 style={{marginBottom:'10px', color:'#dc3545'}}>Questions / Description:</h4>
+                                                    <h4 style={{ marginBottom: '10px', color: '#dc3545' }}>Questions / Description:</h4>
                                                     {e.description ? e.description : "No content provided."}
                                                 </div>
                                             </td>
@@ -630,7 +625,7 @@ function ProfessorDashboard() {
                                 </React.Fragment>
                             ))
                         ) : (
-                            <tr><td colSpan="4" style={{textAlign:'center'}}>No exams created yet.</td></tr>
+                            <tr><td colSpan="4" style={{ textAlign: 'center' }}>No exams created yet.</td></tr>
                         )}
                         </tbody>
                     </table>
@@ -639,7 +634,7 @@ function ProfessorDashboard() {
         );
     };
 
-    // --- HELPER COMPONENTS ---
+    // --- Helper Components ---
     const StatCard = ({ title, value, icon, color }) => (
         <div className="stat-card">
             <div className={`stat-icon stat-icon-${color}`}>{icon}</div>
@@ -660,7 +655,7 @@ function ProfessorDashboard() {
                         <th>Code</th>
                         <th>Name</th>
                         <th>Credit Hours</th>
-                        <th>Action</th> {/* Added action column */}
+                        <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -671,7 +666,11 @@ function ProfessorDashboard() {
                             <td>{course.name}</td>
                             <td>{course.creditHours}</td>
                             <td>
-                                <button className="submit-btn" style={{padding: '5px 10px', fontSize: '0.9rem', width: 'auto'}} onClick={() => handleViewMaterials(course.courseId)}>
+                                <button
+                                    className="submit-btn"
+                                    style={{ padding: '5px 10px', fontSize: '0.9rem', width: 'auto' }}
+                                    onClick={() => handleViewMaterials(course.courseId)}
+                                >
                                     View Content
                                 </button>
                             </td>
@@ -685,40 +684,29 @@ function ProfessorDashboard() {
         </div>
     );
 
-    // --- ROOM AVAILABILITY VIEW ---
+    // --- Room Availability View ---
     const RoomAvailabilityView = () => {
         const { selectedDate, selectedRoomType, availableRooms, isLoading, error } = roomAvailability;
-        const { myBookings, isModalOpen, selectedSlot } = bookingState;
-
-        const tableHeaderStyle = {
-            padding: '15px 20px',
-            textAlign: 'left',
-            borderBottom: '2px solid #ddd',
-            backgroundColor: '#e0e7ff'
-        };
-        const tableCellStyle = {
-            padding: '15px 20px',
-            textAlign: 'left'
-        };
-
+        const { isModalOpen, selectedSlot } = bookingState;
         const [userBookings, setUserBookings] = useState([]);
         const [loadingBookings, setLoadingBookings] = useState(false);
 
+        const loadUserBookings = async () => {
+            setLoadingBookings(true);
+            try {
+                const bookings = await fetchUserBookings();
+                setUserBookings(bookings);
+            } catch (err) {
+                console.error("Failed to fetch user bookings:", err);
+            } finally {
+                setLoadingBookings(false);
+            }
+        };
+
         useEffect(() => {
-            const loadUserBookings = async () => {
-                if (currentView === 'room_availability') {
-                    setLoadingBookings(true);
-                    try {
-                        const bookings = await fetchUserBookings();
-                        setUserBookings(bookings);
-                    } catch (err) {
-                        console.error("Failed to fetch user bookings:", err);
-                    } finally {
-                        setLoadingBookings(false);
-                    }
-                }
-            };
-            loadUserBookings();
+            if (currentView === 'room_availability') {
+                loadUserBookings();
+            }
         }, [currentView]);
 
         return (
@@ -781,13 +769,7 @@ function ProfessorDashboard() {
                                 {userBookings.length} booking{userBookings.length !== 1 ? 's' : ''}
                             </span>
                             <button
-                                onClick={() => {
-                                    setLoadingBookings(true);
-                                    fetchUserBookings()
-                                        .then(data => setUserBookings(data))
-                                        .catch(err => console.error(err))
-                                        .finally(() => setLoadingBookings(false));
-                                }}
+                                onClick={loadUserBookings}
                                 disabled={loadingBookings}
                                 style={{
                                     backgroundColor: '#3b82f6',
@@ -808,20 +790,12 @@ function ProfessorDashboard() {
                     </div>
 
                     {loadingBookings ? (
-                        <div style={{
-                            textAlign: 'center',
-                            padding: '40px',
-                            color: '#64748b'
-                        }}>
+                        <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>
                             <div style={{ fontSize: '24px', marginBottom: '10px' }}>⏳</div>
                             <p style={{ margin: 0, fontSize: '16px' }}>Loading your bookings...</p>
                         </div>
                     ) : userBookings.length === 0 ? (
-                        <div style={{
-                            textAlign: 'center',
-                            padding: '40px',
-                            color: '#64748b'
-                        }}>
+                        <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>
                             <div style={{ fontSize: '48px', marginBottom: '10px' }}>📭</div>
                             <p style={{ margin: 0, fontSize: '16px' }}>No bookings yet. Book a room to see them here.</p>
                         </div>
@@ -869,11 +843,7 @@ function ProfessorDashboard() {
                                         {booking.status || 'CONFIRMED'}
                                     </div>
 
-                                    <div style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        marginBottom: '15px'
-                                    }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
                                         <div style={{
                                             backgroundColor: '#3b82f6',
                                             color: 'white',
@@ -890,18 +860,10 @@ function ProfessorDashboard() {
                                             {booking.roomCode?.charAt(0) || 'R'}
                                         </div>
                                         <div>
-                                            <h4 style={{
-                                                margin: '0 0 5px 0',
-                                                color: '#1e293b',
-                                                fontSize: '18px'
-                                            }}>
+                                            <h4 style={{ margin: '0 0 5px 0', color: '#1e293b', fontSize: '18px' }}>
                                                 {booking.roomCode || 'Unknown Room'}
                                             </h4>
-                                            <p style={{
-                                                margin: 0,
-                                                fontSize: '14px',
-                                                color: '#64748b'
-                                            }}>
+                                            <p style={{ margin: 0, fontSize: '14px', color: '#64748b' }}>
                                                 {booking.roomType || 'Classroom'} • Capacity: {booking.capacity || 'N/A'}
                                             </p>
                                         </div>
@@ -913,12 +875,7 @@ function ProfessorDashboard() {
                                         borderRadius: '6px',
                                         marginBottom: '15px'
                                     }}>
-                                        <div style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            marginBottom: '10px',
-                                            gap: '10px'
-                                        }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', gap: '10px' }}>
                                             <span style={{ fontSize: '20px' }}>📅</span>
                                             <div>
                                                 <div style={{ fontSize: '14px', color: '#475569' }}>Date</div>
@@ -933,12 +890,7 @@ function ProfessorDashboard() {
                                             </div>
                                         </div>
 
-                                        <div style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            marginBottom: '10px',
-                                            gap: '10px'
-                                        }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', gap: '10px' }}>
                                             <span style={{ fontSize: '20px' }}>⏰</span>
                                             <div>
                                                 <div style={{ fontSize: '14px', color: '#475569' }}>Time</div>
@@ -961,19 +913,10 @@ function ProfessorDashboard() {
                                         borderRadius: '6px',
                                         marginBottom: '15px'
                                     }}>
-                                        <p style={{
-                                            margin: '0 0 5px 0',
-                                            fontSize: '13px',
-                                            color: '#475569',
-                                            fontWeight: '600'
-                                        }}>
+                                        <p style={{ margin: '0 0 5px 0', fontSize: '13px', color: '#475569', fontWeight: '600' }}>
                                             📝 Purpose:
                                         </p>
-                                        <p style={{
-                                            margin: 0,
-                                            fontSize: '14px',
-                                            color: '#334155'
-                                        }}>
+                                        <p style={{ margin: 0, fontSize: '14px', color: '#334155' }}>
                                             {booking.purpose || 'No purpose provided'}
                                         </p>
                                     </div>
@@ -985,37 +928,9 @@ function ProfessorDashboard() {
                                         paddingTop: '15px',
                                         borderTop: '1px solid #e2e8f0'
                                     }}>
-                                        <span style={{
-                                            fontSize: '12px',
-                                            color: '#94a3b8'
-                                        }}>
+                                        <span style={{ fontSize: '12px', color: '#94a3b8' }}>
                                             Booked on: {new Date(booking.createdAt || Date.now()).toLocaleDateString()}
                                         </span>
-                                        <button
-                                            onClick={() => {
-                                                console.log('Cancel booking:', booking.bookingId);
-                                            }}
-                                            style={{
-                                                backgroundColor: 'transparent',
-                                                color: '#ef4444',
-                                                border: '1px solid #ef4444',
-                                                padding: '5px 12px',
-                                                borderRadius: '6px',
-                                                fontSize: '12px',
-                                                cursor: 'pointer',
-                                                transition: 'all 0.2s'
-                                            }}
-                                            onMouseEnter={(e) => {
-                                                e.target.style.backgroundColor = '#ef4444';
-                                                e.target.style.color = 'white';
-                                            }}
-                                            onMouseLeave={(e) => {
-                                                e.target.style.backgroundColor = 'transparent';
-                                                e.target.style.color = '#ef4444';
-                                            }}
-                                        >
-                                            Cancel
-                                        </button>
                                     </div>
                                 </div>
                             ))}
@@ -1037,11 +952,11 @@ function ProfessorDashboard() {
                                 <table className="availability-table">
                                     <thead>
                                     <tr>
-                                        <th style={tableHeaderStyle}>Room Code</th>
-                                        <th style={tableHeaderStyle}>Type</th>
-                                        <th style={tableHeaderStyle}>Capacity</th>
-                                        <th style={tableHeaderStyle}>Time Slot / Status</th>
-                                        <th style={tableHeaderStyle}>Action</th>
+                                        <th>Room Code</th>
+                                        <th>Type</th>
+                                        <th>Capacity</th>
+                                        <th>Time Slot / Status</th>
+                                        <th>Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -1052,13 +967,13 @@ function ProfessorDashboard() {
                                     ) : (
                                         availableRooms.map((item, index) => (
                                             <tr key={index} className="table-row">
-                                                <td style={tableCellStyle}>{item.roomCode}</td>
-                                                <td style={tableCellStyle}>{item.roomType}</td>
-                                                <td style={tableCellStyle}>{item.capacity}</td>
-                                                <td style={{ ...tableCellStyle, color: item.status === 'Free' ? '#10b981' : '#ef4444', fontWeight: '600' }}>
+                                                <td>{item.roomCode}</td>
+                                                <td>{item.roomType}</td>
+                                                <td>{item.capacity}</td>
+                                                <td style={{ color: item.status === 'Free' ? '#10b981' : '#ef4444', fontWeight: '600' }}>
                                                     {item.status} - {item.timeSlot}
                                                 </td>
-                                                <td style={tableCellStyle}>
+                                                <td>
                                                     {item.status === 'Free' ? (
                                                         <button
                                                             className="book-button"
@@ -1067,7 +982,7 @@ function ProfessorDashboard() {
                                                             Book Slot
                                                         </button>
                                                     ) : (
-                                                        <span className="occupied-slot" style={{ fontSize: '14px', color: '#666' }}>Booked</span>
+                                                        <span className="occupied-slot">Booked</span>
                                                     )}
                                                 </td>
                                             </tr>
@@ -1080,19 +995,6 @@ function ProfessorDashboard() {
                     )}
                 </div>
 
-                {myBookings.length > 0 && (
-                    <div style={{ marginTop: '30px', padding: '20px', backgroundColor: '#f0f9ff', borderRadius: '8px', border: '1px solid #bae6fd' }}>
-                        <h3 style={{ color: '#0284c7', margin: '0 0 10px 0' }}>✅ Your Recent Bookings</h3>
-                        <ul style={{ listStyleType: 'none', padding: 0 }}>
-                            {myBookings.map((b, i) => (
-                                <li key={i} style={{ marginBottom: '5px', color: '#334155' }}>
-                                    <strong>{b.roomCode}</strong> on {b.date} ({b.timeSlot}) - <em>{b.purpose}</em>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
-
                 {isModalOpen && (
                     <BookingFormModal
                         slotDetails={selectedSlot}
@@ -1104,7 +1006,7 @@ function ProfessorDashboard() {
         );
     };
 
-    // --- MAIN RENDER LOGIC ---
+    // --- Main Render Logic ---
     const renderMainContent = () => {
         if (loading && currentView !== 'room_availability') {
             return (
@@ -1148,11 +1050,17 @@ function ProfessorDashboard() {
                                 <div className="card-body">
                                     <div className="profile-row">
                                         <div className="profile-icon-box">📧</div>
-                                        <div className="profile-detail"><span className="label">Email Address</span><span className="value">{data.email}</span></div>
+                                        <div className="profile-detail">
+                                            <span className="label">Email Address</span>
+                                            <span className="value">{data.email}</span>
+                                        </div>
                                     </div>
                                     <div className="profile-row">
                                         <div className="profile-icon-box">🏛️</div>
-                                        <div className="profile-detail"><span className="label">Department</span><span className="value badge">{data.departmentName}</span></div>
+                                        <div className="profile-detail">
+                                            <span className="label">Department</span>
+                                            <span className="value badge">{data.departmentName}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1186,6 +1094,11 @@ function ProfessorDashboard() {
 
             case 'publish_content':
                 return <PublishContentView />;
+            case 'office_hours':
+                return <OfficeHoursManager professorId={dashboardData.professorId} />;
+
+            case 'Maintenance_Report':
+                return <MaintenanceReportForm rooms={rooms} />;
 
             default:
                 return <div className="p-8 text-center text-red-500">Unknown view selected.</div>;
@@ -1202,7 +1115,6 @@ function ProfessorDashboard() {
             <main className="main-content">
                 {gradingPage ? (
                     <ProfessorGradingPage
-
                         gradingType={gradingPage}
                         currentItem={currentItemForGrading}
                         onBackToMaterials={handleBackToMaterials}

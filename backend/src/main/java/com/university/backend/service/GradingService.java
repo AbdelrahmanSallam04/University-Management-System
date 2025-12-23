@@ -1,12 +1,12 @@
 package com.university.backend.service;
 
 import com.university.backend.dto.AssignmentSubmissionDTO;
-import com.university.backend.dto.ExamResultDTO;
+import com.university.backend.dto.ExamSubmissionDTO;
 import com.university.backend.dto.GradeUpdateRequestDTO;
 import com.university.backend.model.AssignmentSubmission;
-import com.university.backend.model.ExamResult;
+import com.university.backend.model.ExamSubmission;
 import com.university.backend.repository.AssignmentSubmissionRepository;
-import com.university.backend.repository.ExamResultRepository;
+import com.university.backend.repository.ExamSubmissionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class GradingService {
     private AssignmentSubmissionRepository assignmentSubmissionRepository;
 
     @Autowired
-    private ExamResultRepository examResultRepository;
+    private ExamSubmissionRepository examSubmissionRepository;
 
 
     // ========== ASSIGNMENT METHODS ==========
@@ -68,43 +68,77 @@ public class GradingService {
         return dto;
     }
 
-    // ========== EXAM METHODS ==========
+    // Fetch all submissions for an exam
+    public List<ExamSubmissionDTO> getExamSubmissions(int examId) {
+        List<ExamSubmission> submissions = examSubmissionRepository.findSubmissionsByExamId(examId);
 
-    public List<ExamResultDTO> getExamResults(int examId) {
-        List<ExamResult> results = examResultRepository.findResultsWithStudent(examId);
+        return submissions.stream().map(sub -> {
+            ExamSubmissionDTO dto = new ExamSubmissionDTO();
 
-        return results.stream().map(res -> {
-            // Create DTO from entity
-            ExamResultDTO dto = new ExamResultDTO();
-            dto.setExamResultId(res.getExam_result());
-            dto.setExamId(res.getExam_id().getExamId());
-            dto.setStudentId(res.getStudent_id().getUserId());
+            // Basic submission info
+            dto.setExamSubmissionId(sub.getExamSubmissionId());
+            dto.setAnswers(sub.getAnswers());
+            dto.setSubmittedAt(sub.getSubmittedAt());
+            dto.setObtainedMarks(sub.getObtainedMarks());
+            dto.setFeedback(sub.getFeedback());
+            dto.setStatus(sub.getStatus());
+            dto.setTimeTakenMinutes(sub.getTimeTakenMinutes());
 
-            dto.setScore(res.getScore());
-            dto.setFeedback(res.getFeedback());
+            // Exam info
+            if (sub.getExam() != null) {
+                dto.setExamId(sub.getExam().getExamId());
+            }
+
+            // Student info
+            if (sub.getStudent() != null) {
+                dto.setStudentId(sub.getStudent().getUserId());
+
+                // Get student name (adjust based on your Student entity)
+                String firstName = sub.getStudent().getFirstName() != null ? sub.getStudent().getFirstName() : "";
+                String lastName = sub.getStudent().getLastName() != null ? sub.getStudent().getLastName() : "";
+                dto.setStudentName(firstName + " " + lastName);
+            }
+
             return dto;
         }).collect(Collectors.toList());
     }
 
     @Transactional
-    public ExamResultDTO gradeExam(int resultId, GradeUpdateRequestDTO request) {
-        ExamResult result = examResultRepository.findById(resultId)
-                .orElseThrow(() -> new RuntimeException("Exam result not found with ID: " + resultId));
+    public ExamSubmissionDTO gradeExamSubmission(int submissionId, GradeUpdateRequestDTO request) {
+        ExamSubmission submission = examSubmissionRepository.findById(submissionId)
+                .orElseThrow(() -> new RuntimeException("Exam submission not found with ID: " + submissionId));
 
         // Update entity
-        result.setScore(request.getScore() != null ? request.getScore() : 0);
-        result.setFeedback(request.getFeedback() != null ? request.getFeedback() : "");
+        submission.setObtainedMarks(request.getScore() != null ? request.getScore() : 0);
+        submission.setFeedback(request.getFeedback() != null ? request.getFeedback() : "");
 
-        ExamResult saved = examResultRepository.save(result);
+        ExamSubmission saved = examSubmissionRepository.save(submission);
 
-        // Convert to DTO
-        ExamResultDTO dto = new ExamResultDTO();
-        dto.setExamResultId(saved.getExam_result());
-        dto.setExamId(saved.getExam_id().getExamId());
-        dto.setStudentId(saved.getStudent_id().getUserId());
+        // Convert to ExamSubmissionDTO
+        ExamSubmissionDTO dto = new ExamSubmissionDTO();
 
-        dto.setScore(saved.getScore());
+        // Basic submission info
+        dto.setExamSubmissionId(saved.getExamSubmissionId());
+        dto.setAnswers(saved.getAnswers());
+        dto.setSubmittedAt(saved.getSubmittedAt());
+        dto.setObtainedMarks(saved.getObtainedMarks());
         dto.setFeedback(saved.getFeedback());
+        dto.setStatus(saved.getStatus());
+        dto.setTimeTakenMinutes(saved.getTimeTakenMinutes());
+
+        // Exam info
+        if (saved.getExam() != null) {
+            dto.setExamId(saved.getExam().getExamId());
+        }
+
+        // Student info
+        if (saved.getStudent() != null) {
+            dto.setStudentId(saved.getStudent().getUserId());
+
+            String firstName = saved.getStudent().getFirstName() != null ? saved.getStudent().getFirstName() : "";
+            String lastName = saved.getStudent().getLastName() != null ? saved.getStudent().getLastName() : "";
+            dto.setStudentName(firstName + " " + lastName);
+        }
 
         return dto;
     }

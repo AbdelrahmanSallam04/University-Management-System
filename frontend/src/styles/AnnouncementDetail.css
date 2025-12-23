@@ -1,0 +1,124 @@
+.detail-container {
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 24px;
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2c3e50;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    color: #2563eb;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-bottom: 24px;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.back-btn:hover {
+    color: #1e40af;
+    text-decoration: underline;
+}
+
+.announcement-content {
+    background: #ffffff;
+    padding: 48px;
+    border-radius: 16px;
+    box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.08),
+            0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.detail-header h1 {
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: #1f2933;
+    margin-bottom: 14px;
+    line-height: 1.2;
+}
+
+.meta-info {
+    margin-bottom: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.date-tag,
+.category-tag {
+    background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #3730a3;
+}
+
+.summary-section {
+    margin-bottom: 28px;
+}
+
+.summary-section p {
+    font-style: italic;
+    font-size: 1.15rem;
+    color: #4b5563;
+    border-left: 4px solid #6366f1;
+    padding-left: 16px;
+}
+
+.content-text {
+    line-height: 1.9;
+    font-size: 1.05rem;
+    color: #374151;
+    white-space: pre-wrap; /* Preserves line breaks */
+}
+
+.additional-info {
+    margin-top: 40px;
+    padding: 24px;
+    background: #f9fafb;
+    border-radius: 12px;
+    border-left: 5px solid #6366f1;
+}
+
+.additional-info ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.additional-info li {
+    margin-bottom: 10px;
+    padding-left: 18px;
+    position: relative;
+    color: #374151;
+}
+
+.additional-info li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #6366f1;
+    font-weight: bold;
+}
+.detail-container {
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 40px 24px;
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    /* Purple background behind the card */
+    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    border-radius: 24px;
+}
+
+.announcement-content {
+    background: #ffffff;
+    padding: 48px;
+    border-radius: 16px;
+    box-shadow:
+            0 15px 40px rgba(0, 0, 0, 0.12),
+            0 4px 10px rgba(0, 0, 0, 0.06);
+}

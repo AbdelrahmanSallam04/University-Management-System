@@ -10,7 +10,10 @@ const AdminSidebar = ({ onMenuChange }) => {
     { id: 'create-account', label: 'Create Account', icon: '➕' },
     { id: 'events', label: 'Events', icon: '📅' },
     { id: 'announcements', label: 'Announcements', icon: '📢' },
-    { id: 'room-availability', label: 'Room Availability', icon: '🏢' }
+    { id: 'room-availability', label: 'Room Availability', icon: '🏢' },
+    {id: 'resources-management', label: 'Resources Management', icon: '📦'},
+    {id: 'Maintenance-Report', label: 'Maintenance Report', icon: '⚙️'},
+    {id: 'Maintenance-View', label: 'Maintenance View', icon: '🔧'}
   ];
 
   const handleMenuClick = (menuId) => {

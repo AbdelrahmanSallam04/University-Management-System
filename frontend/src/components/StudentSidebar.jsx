@@ -13,9 +13,8 @@ const Sidebar = () => {
     { path: "/course-catalog", label: "Courses Catalog", icon: "📊" },
     { path: "/exams", label: "Exams", icon: "📝" },
     { path: "/profile", label: "Profile", icon: "👤" },
-    { path: "/schedule", label: "Schedule", icon: "📅" },
-    { path: "/notice", label: "Notice", icon: "📢" },
-    { path: "/messages", label: "Messages", icon: "💬" },
+    { path: "/StaffDirectories", label: "Staff Directories", icon: "👨‍🏫" },
+    { path: "/Events", label: "Events", icon: "💬" },
   ];
 
   const handleNavigation = (path) => {

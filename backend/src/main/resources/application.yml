@@ -4,6 +4,7 @@ spring:
 
   datasource:
     url: jdbc:sqlserver://localhost:1433;databaseName=university_management_system;encrypt=true;trustServerCertificate=true;instanceName=SQLEXPRESS;
+
     username: university_user
     password: 123
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver

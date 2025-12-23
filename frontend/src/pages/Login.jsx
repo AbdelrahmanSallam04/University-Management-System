@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // ← ADD THIS IMPORT
+import { useNavigate } from 'react-router-dom';
 import InputField from '../components/InputField';
 import authService from '../services/authService';
 import '../styles/Login.css';
@@ -9,7 +9,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const navigate = useNavigate(); // ← ADD THIS HOOK
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -26,10 +26,15 @@ const Login = () => {
                 navigate('/admin-dashboard');
             } else if (result.role === "STUDENT") {
                 navigate('/student-dashboard');
-                   } else if (result.role === "PARENT") {
+             } else if (result.role === "PARENT") {
                                 navigate('/parent-dashboard');
 
-            } else {
+             }else if (result.role=="ASSISTANT"){
+                 navigate('/ta-dashboard')
+                 }
+
+
+                                 else {
                 console.log('Role unidentified!!', result)
             }
             // onLogin(); // Notify App component
@@ -49,8 +54,8 @@ const Login = () => {
                 <p>University Management System</p>
             </div>
 
-            <div className="login-content">
-                <div className="login-card">
+            <div className="login-content-centered">
+                <div className="login-card-centered">
                     <h2>Welcome Back</h2>
 
                     {/* Error Message Display */}
@@ -80,13 +85,23 @@ const Login = () => {
                             error={error && !password.trim() ? 'Password is required' : ''}
                         />
 
-                        <button
-                            type="submit"
-                            className="login-btn"
-                            disabled={loading}
-                        >
-                            {loading ? 'Logging in...' : 'Login'}
-                        </button>
+                        <div className="button-group">
+                            <button
+                                type="submit"
+                                className="login-btn"
+                                disabled={loading}
+                            >
+                                {loading ? 'Logging in...' : 'Login'}
+                            </button>
+
+                            <button
+                                type="button"
+                                className="public-news-btn"
+                                onClick={() => window.open('/public-announcements', '_blank')}
+                            >
+                                📢 News
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>

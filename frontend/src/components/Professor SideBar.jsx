@@ -7,8 +7,10 @@ const Sidebar = ({ currentView, setCurrentView, handleLogout }) => {
         { id: 'dashboard', label: 'Dashboard Overview', icon: '🏠' },
         { id: 'courses', label: 'Courses Teaching', icon: '📚' },
         { id: 'room_availability', label: 'Room Availability', icon: '📅' },
-        // New Menu Item
         { id: 'publish_content', label: 'Publish Content', icon: '📝' },
+        { id: 'Maintenance_Report', label: 'Maintenance Report', icon: '⚙️'},
+        // Added Office Hours Menu Item
+        { id: 'office_hours', label: 'Office Hours', icon: '⏰' },
     ];
 
     return (

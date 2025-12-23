@@ -56,15 +56,6 @@ const RegistrationStatus = () => {
           </span>
         </div>
       </div>
-
-      <div className="progress-container">
-        <div className="progress-bar" style={{ width: `${creditPercentage}%` }}>
-          <span className="progress-text">
-            {creditPercentage.toFixed(1)}%
-          </span>
-        </div>
-      </div>
-
       <button
         onClick={fetchRegistrationStatus}
         className="refresh-btn"

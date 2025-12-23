@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // ← ADD THIS IMPORT
+import { useNavigate } from 'react-router-dom';
 import InputField from '../components/InputField';
 import authService from '../services/authService';
 import '../styles/Login.css';
@@ -9,7 +9,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const navigate = useNavigate(); // ← ADD THIS HOOK
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -18,25 +18,19 @@ const Login = () => {
 
         try {
             const result = await authService.login(username, password);
-            console.log('Login successful:', result);
-            // Navigate based on user role
             if (result.role === "PROFESSOR") {
                 navigate('/professor-dashboard');
             } else if (result.role === "ADMIN") {
                 navigate('/admin-dashboard');
             } else if (result.role === "STUDENT") {
                 navigate('/student-dashboard');
-                   } else if (result.role === "PARENT") {
-                                navigate('/parent-dashboard');
-
+            } else if (result.role === "PARENT") {
+                navigate('/parent-dashboard');
             } else {
-                console.log('Role unidentified!!', result)
+                console.log('Role unidentified!!', result);
             }
-            // onLogin(); // Notify App component
         } catch (error) {
-            const errorMessage =
-                'Login failed. Please check your credentials.';
-            setError(errorMessage);
+            setError('Login failed. Please check your credentials.');
         } finally {
             setLoading(false);
         }
@@ -49,11 +43,10 @@ const Login = () => {
                 <p>University Management System</p>
             </div>
 
-            <div className="login-content">
-                <div className="login-card">
+            <div className="login-content-centered">
+                <div className="login-card-centered">
                     <h2>Welcome Back</h2>
 
-                    {/* Error Message Display */}
                     {error && (
                         <div className="error-message">
                             <span className="error-icon">⚠</span>
@@ -68,7 +61,6 @@ const Login = () => {
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             placeholder="Enter your username"
-                            error={error && !username.trim() ? 'Username is required' : ''}
                         />
 
                         <InputField
@@ -77,16 +69,25 @@ const Login = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="Enter your password"
-                            error={error && !password.trim() ? 'Password is required' : ''}
                         />
 
-                        <button
-                            type="submit"
-                            className="login-btn"
-                            disabled={loading}
-                        >
-                            {loading ? 'Logging in...' : 'Login'}
-                        </button>
+                        <div className="button-group">
+                            <button
+                                type="submit"
+                                className="login-btn"
+                                disabled={loading}
+                            >
+                                {loading ? 'Logging in...' : 'Login'}
+                            </button>
+
+                            <button
+                                type="button"
+                                className="public-news-btn"
+                                onClick={() => window.open('/public-announcements', '_blank')}
+                            >
+                                📢 News
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>

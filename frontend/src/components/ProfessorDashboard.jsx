@@ -7,6 +7,7 @@ import BookingFormModal from '../pages/BookingFormModal';
 import axios from 'axios';
 import ProfessorGradingPage from './ProfessorGradingPage';
 import MaintenanceReportForm from "./MaintenanceReportForm";
+import OfficeHoursManager from './OfficeHoursManager';
 
 function ProfessorDashboard() {
     const navigate = useNavigate();
@@ -1093,6 +1094,8 @@ function ProfessorDashboard() {
 
             case 'publish_content':
                 return <PublishContentView />;
+            case 'office_hours':
+                return <OfficeHoursManager professorId={dashboardData.professorId} />;
 
             case 'Maintenance_Report':
                 return <MaintenanceReportForm rooms={rooms} />;

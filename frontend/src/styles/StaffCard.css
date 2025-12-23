@@ -1,0 +1,293 @@
+/* Staff Card CSS - FIXED OVERLAP ISSUE */
+.staff-card {
+  transition: all 0.3s ease;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* REMOVE this hover effect from the main card */
+/* .staff-card:hover {
+  transform: translateY(-5px);
+  z-index: 10;
+} */
+
+.staff-card .course-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 25px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+}
+
+/* FIXED: Only transform the inner card, not the grid item */
+.staff-card .course-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+  z-index: 10; /* Bring hovered card to front */
+}
+
+.staff-card .course-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.staff-card .course-card:hover::before {
+  transform: scaleX(1);
+}
+
+/* Professor specific */
+.staff-card[data-role="professor"] .course-card::before {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+/* TA specific */
+.staff-card[data-role="teaching assistant"] .course-card::before {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+
+/* Staff Avatar Container */
+.staff-avatar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.staff-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.staff-role-badge {
+  background: #f8f9fa;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: #4a5568;
+  font-weight: 600;
+  text-align: center;
+  min-width: 140px;
+  border: 2px solid #e2e8f0;
+}
+
+/* Staff Info */
+.staff-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.staff-name {
+  margin: 0 0 15px 0;
+  color: #1a202c;
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+}
+
+/* Staff Details */
+.staff-details {
+  margin-bottom: 20px;
+  flex-shrink: 0;
+}
+
+.detail-item {
+  display: flex;
+  margin-bottom: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 0.9rem;
+  min-width: 100px;
+}
+
+.detail-value {
+  color: #2d3748;
+  font-size: 0.9rem;
+  font-weight: 500;
+  flex: 1;
+}
+
+.detail-value.email {
+  color: #3498db;
+  word-break: break-word;
+}
+
+/* Courses Section */
+.courses-section {
+  margin: 20px 0;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.courses-section h4 {
+  margin: 0 0 12px 0;
+  color: #4a5568;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.courses-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.course-tag {
+  background: linear-gradient(135deg, #667eea20, #764ba220);
+  color: #667eea;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1px solid #667eea40;
+  line-height: 1.3;
+  flex-shrink: 0;
+}
+
+.course-tag.more {
+  background: #f8f9fa;
+  color: #718096;
+  border: 1px solid #e2e8f0;
+}
+
+/* Office Hours Button */
+.office-hours-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.office-hours-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, #059669, #047857);
+}
+
+.office-hours-btn:disabled {
+  background: #cbd5e0;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.office-hours-btn.no-hours {
+  background: #cbd5e0;
+  cursor: not-allowed;
+}
+
+.office-hours-btn.no-hours:hover {
+  background: #cbd5e0;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Responsive Design for Staff Card */
+@media (max-width: 1024px) {
+  .staff-card .course-card {
+    min-height: 380px;
+  }
+}
+
+@media (max-width: 768px) {
+  .staff-card .course-card {
+    padding: 20px;
+    min-height: auto;
+    height: auto;
+  }
+
+  .staff-avatar {
+    width: 70px;
+    height: 70px;
+    font-size: 1.5rem;
+  }
+
+  .staff-role-badge {
+    min-width: 120px;
+    font-size: 0.85rem;
+    padding: 6px 12px;
+  }
+
+  .staff-name {
+    font-size: 1.3rem;
+  }
+
+  .detail-item {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .detail-label {
+    min-width: auto;
+  }
+
+  .courses-list {
+    flex-direction: column;
+  }
+
+  .course-tag {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .staff-card .course-card {
+    min-height: auto;
+  }
+
+  .courses-section {
+    flex: none;
+  }
+}

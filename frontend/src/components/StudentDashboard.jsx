@@ -39,9 +39,8 @@ const StudentDashboard = () => {
     { id: 2, name: "Courses Catalog", icon: "📊", path: "/course-catalog", color: "#667eea" },
     { id: 3, name: "Exams", icon: "📝", path: "/exams", color: "#4facfe" },
     { id: 4, name: "Profile", icon: "👤", path: "/profile", color: "#43e97b" },
-    { id: 5, name: "Schedule", icon: "📅", path: "/schedule", color: "#fa709a" },
-    { id: 6, name: "Notice", icon: "📢", path: "/notice", color: "#a8edea" },
-    { id: 8, name: "Messages", icon: "💬", path: "/messages", color: "#89f7fe" },
+    { id: 6, name: "Staff Directories", icon: "👨‍🏫", path: "/StaffDirectories", color: "#a8edea" },
+    { id: 8, name: "Events", icon: "💬", path: "/Events", color: "#89f7fe" },
   ];
 
   const handleCardClick = (card) => {
@@ -90,7 +89,7 @@ const StudentDashboard = () => {
         <div className="welcome-section">
           <div className="welcome-text">
             <h1>Welcome back, {dashboardData?.firstName || 'Student'}! 👋</h1>
-            <p>Here's your academic overview for today</p>
+             <p style={{ color: 'white' }}>Here's your academic overview for today</p>
           </div>
           <div className="date-display">
             {new Date().toLocaleDateString('en-US', {
@@ -109,13 +108,6 @@ const StudentDashboard = () => {
             <div className="stat-info">
               <h3>{dashboardData?.enrolledCoursesCount || 0}</h3>
               <p>Enrolled Courses</p>
-            </div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon">⏰</div>
-            <div className="stat-info">
-              <h3>2</h3>
-              <p>Classes Today</p>
             </div>
           </div>
           <div className="stat-card">

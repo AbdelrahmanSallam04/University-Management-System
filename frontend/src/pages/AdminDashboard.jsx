@@ -7,6 +7,8 @@ import EventsManagement from './EventsManagement';
 import AnnouncementsManagement from './AnnouncementsManagement';
 import ResourcesManagement from './ResourceManagement';
 import '../styles/AdminDashboard.css';
+import MaintenanceManagement from "../components/MaintenanceManagement";
+import MaintenanceReportForm from "../components/MaintenanceReportForm";
 
 const AdminDashboard = () => {
     const [activeComponent, setActiveComponent] = useState('dashboard');
@@ -27,6 +29,10 @@ const AdminDashboard = () => {
                 return <AnnouncementsManagement />;
                 case 'resources-management':
                     return <ResourcesManagement />;
+            case 'Maintenance-Report':
+                return <MaintenanceReportForm />
+            case 'Maintenance-View':
+                return <MaintenanceManagement />;
             default:
                 return <AdminOverview setActiveComponent={setActiveComponent} />;
         }

@@ -49,3 +49,19 @@ export const fetchUserBookings = async () => {
         throw error;
     }
 };
+
+
+// roomService.js - FIX
+export const fetchAllRooms = async () => {
+    try {
+        // MUST be .get to match @GetMapping in RoomController.java
+        const response = await axios.get(`${API_BASE_URL}/all`, {
+            withCredentials: true // Config must be the 2nd argument for GET
+        });
+        console.log("Data from server:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching all rooms:", error);
+        throw error;
+    }
+};

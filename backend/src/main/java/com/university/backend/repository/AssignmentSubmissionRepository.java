@@ -26,6 +26,7 @@ public interface AssignmentSubmissionRepository extends JpaRepository<Assignment
             "LEFT JOIN FETCH a.student s " +
             "WHERE a.assignment_id.assignmentId = :assignmentId")
     List<AssignmentSubmission> findSubmissionsWithStudent(@Param("assignmentId") int assignmentId);
+
     // Find all submissions for a student
     @Query("SELECT s FROM AssignmentSubmission s WHERE s.student.userId = :studentId")
     List<AssignmentSubmission> findByStudentId(@Param("studentId") Integer studentId);
@@ -33,4 +34,15 @@ public interface AssignmentSubmissionRepository extends JpaRepository<Assignment
     // Find submissions for a specific assignment
     @Query("SELECT s FROM AssignmentSubmission s WHERE s.assignment_id.assignmentId = :assignmentId")
     List<AssignmentSubmission> findByAssignmentId(@Param("assignmentId") Integer assignmentId);
+
+
+    @Query("SELECT a FROM AssignmentSubmission a WHERE a.student.userId = :studentId")
+    List<AssignmentSubmission> findByStudentUserId(@Param("studentId") Integer studentId);
+
+    // Find pending assignments (not submitted or not graded)
+    @Query("SELECT a FROM AssignmentSubmission a WHERE a.student.userId = :studentId " +
+            "AND (a.submitted_at IS NULL OR a.grade = 0)")
+    List<AssignmentSubmission> findPendingByStudentId(@Param("studentId") Integer studentId);
+
+
 }

@@ -26,10 +26,15 @@ const Login = () => {
                 navigate('/admin-dashboard');
             } else if (result.role === "STUDENT") {
                 navigate('/student-dashboard');
-                   } else if (result.role === "PARENT") {
+             } else if (result.role === "PARENT") {
                                 navigate('/parent-dashboard');
 
-            } else {
+             }else if (result.role=="ASSISTANT"){
+                 navigate('/ta-dashboard')
+                 }
+
+
+                                 else {
                 console.log('Role unidentified!!', result)
             }
             // onLogin(); // Notify App component

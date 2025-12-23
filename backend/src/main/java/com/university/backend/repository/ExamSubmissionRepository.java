@@ -25,4 +25,9 @@ public interface ExamSubmissionRepository extends JpaRepository<ExamSubmission, 
             "JOIN FETCH es.student s " +
             "WHERE es.exam.examId = :examId")
     List<ExamSubmission> findSubmissionsByExamId(@Param("examId") Integer examId);
+
+    @Query("SELECT e FROM ExamSubmission e WHERE e.student.userId = :studentId")
+    List<ExamSubmission> findByStudentUserId(@Param("studentId") Integer studentId);
+
+
     }

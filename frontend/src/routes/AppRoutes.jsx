@@ -13,6 +13,7 @@ import AssignmentSubmission from "../pages/AssignmentSubmission"
 import ExamView from '../pages/ExamView';
 import ExamTaking from '../pages/ExamTaking';
 import StaffDirectories from '../pages/StaffDirectories'
+import TADashboard from "../components/TADashboard";
 
 import ParentDashboard from "../pages/ParentDashboard";
 
@@ -34,6 +35,7 @@ const AppRoutes = () => {
            <Route path="/StaffDirectories" element={<StaffDirectories />} />
 
           <Route path="/parent-dashboard" element={<ParentDashboard />} /> {/* Add this route */}
+           <Route path="/ta-dashboard" element={<TADashboard />} />{/* Add this route */}
 
 
 

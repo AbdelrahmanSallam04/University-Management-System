@@ -8,10 +8,7 @@ const ParentSidebar = ({ currentView, setCurrentView, handleLogout }) => {
         { id: 'children', label: 'My Children', icon: '👨‍👩‍👧‍👦' },
         { id: 'assignments', label: 'Assignments', icon: '📝' },
         { id: 'grades', label: 'Grades', icon: '📚' },
-        { id: 'attendance', label: 'Attendance', icon: '✅' },
-        { id: 'messages', label: 'Messages', icon: '💬' },
-        { id: 'calendar', label: 'Calendar', icon: '📅' },
-        { id: 'settings', label: 'Settings', icon: '⚙️' },
+
     ];
 
     return (

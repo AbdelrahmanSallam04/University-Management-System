@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'; //
+import React, { useState, useEffect } from 'react';
 import AnnouncementCard from '../components/AnnouncementCard';
 import '../styles/AnnouncementsManagement.css';
 
 const AnnouncementsManagement = () => {
   // --- STATE MANAGEMENT ---
   const [showForm, setShowForm] = useState(false);
-  const [announcements, setAnnouncements] = useState([]); // NEW: Holds the DB data
+  const [announcements, setAnnouncements] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customFieldName, setCustomFieldName] = useState("");
@@ -21,7 +21,10 @@ const AnnouncementsManagement = () => {
   // Dynamic fields
   const [dynamicFields, setDynamicFields] = useState([]);
 
-  // --- FETCH LOGIC ---
+  // Options for the dropdown
+  const fieldOptions = ["Audience", "Priority", "Category", "Link"];
+
+  // --- FETCH LOGIC (GET) ---
   const fetchAnnouncements = async () => {
     try {
       const response = await fetch('http://localhost:8080/api/announcements/all');
@@ -35,10 +38,10 @@ const AnnouncementsManagement = () => {
   };
 
   useEffect(() => {
-    fetchAnnouncements(); // Fetch on page load
+    fetchAnnouncements();
   }, []);
 
-  // --- HANDLERS ---
+  // --- FORM HANDLERS ---
   const handleMandatoryChange = (e) => {
     setMandatoryFields({ ...mandatoryFields, [e.target.name]: e.target.value });
   };
@@ -74,7 +77,7 @@ const AnnouncementsManagement = () => {
     setDynamicFields(updatedFields);
   };
 
-  // --- SUBMIT HANDLER ---
+  // --- SUBMIT HANDLER (POST) ---
   const handleSubmit = async () => {
     if (
         !mandatoryFields.Title.trim() ||
@@ -109,17 +112,24 @@ const AnnouncementsManagement = () => {
       if (response.ok) {
         alert("✅ Published Successfully!");
         setShowForm(false);
+        // Reset state
         setMandatoryFields({ Title: "", Date: "", Summary: "", Content: "" });
         setDynamicFields([]);
-        fetchAnnouncements(); // REFRESH THE LIST IMMEDIATELY
+        // Refresh list
+        fetchAnnouncements();
+      } else {
+        const errorMsg = await response.text();
+        alert(`❌ Error: ${errorMsg}`);
       }
     } catch (error) {
       console.error("Connection Error:", error);
+      alert("❌ Could not connect to backend.");
     }
   };
 
   return (
       <div className="announcement-container">
+        {/* --- PAGE HEADER --- */}
         <div className="header-section">
           <h1>Announcements Management</h1>
           <button onClick={() => setShowForm(true)} className="btn btn-primary">
@@ -127,11 +137,11 @@ const AnnouncementsManagement = () => {
           </button>
         </div>
 
-        {/* --- REPLACED MOCK LIST WITH REAL CARDS --- */}
+        {/* --- LIST SECTION --- */}
         <div className="announcements-display-grid">
           {announcements.length > 0 ? (
               announcements.map((ann, index) => (
-                  <AnnouncementCard key={index} announcement={ann} isAdminView={true} />
+                  <AnnouncementCard key={ann.id || index} announcement={ann} isAdminView={true} />
               ))
           ) : (
               <div className="empty-state">
@@ -140,7 +150,7 @@ const AnnouncementsManagement = () => {
           )}
         </div>
 
-        {/* --- MODAL (Kept same as original) --- */}
+        {/* --- CREATE MODAL --- */}
         {showForm && (
             <div className="modal-overlay">
               <div className="modal-content">
@@ -148,7 +158,9 @@ const AnnouncementsManagement = () => {
                   <h2>New Announcement</h2>
                   <button onClick={() => setShowForm(false)} className="close-btn">✕</button>
                 </div>
+
                 <div className="form-container">
+                  {/* Mandatory Fields */}
                   {['Title', 'Date', 'Summary'].map((field) => (
                       <div key={field} className="form-group">
                         <label className="form-label">{field} *</label>
@@ -161,17 +173,19 @@ const AnnouncementsManagement = () => {
                         />
                       </div>
                   ))}
+
                   <div className="form-group">
                     <label className="form-label">Content *</label>
                     <textarea
                         name="Content"
                         value={mandatoryFields.Content}
                         onChange={handleMandatoryChange}
-                        rows="3"
+                        rows="4"
                         className="form-control"
                     />
                   </div>
-                  {/* ... (dynamic field logic kept same) */}
+
+                  {/* Dynamic Fields */}
                   {dynamicFields.map((field, index) => (
                       <div key={index} className="form-group">
                         <label className="form-label">{field.key}</label>
@@ -186,7 +200,48 @@ const AnnouncementsManagement = () => {
                         </div>
                       </div>
                   ))}
-                  {/* ... (Add field button and Save button kept same) */}
+
+                  {/* Add Field Buttons */}
+                  <div className="add-field-container">
+                    {!showCustomInput ? (
+                        <>
+                          <button
+                              type="button"
+                              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                              className="btn btn-add-attr"
+                          >
+                            + Add Attribute
+                          </button>
+
+                          {isDropdownOpen && (
+                              <div className="dropdown-menu">
+                                {fieldOptions.map(opt => (
+                                    <div key={opt} onClick={() => handleAddField(opt)} className="dropdown-item">
+                                      {opt}
+                                    </div>
+                                ))}
+                                <div onClick={() => handleAddField("Custom")} className="dropdown-item custom">
+                                  + Custom Field...
+                                </div>
+                              </div>
+                          )}
+                        </>
+                    ) : (
+                        <div className="custom-input-group">
+                          <input
+                              type="text"
+                              placeholder="Field name..."
+                              value={customFieldName}
+                              onChange={(e) => setCustomFieldName(e.target.value)}
+                              className="form-control"
+                              autoFocus
+                          />
+                          <button onClick={confirmCustomField} className="btn btn-success">Save</button>
+                          <button onClick={() => setShowCustomInput(false)} className="btn btn-secondary">Cancel</button>
+                        </div>
+                    )}
+                  </div>
+
                   <div className="modal-footer">
                     <button onClick={handleSubmit} className="btn btn-primary">Publish Announcement</button>
                   </div>

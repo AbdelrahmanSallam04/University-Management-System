@@ -88,6 +88,8 @@ public class AccountService {
 
                 case "admin":
                     Admin admin = new Admin();
+                    admin.setSalary(0.0);
+                    admin.setDepartment(department);
                     newUser = admin;
                     break;
 

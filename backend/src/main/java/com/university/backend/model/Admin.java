@@ -9,6 +9,6 @@ import lombok.Setter;
 @Table(name = "administrators")
 @Getter
 @Setter
-public class Admin extends User {
+public class Admin extends StaffMember {
     // Additional admin-specific fields if needed
 }

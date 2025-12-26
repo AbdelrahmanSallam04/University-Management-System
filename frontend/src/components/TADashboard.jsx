@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from '../components/Professor SideBar';
+import Sidebar from '../pages/TASidebar';
 import RoomAvailabilityComponent from '../components/RoomAvailabilityComponent';
 import MaintenanceReportForm from "../components/MaintenanceReportForm";
 import TAOfficehours from '../components/OfficeHoursManager';

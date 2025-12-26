@@ -1095,7 +1095,7 @@ function ProfessorDashboard() {
             case 'publish_content':
                 return <PublishContentView />;
             case 'office_hours':
-                return <OfficeHoursManager professorId={dashboardData.professorId} />;
+                return <OfficeHoursManager staffMemberId={dashboardData.professorId} />;
 
             case 'Maintenance_Report':
                 return <MaintenanceReportForm rooms={rooms} />;

@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface TARepository extends JpaRepository<TA, Long> {
 
-
-
-
+    // Only keep this simple query
+    @Query("SELECT t FROM TA t WHERE t.userId = :userId")
+    Optional<TA> findByUserId(@Param("userId") Integer userId);
 }

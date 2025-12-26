@@ -26,8 +26,8 @@ public class AnnouncementValues {
     private AnnouncementAttributes attribute;
 
     private String stringValue;
-    private float decimalValue;
-    private Integer integerValue;
-    private LocalDate dateValue;
-    private Boolean booleanValue;
+//    private float decimalValue;
+//    private Integer integerValue;
+//    private LocalDate dateValue;
+//    private Boolean booleanValue;
 }

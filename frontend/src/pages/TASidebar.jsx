@@ -8,6 +8,7 @@ const TASidebar = ({ currentView, setCurrentView, handleLogout }) => {
         { id: 'publish_content', label: 'Publish Assignment', icon: '📝' },
         { id: 'room_availability', label: 'Room Booking', icon: '🗓️' },
         { id: 'office_hours', label: 'Office Hours', icon: '⏰' },
+        { id: 'Maintenance_Report', label: 'Maintenance Report', icon: '⚙️'}
     ];
 
     return (

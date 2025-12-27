@@ -5,6 +5,8 @@ import RoomAvailabilityComponent from '../components/RoomAvailabilityComponent';
 import MaintenanceReportForm from "../components/MaintenanceReportForm";
 import TAOfficehours from '../components/OfficeHoursManager';
 import '../styles/ProfessorDashboard.css';
+import PublishContentView from "./PublishContent";
+import TAPublishComponent from "./TAPublishComponent";
 
 function TADashboard() {
     const navigate = useNavigate();
@@ -266,16 +268,7 @@ function TADashboard() {
                 );
 
             case 'publish_content':
-                return (
-                    <div className="events-section">
-                        <div className="page-header"><h2>📝 Publish Assignment</h2></div>
-                        <div className="publish-form-wrapper">
-                            <p style={{ textAlign: 'center', padding: '40px' }}>
-                                Assignment publishing functionality would go here
-                            </p>
-                        </div>
-                    </div>
-                );
+                return <TAPublishComponent  />;
 
             case 'grading':
                 return (

@@ -4,8 +4,15 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 @Data
 public class CourseMaterialsResponse {
+    private String courseName;
+    private String courseCode;
     private List<ExamResponse> exams;
     private List<AssignmentResponse> assignments;
 

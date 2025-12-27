@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface TARepository extends JpaRepository<TA, Long> {
+public interface TARepository extends JpaRepository<TA, Integer> {
 
     // Only keep this simple query
     @Query("SELECT t FROM TA t WHERE t.userId = :userId")

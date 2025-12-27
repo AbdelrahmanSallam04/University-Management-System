@@ -232,7 +232,7 @@ const AddEquipment = () => {
 
             // Reset form after 2 seconds and redirect
             setTimeout(() => {
-                navigate('/admin/resources-management');
+                navigate('/admin-dashboard');
             }, 2000);
         } catch (error) {
             console.error('Error submitting form:', error);
@@ -402,7 +402,7 @@ const AddEquipment = () => {
             <div className="page-header">
                 <button
                     className="back-button"
-                    onClick={() => navigate('/admin/resources-management')}
+                    onClick={() => navigate('/admin-dashboard')}
                 >
                     ← Back to Resources
                 </button>

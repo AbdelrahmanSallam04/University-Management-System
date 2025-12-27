@@ -842,6 +842,9 @@ function ProfessorDashboard() {
             case 'Maintenance_Report':
                 return <MaintenanceReportForm rooms={rooms} />;
 
+            case 'view_materials':
+                return renderMaterialsSection();
+
             default:
                 return <div className="p-8 text-center text-red-500">Unknown view selected.</div>;
         }

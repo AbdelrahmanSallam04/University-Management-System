@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchAvailableRooms, fetchAllRooms } from '../services/roomService';
+import { fetchAllRooms } from '../services/roomService';
 import {submitReport} from '../services/maintenanceService';
 import '../styles/MaintenanceReportForm.css';
 

@@ -1,3 +1,4 @@
+
 package com.university.backend.dto;
 
 import lombok.Getter;
@@ -19,4 +20,5 @@ public class ExamSubmissionDTO {
     private String status;
     private Integer timeTakenMinutes;
     private boolean isLate;
+    private Integer totalMarks;
 }

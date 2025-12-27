@@ -1,3 +1,4 @@
+
 package com.university.backend.dto;
 
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class AssignmentSubmissionDTO {
     private String answer;
     private Integer grade;  // Changed to Integer to allow null
     private String feedback;
+    private Integer totalMarks;
 
     // No-args constructor (required for JSON deserialization)
     public AssignmentSubmissionDTO() {}
@@ -33,6 +35,7 @@ public class AssignmentSubmissionDTO {
         this.answer = answer;
         this.grade = grade;
         this.feedback = feedback;
+
     }
 
 }

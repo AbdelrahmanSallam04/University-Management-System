@@ -1,3 +1,4 @@
+
 package com.university.backend.service;
 
 import com.university.backend.dto.*;
@@ -227,6 +228,9 @@ public class ParentDashboardService {
         dto.setAssignmentSubmissionId(submission.getAssignment_submission_id());
 
 
+        if (submission.getAssignment_id() != null) {
+            dto.setTotalMarks(submission.getAssignment_id().getMarks());
+        }
 
         if (submission.getSubmitted_at() != null) {
             dto.setSubmittedAt(submission.getSubmitted_at().toString());
@@ -248,6 +252,10 @@ public class ParentDashboardService {
         ExamSubmissionDTO dto = new ExamSubmissionDTO();
         dto.setExamSubmissionId(submission.getExamSubmissionId());
 
+        if (submission.getExam() != null) {
+            dto.setExamId(submission.getExam().getExamId());
+            dto.setTotalMarks(submission.getExam().getTotalMarks()); // ⭐ FIX
+        }
 
         if (submission.getStudent() != null) {
             dto.setStudentId(submission.getStudent().getUserId());

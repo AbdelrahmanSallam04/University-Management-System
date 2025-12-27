@@ -1,14 +1,14 @@
 import React from 'react';
+import '../styles/TAsideBar.css';
 
 const TASidebar = ({ currentView, setCurrentView, handleLogout }) => {
     const menuItems = [
         { id: 'dashboard', label: 'Dashboard', icon: '🏠' },
         { id: 'courses', label: 'My Courses', icon: '📚' },
-        { id: 'view_materials', label: 'Course Content', icon: '📂' },
         { id: 'publish_content', label: 'Publish Assignment', icon: '📝' },
-        { id: 'grading', label: 'Grading', icon: '📊' },
         { id: 'room_availability', label: 'Room Booking', icon: '🗓️' },
         { id: 'office_hours', label: 'Office Hours', icon: '⏰' },
+        { id: 'Maintenance_Report', label: 'Maintenance Report', icon: '⚙️'}
     ];
 
     return (

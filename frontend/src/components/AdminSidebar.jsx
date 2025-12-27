@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import '../styles/AdminSidebar.css';
+// Remove useNavigate from here - we'll handle logout in AdminDashboard
 
-const AdminSidebar = ({ onMenuChange }) => {
+const AdminSidebar = ({ onMenuChange, onLogout }) => { // Add onLogout as a prop
   const [activeMenu, setActiveMenu] = useState('dashboard');
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: '📊' },
     { id: 'user-management', label: 'User Management', icon: '👥' },
     { id: 'create-account', label: 'Create Account', icon: '➕' },
-    { id: 'events', label: 'Events', icon: '📅' },
     { id: 'announcements', label: 'Announcements', icon: '📢' },
     { id: 'room-availability', label: 'Room Availability', icon: '🏢' },
-    {id: 'resources-management', label: 'Resources Management', icon: '📦'},
-    {id: 'Maintenance-Report', label: 'Maintenance Report', icon: '⚙️'},
-    {id: 'Maintenance-View', label: 'Maintenance View', icon: '🔧'}
+    { id: 'resources-management', label: 'Resources Management', icon: '📦' },
+    { id: 'Maintenance-Report', label: 'Maintenance Report', icon: '⚙️' },
+    { id: 'Maintenance-View', label: 'Maintenance View', icon: '🔧' }
   ];
 
   const handleMenuClick = (menuId) => {
@@ -48,10 +48,13 @@ const AdminSidebar = ({ onMenuChange }) => {
       </div>
 
       <div className="admin-sidebar-footer">
-        <div className="admin-logout-button">
+        <button
+          className="admin-logout-button"
+          onClick={onLogout} // Use the onLogout prop passed from parent
+        >
           <span className="admin-logout-icon">🚪</span>
           <span>Logout</span>
-        </div>
+        </button>
       </div>
     </div>
   );

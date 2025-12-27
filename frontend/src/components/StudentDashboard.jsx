@@ -144,32 +144,6 @@ const StudentDashboard = () => {
             ))}
           </div>
         </div>
-        {/* Upcoming Events */}
-        <div className="events-section">
-          <h2>Upcoming Events</h2>
-          <div className="events-list">
-            <div className="event-item">
-              <div className="event-date">
-                <span className="event-day">15</span>
-                <span className="event-month">NOV</span>
-              </div>
-              <div className="event-details">
-                <h4>Mathematics Midterm</h4>
-                <p>10:00 AM - 12:00 PM</p>
-              </div>
-            </div>
-            <div className="event-item">
-              <div className="event-date">
-                <span className="event-day">18</span>
-                <span className="event-month">NOV</span>
-              </div>
-              <div className="event-details">
-                <h4>Computer Science Lab</h4>
-                <p>02:00 PM - 04:00 PM</p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
